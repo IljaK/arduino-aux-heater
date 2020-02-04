@@ -1,0 +1,6 @@
+AudiControl/.vs/
+AudiControl/__vm/
+AudiControl/.vscode/
+AudiControl/Release/
+AudiControlUnitTest/Release/
+*.user
