@@ -7,3 +7,4 @@ AudiControlUnitTest/Release/
 aux-heater-test/.vs/
 aux-heater-test/Debug/
 aux-heater-test/Release/
+/aux-heater/.vscode/c_cpp_properties.json

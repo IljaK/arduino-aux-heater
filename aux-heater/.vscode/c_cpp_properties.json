@@ -1,11 +1,22 @@
 {
     "configurations": [
         {
-            "name": "Win32",
+            "name": "Linux",
             "includePath": [
-                "C:\\Users\\Ilja\\AppData\\Local\\Arduino15\\packages\\arduino\\tools\\**",
-                "C:\\Users\\Ilja\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\avr\\1.8.2\\**",
-                "${workspaceFolder}/**"
+                "/home/ilja/arduino-1.8.11/tools/**",
+                "/home/ilja/arduino-1.8.11/hardware/arduino/avr/**",
+                "${workspaceFolder}/**",
+                "/home/ilja/arduino-1.8.11/hardware/arduino/avr/cores/arduino/",
+                "/home/ilja/arduino-1.8.11/hardware/arduino/avr/libraries/EEPROM/",
+                "/home/ilja/arduino-1.8.11/hardware/arduino/avr/libraries/SPI/",
+                "/home/ilja/arduino-1.8.11/hardware/arduino/avr/libraries/SoftwareSerial/",
+                "/home/ilja/arduino-1.8.11/hardware/arduino/avr/libraries/Wire/",
+                "/home/ilja/arduino-1.8.11/hardware/tools/avr/avr/include/",
+                "/home/ilja/arduino-1.8.11/hardware/tools/avr/avr/include/avr/",
+                "/home/ilja/arduino-1.8.11/hardware/tools/avr/avr/include/compat/",
+                "/home/ilja/arduino-1.8.11/hardware/tools/avr/avr/include/util/",
+                "/home/ilja/arduino-1.8.11/hardware/tools/avr/lib/gcc/avr/4.*.*/include/",
+                "/home/ilja/arduino-1.8.11/hardware/tools/avr/lib/gcc/avr/4.*.*/include-fixed/"
             ],
             "defines": [
                 "_DEBUG",
@@ -14,9 +25,11 @@
                 "USBCON",
                 "ARDUINO"
             ],
-            "intelliSenseMode": "gcc-x86",
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
             "forcedInclude": [
-                "C:\\Users\\Ilja\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\avr\\1.8.2\\cores\\arduino\\Arduino.h"
+                "/home/ilja/arduino-1.8.11/hardware/arduino/avr/cores/arduino/Arduino.h"
             ]
         }
     ],
