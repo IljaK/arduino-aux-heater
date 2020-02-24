@@ -4,3 +4,6 @@ AudiControl/.vscode/
 AudiControl/Release/
 AudiControlUnitTest/Release/
 *.user
+aux-heater-test/.vs/
+aux-heater-test/Debug/
+aux-heater-test/Release/

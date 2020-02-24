@@ -1,0 +1,4 @@
+{
+    "arduino.logLevel": "info",
+    "C_Cpp.loggingLevel": "Error"
+}
