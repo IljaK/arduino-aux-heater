@@ -28,11 +28,11 @@
     <Filter Include="Testable\Sources\Serial">
       <UniqueIdentifier>{70ec2668-a4c7-4661-b0fe-338d301edd27}</UniqueIdentifier>
     </Filter>
-    <Filter Include="TestableMock">
-      <UniqueIdentifier>{6a95af84-1b68-4e46-ae40-0174531413b0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="arduino-stub">
       <UniqueIdentifier>{052f0c33-a1fd-4a31-af68-bc7a467d48d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mock">
+      <UniqueIdentifier>{6a95af84-1b68-4e46-ae40-0174531413b0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -85,16 +85,16 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="BaseSerialHandlerMock.h">
-      <Filter>TestableMock</Filter>
+      <Filter>Mock</Filter>
     </ClInclude>
     <ClInclude Include="SerialCharResponseHandlerMock.h">
-      <Filter>TestableMock</Filter>
+      <Filter>Mock</Filter>
     </ClInclude>
     <ClInclude Include="SerialTimerResponseHandlerMock.h">
-      <Filter>TestableMock</Filter>
+      <Filter>Mock</Filter>
     </ClInclude>
     <ClInclude Include="BaseSerialHandlerTestMock.h">
-      <Filter>TestableMock</Filter>
+      <Filter>Mock</Filter>
     </ClInclude>
     <ClInclude Include="TimerMock.h">
       <Filter>Source Files</Filter>
@@ -162,19 +162,19 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BaseSerialHandlerMock.cpp">
-      <Filter>TestableMock</Filter>
+      <Filter>Mock</Filter>
     </ClCompile>
     <ClCompile Include="SerialCharResponseHandlerMock.cpp">
-      <Filter>TestableMock</Filter>
+      <Filter>Mock</Filter>
     </ClCompile>
     <ClCompile Include="SerialTimeResponseHandlerTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SerialTimerResponseHandlerMock.cpp">
-      <Filter>TestableMock</Filter>
+      <Filter>Mock</Filter>
     </ClCompile>
     <ClCompile Include="BaseSerialHandlerTestMock.cpp">
-      <Filter>TestableMock</Filter>
+      <Filter>Mock</Filter>
     </ClCompile>
     <ClCompile Include="UtilTest.cpp">
       <Filter>Source Files</Filter>
