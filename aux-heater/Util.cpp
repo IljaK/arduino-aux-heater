@@ -110,7 +110,7 @@ size_t printLongs(char *stringBuff, size_t bufferLength, unsigned long *sendByte
 
 size_t SplitString(char *source, uint8_t separator, char **subStrArray, size_t arraySize, bool skipEmpty)
 {
-	char sep[2] = { separator , 0 };
+	char sep[2] = { (char)separator , 0 };
 	return SplitString(source, sep, subStrArray, arraySize, skipEmpty);
 }
 

@@ -80,11 +80,12 @@ void AuxHeaterSerial::LaunchCMD()
 	cmdAttempt++;
 
 	digitalWrite(AUX_TX_PIN, LOW);
-	delayMicroseconds(300000u);
+	//delayMicroseconds(300000u);
+	delay(300ul);
 	digitalWrite(AUX_TX_PIN, HIGH);
-	delayMicroseconds(59432);
+	delayMicroseconds(59432u);
 	serial->write((uint8_t)145u);
-	delayMicroseconds(2400);
+	delayMicroseconds(2400u);
 	serial->write((uint8_t)129u);
 
 	StopTimer();
