@@ -1,0 +1,7 @@
+{
+    "arduino.logLevel": "info",
+    "C_Cpp.loggingLevel": "Error",
+    "C_Cpp.default.defines": [
+        //"ARDUINO"
+    ],
+}
