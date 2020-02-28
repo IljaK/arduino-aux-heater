@@ -1,0 +1,180 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{ba1be6bc-6df7-4ff8-ae15-aaa048fd2fa0}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(ProjectDir)/../arduino-stub;$(ProjectDir)/../aux-heater;$(IncludePath)</IncludePath>
+    <SourcePath>$(ProjectDir)/../arduino-stub;$(ProjectDir)/../aux-heater;$(SourcePath)</SourcePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(ProjectDir)/../arduino-stub;$(ProjectDir)/../aux-heater;$(IncludePath)</IncludePath>
+    <SourcePath>$(ProjectDir)/../arduino-stub;$(ProjectDir)/../aux-heater;$(SourcePath)</SourcePath>
+  </PropertyGroup>
+  <ItemGroup>
+    <ClInclude Include="..\arduino-stub\Arduino.h" />
+    <ClInclude Include="..\arduino-stub\Stream.h" />
+    <ClInclude Include="..\aux-heater\AuxHeaterSerial.h" />
+    <ClInclude Include="..\aux-heater\BaseSerialHandler.h" />
+    <ClInclude Include="..\aux-heater\BatteryMonitor.h" />
+    <ClInclude Include="..\aux-heater\BitDataManager.h" />
+    <ClInclude Include="..\aux-heater\CMDSerialHandler.h" />
+    <ClInclude Include="..\aux-heater\DigitalOscilloscope.h" />
+    <ClInclude Include="..\aux-heater\GSMSerialHandler.h" />
+    <ClInclude Include="..\aux-heater\LedController.h" />
+    <ClInclude Include="..\aux-heater\SerialCharResponseHandler.h" />
+    <ClInclude Include="..\aux-heater\SerialTimerResponseHandler.h" />
+    <ClInclude Include="..\aux-heater\Timer.h" />
+    <ClInclude Include="..\aux-heater\Util.h" />
+    <ClInclude Include="..\aux-heater\VoltMeter.h" />
+    <ClInclude Include="BaseSerialHandlerMock.h" />
+    <ClInclude Include="BaseSerialHandlerTestMock.h" />
+    <ClInclude Include="SerialCharResponseHandlerMock.h" />
+    <ClInclude Include="SerialStream.h" />
+    <ClInclude Include="SerialTimerResponseHandlerMock.h" />
+    <ClInclude Include="TimerMock.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\arduino-stub\Arduino.cpp" />
+    <ClCompile Include="..\arduino-stub\Stream.cpp" />
+    <ClCompile Include="..\aux-heater\AuxHeaterSerial.cpp" />
+    <ClCompile Include="..\aux-heater\BaseSerialHandler.cpp" />
+    <ClCompile Include="..\aux-heater\BatteryMonitor.cpp" />
+    <ClCompile Include="..\aux-heater\BitDataManager.cpp" />
+    <ClCompile Include="..\aux-heater\CMDSerialHandler.cpp" />
+    <ClCompile Include="..\aux-heater\DigitalOscilloscope.cpp" />
+    <ClCompile Include="..\aux-heater\GSMSerialHandler.cpp" />
+    <ClCompile Include="..\aux-heater\LedController.cpp" />
+    <ClCompile Include="..\aux-heater\SerialCharResponseHandler.cpp" />
+    <ClCompile Include="..\aux-heater\SerialTimerResponseHandler.cpp" />
+    <ClCompile Include="..\aux-heater\Timer.cpp" />
+    <ClCompile Include="..\aux-heater\Util.cpp" />
+    <ClCompile Include="..\aux-heater\VoltMeter.cpp" />
+    <ClCompile Include="BaseSerialHandlerMock.cpp" />
+    <ClCompile Include="BaseSerialHandlerTest.cpp" />
+    <ClCompile Include="BaseSerialHandlerTestMock.cpp" />
+    <ClCompile Include="GsmSerialHandlerTest.cpp" />
+    <ClCompile Include="SerialCharResponseHandlerMock.cpp" />
+    <ClCompile Include="SerialCharResponseHandlerTest.cpp" />
+    <ClCompile Include="SerialStream.cpp" />
+    <ClCompile Include="SerialTimeResponseHandlerTest.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="SerialTimerResponseHandlerMock.cpp" />
+    <ClCompile Include="TimerMock.cpp" />
+    <ClCompile Include="TimerTest.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="UtilTest.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="VoltMeterTest.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemDefinitionGroup />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1\build\native\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets" Condition="Exists('packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1\build\native\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets')" />
+  </ImportGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;ARDUINO_TEST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>X64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;ARDUINO_TEST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PreprocessorDefinitions>X64;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+    </Link>
+  </ItemDefinitionGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1\build\native\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1\build\native\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets'))" />
+  </Target>
+</Project>
