@@ -1,6 +1,8 @@
 #include <stdint.h>
 #ifdef _LINUX_
 #include <unistd.h>
+#else
+#include <windows.h>
 #endif
 #include <ctype.h>
 

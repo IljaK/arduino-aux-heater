@@ -42,6 +42,8 @@ TEST(BaseSerialHandler, BufferOverflowTest)
 		}
 	}
 
+	FAIL();
+
 	//swprintf(message, 128, L"Command owerflow has not been detected available: %d", serialHandler.SerialStream()->available());
 	//Assert::Fail(message);
 }
@@ -49,7 +51,6 @@ TEST(BaseSerialHandler, BufferOverflowTest)
 TEST(BaseSerialHandler, SerialHandlerTimeoutTest)
 {
 	timeOffset = 0;
-	wchar_t message[128];
 
 	SerialStream stream;
 	BaseSerialHandlerTestMock serialHandler(&stream);
@@ -60,9 +61,6 @@ TEST(BaseSerialHandler, SerialHandlerTimeoutTest)
 
 	Timer::Loop();
 	serialHandler.Loop();
-
-	//swprintf(message, 128, L"BaseSerialHandler time out timer FAIL");
-	//Assert::IsTrue(!serialHandler.isResponseReceived, message);
 	EXPECT_FALSE(serialHandler.isResponseReceived);
 
 	timeOffset = 1000000ul;
@@ -70,7 +68,5 @@ TEST(BaseSerialHandler, SerialHandlerTimeoutTest)
 	Timer::Loop();
 	serialHandler.Loop();
 
-	//swprintf(message, 128, L"BaseSerialHandler response time out FAIL");
-	//Assert::IsTrue(serialHandler.isResponseReceived, message);
 	EXPECT_TRUE(serialHandler.isResponseReceived);
 }

@@ -56,12 +56,12 @@
     <ClInclude Include="..\aux-heater\Timer.h" />
     <ClInclude Include="..\aux-heater\Util.h" />
     <ClInclude Include="..\aux-heater\VoltMeter.h" />
-    <ClInclude Include="BaseSerialHandlerMock.h" />
-    <ClInclude Include="BaseSerialHandlerTestMock.h" />
-    <ClInclude Include="SerialCharResponseHandlerMock.h" />
-    <ClInclude Include="SerialStream.h" />
-    <ClInclude Include="SerialTimerResponseHandlerMock.h" />
-    <ClInclude Include="TimerMock.h" />
+    <ClInclude Include="src\BaseSerialHandlerMock.h" />
+    <ClInclude Include="src\BaseSerialHandlerTestMock.h" />
+    <ClInclude Include="src\SerialCharResponseHandlerMock.h" />
+    <ClInclude Include="src\SerialStream.h" />
+    <ClInclude Include="src\SerialTimerResponseHandlerMock.h" />
+    <ClInclude Include="src\TimerMock.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\arduino-stub\Arduino.cpp" />
@@ -79,25 +79,25 @@
     <ClCompile Include="..\aux-heater\Timer.cpp" />
     <ClCompile Include="..\aux-heater\Util.cpp" />
     <ClCompile Include="..\aux-heater\VoltMeter.cpp" />
-    <ClCompile Include="BaseSerialHandlerMock.cpp" />
-    <ClCompile Include="BaseSerialHandlerTest.cpp" />
-    <ClCompile Include="BaseSerialHandlerTestMock.cpp" />
-    <ClCompile Include="GsmSerialHandlerTest.cpp" />
-    <ClCompile Include="SerialCharResponseHandlerMock.cpp" />
-    <ClCompile Include="SerialCharResponseHandlerTest.cpp" />
-    <ClCompile Include="SerialStream.cpp" />
-    <ClCompile Include="SerialTimeResponseHandlerTest.cpp">
+    <ClCompile Include="src\BaseSerialHandlerMock.cpp" />
+    <ClCompile Include="src\BaseSerialHandlerTest.cpp" />
+    <ClCompile Include="src\BaseSerialHandlerTestMock.cpp" />
+    <ClCompile Include="src\GsmSerialHandlerTest.cpp" />
+    <ClCompile Include="src\SerialCharResponseHandlerMock.cpp" />
+    <ClCompile Include="src\SerialCharResponseHandlerTest.cpp" />
+    <ClCompile Include="src\SerialStream.cpp" />
+    <ClCompile Include="src\SerialTimeResponseHandlerTest.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="SerialTimerResponseHandlerMock.cpp" />
-    <ClCompile Include="TimerMock.cpp" />
-    <ClCompile Include="TimerTest.cpp">
+    <ClCompile Include="src\SerialTimerResponseHandlerMock.cpp" />
+    <ClCompile Include="src\TimerMock.cpp" />
+    <ClCompile Include="src\TimerTest.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="UtilTest.cpp">
+    <ClCompile Include="src\UtilTest.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="VoltMeterTest.cpp">
+    <ClCompile Include="src\VoltMeterTest.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
   </ItemGroup>

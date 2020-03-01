@@ -48,7 +48,7 @@ bool SerialCharResponseHandler::LoadSymbolFromBuffer(uint8_t symbol)
 	if (separatorMatchedLength > 0) {
 
 		// Append characters to buffer + recheck on separator match
-		for (int i = 0; i < separatorMatchedLength; i++) {
+		for (int i = 0; i < (int)separatorMatchedLength; i++) {
 
 			if (!AppendSymbolToBuffer(separator[i])) {
 				ResponseDetectedInternal(false, true);

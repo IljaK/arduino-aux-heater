@@ -127,6 +127,7 @@ unsigned long Timer::Remain(TimerID timerId)
 			return pNode->remain;
 		}
 	}
+	return 0;
 }
 
 TimerNode *Timer::pFirst = NULL;

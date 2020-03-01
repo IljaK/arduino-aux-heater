@@ -6,13 +6,13 @@
 
 #include <Arduino.h>
 #include <SoftwareSerial.h>
-#include "Timer.h"
-#include "Util.h"
-#include "AuxHeaterSerial.h"
-#include "GSMSerialHandler.h"
-#include "LedController.h"
-#include "BatteryMonitor.h"
-//#include "CMDSerialHandler.h"
+#include "src/Timer.h"
+#include "src/Util.h"
+#include "src/AuxHeaterSerial.h"
+#include "src/GSMSerialHandler.h"
+#include "src/LedController.h"
+#include "src/BatteryMonitor.h"
+//#include "src/CMDSerialHandler.h"
 
 SoftwareSerial auxSerial(AUX_RX_PIN, AUX_TX_PIN);
 AuxHeaterSerial auxSerialHandler(&auxSerial);

@@ -9,9 +9,7 @@
 #include <cstdlib>
 #include <climits>
 
-#ifdef _LINUX_
 #define MAXBYTE UCHAR_MAX
-#endif
 
 #define LOW 0x0
 #define HIGH 0x1
