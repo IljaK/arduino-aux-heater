@@ -1,0 +1,42 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "/usr/lib",
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/../arduino-stub/**",
+                "${workspaceFolder}/../aux-heater/**"
+            ],
+            "defines": [
+                "_LINUX_",
+                "ARDUINO_TEST"
+            ],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-x64",
+            "forcedInclude": [
+            ]
+        },
+        {
+            "name": "Win32",
+            "includePath": [
+                "/usr/lib",
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/../arduino-stub/**",
+                "${workspaceFolder}/../aux-heater/**"
+            ],
+            "defines": [
+                "ARDUINO_TEST"
+            ],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-x64",
+            "forcedInclude": [
+            ]
+        }
+    ],
+    "version": 4
+}
