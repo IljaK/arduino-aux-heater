@@ -1,8 +1,3 @@
-AudiControl/.vs/
-AudiControl/__vm/
-AudiControl/.vscode/
-AudiControl/Release/
-AudiControlUnitTest/Release/
 *.user
 aux-heater-test/.vs/
 aux-heater-test/Debug/
