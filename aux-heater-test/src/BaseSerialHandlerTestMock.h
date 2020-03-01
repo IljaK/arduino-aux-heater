@@ -1,6 +1,6 @@
 #pragma once
 #include "BaseSerialHandlerMock.h"
-#include "../aux-heater/BaseSerialHandler.h"
+#include <BaseSerialHandler.h>
 
 class BaseSerialHandlerTestMock: public BaseSerialHandlerMock, public BaseSerialHandler
 {

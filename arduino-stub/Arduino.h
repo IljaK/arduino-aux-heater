@@ -2,11 +2,16 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <cstdio>
-#include <cstringt.h>
 #include <string>
 #include <ctime>
-#include <chrono>
 #include "Stream.h"
+
+#include <cstdlib>
+#include <climits>
+
+#ifdef _LINUX_
+#define MAXBYTE UCHAR_MAX
+#endif
 
 #define LOW 0x0
 #define HIGH 0x1
@@ -37,9 +42,7 @@ extern int analogRead(uint8_t);
 extern void analogReference(uint8_t mode);
 extern void analogWrite(uint8_t, int);
 
-using namespace std::chrono;
 extern unsigned long timeOffset;
-extern steady_clock::time_point launchTime;
 extern uint16_t analogValues[];
 extern int strcasecmp(const char *str1,const char *str2);
 extern uint16_t voltageToPinValue(double r1, double r2, double voltage, double vcc);

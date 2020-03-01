@@ -1,9 +1,9 @@
-#include <Windows.h>
-#include <chrono>
 #include <stdint.h>
+#ifdef _LINUX_
+#include <unistd.h>
+#endif
+#include <ctype.h>
 
-using namespace std::chrono;
-steady_clock::time_point launchTime = steady_clock::now();
 unsigned long timeOffset = 0;
 uint16_t analogValues[21];
 
@@ -22,11 +22,19 @@ unsigned long millis()
 
 void delay(unsigned long milliseconds)
 {
+	#ifdef _LINUX_
+	usleep(milliseconds);
+	#else
 	Sleep(milliseconds);
+	#endif
 }
 void delayMicroseconds(unsigned int us)
 {
+	#ifdef _LINUX_
+	usleep((unsigned long)us / 1000ul);
+	#else
 	Sleep((unsigned long)us / 1000ul);
+	#endif
 }
 
 void pinMode(uint8_t, uint8_t)

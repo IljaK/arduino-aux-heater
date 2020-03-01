@@ -1,5 +1,5 @@
 #pragma once
-#include "../aux-heater/SerialCharResponseHandler.h"
+#include <SerialCharResponseHandler.h>
 #include <Stream.h>
 #include "BaseSerialHandlerMock.h"
 

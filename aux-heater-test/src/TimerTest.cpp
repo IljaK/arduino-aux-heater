@@ -1,8 +1,7 @@
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #include <Timer.h>
 #include <Arduino.h>
 #include "TimerMock.h"
-#include <cstdlib>
 
 
 TEST(Timer, TimerTestRunStop)

@@ -1,6 +1,9 @@
 {
     "arduino.logLevel": "info",
     "C_Cpp.loggingLevel": "Error",
+    "C_Cpp.default.defines": [
+        //"ARDUINO"
+    ],
     "editor.tokenColorCustomizations": {
         "textMateRules": [
             {
@@ -22,5 +25,13 @@
                 }
             }
         ]
-    }
+    },
+    "files.associations": {
+        "limits": "cpp",
+        "climits": "cpp"
+    },
+    "gtest-adapter.debugConfig": [
+        "GTest"
+    ],
+    "gtest-adapter.supportLocation": false
 }

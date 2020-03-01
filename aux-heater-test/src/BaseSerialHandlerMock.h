@@ -1,5 +1,5 @@
 #pragma once
-#include "../aux-heater/BaseSerialHandler.h"
+#include <BaseSerialHandler.h>
 
 class BaseSerialHandlerMock
 {

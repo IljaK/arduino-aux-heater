@@ -1,5 +1,5 @@
 #pragma once
-#include "../aux-heater/SerialTimerResponseHandler.h"
+#include <SerialTimerResponseHandler.h>
 #include "BaseSerialHandlerMock.h"
 
 class SerialTimerResponseHandlerMock: public SerialTimerResponseHandler, public BaseSerialHandlerMock
