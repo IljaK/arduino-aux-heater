@@ -8,4 +8,4 @@ aux-heater-test/.vs/
 aux-heater-test/Debug/
 aux-heater-test/Release/
 aux-heater-test/packages/
-aux-heater/.vscode/c_cpp_properties.json
+aux-heater-test/build/
