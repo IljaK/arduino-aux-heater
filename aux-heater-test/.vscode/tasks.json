@@ -33,6 +33,23 @@
                 "options": {
                     "cwd": "/usr/bin"
                 }
+            },
+            "windows": {
+                "command": "cl.exe",
+                "args": [
+                    "/Zi",
+                    "/EHsc",
+                    "/Fe:", "${workspaceFolder}/build/test_app.exe",
+                    "${workspaceFolder}/../aux-heater/*.cpp",
+                    "${workspaceFolder}/../arduino-stub/*.cpp",
+                    "${workspaceFolder}/src/*.cpp",
+                    "${workspaceFolder}/app/*.cpp"
+                ],
+                "problemMatcher": ["$msCompile"],
+                "group": {
+                    "kind": "build",
+                    "isDefault": true
+                }
             }
         }
     ]

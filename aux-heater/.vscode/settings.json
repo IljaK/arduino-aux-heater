@@ -1,6 +1,8 @@
 {
     "arduino.logLevel": "info",
+    "arduino.enableUSBDetection": false,
     "C_Cpp.loggingLevel": "Error",
+    "C_Cpp.default.includePath": null,
     "editor.tokenColorCustomizations": {
         "textMateRules": [
             {
