@@ -1,4 +1,3 @@
-#include "gtest/gtest.h"
 #include "SerialStream.h"
 
 void SerialStream::SetRXBuffer(uint8_t *byteArray, rx_buffer_index_t length)

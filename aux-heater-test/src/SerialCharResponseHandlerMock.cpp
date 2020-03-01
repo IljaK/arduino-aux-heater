@@ -1,7 +1,5 @@
 #include "SerialCharResponseHandlerMock.h"
 
-
-
 SerialCharResponseHandlerMock::SerialCharResponseHandlerMock(const char *separator, Stream * stream):SerialCharResponseHandler(separator, stream), BaseSerialHandlerMock()
 {
 	Clear();

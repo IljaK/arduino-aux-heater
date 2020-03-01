@@ -5,38 +5,16 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Arduino",
-            "type": "arduino",
+            "name": "GTest",
+            "type": "cppdbg",
             "request": "launch",
-            "program": "${file}",
+            "program": "${workspaceFolder}/build/test_app",
+            "args": [],
+            "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
-            "MIMode": "gdb",
-            "targetArchitecture": "arm",
-            "miDebuggerPath": "",
-            "debugServerPath": "",
-            "debugServerArgs": "",
-            "customLaunchSetupCommands": [
-                {
-                    "text": "target remote localhost:3333"
-                },
-                {
-                    "text": "file \"${file}\""
-                },
-                {
-                    "text": "load"
-                },
-                {
-                    "text": "monitor reset halt"
-                },
-                {
-                    "text": "monitor reset init"
-                }
-            ],
-            "stopAtEntry": true,
-            "serverStarted": "Info\\ :\\ [\\w\\d\\.]*:\\ hardware",
-            "launchCompleteCommand": "exec-continue",
-            "filterStderr": true,
-            "args": []
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb"
         }
     ]
 }

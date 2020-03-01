@@ -1,4 +1,5 @@
 #include "BitDataManager.h"
+#include <math.h>
 
 BitDataManager::BitDataManager()
 {

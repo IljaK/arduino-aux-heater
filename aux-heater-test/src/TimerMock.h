@@ -1,5 +1,5 @@
 #pragma once
-#include "../aux-heater/Timer.h"
+#include <Timer.h>
 
 class TimerMock: public ITimerCallback
 {

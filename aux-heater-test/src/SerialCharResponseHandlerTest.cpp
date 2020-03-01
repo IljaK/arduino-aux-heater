@@ -1,4 +1,4 @@
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #include "SerialCharResponseHandlerMock.h"
 #include "BaseSerialHandlerMock.h"
 #include <Arduino.h>

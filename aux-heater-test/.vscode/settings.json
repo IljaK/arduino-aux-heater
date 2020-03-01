@@ -4,4 +4,34 @@
     "C_Cpp.default.defines": [
         //"ARDUINO"
     ],
+    "editor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                "scope": "googletest.failed",
+                "settings": {
+                    "foreground": "#f00"
+                }
+            },
+            {
+                "scope": "googletest.passed",
+                "settings": {
+                    "foreground": "#0f0"
+                }
+            },
+            {
+                "scope": "googletest.run",
+                "settings": {
+                    "foreground": "#0f0"
+                }
+            }
+        ]
+    },
+    "files.associations": {
+        "limits": "cpp",
+        "climits": "cpp"
+    },
+    "gtest-adapter.debugConfig": [
+        "GTest"
+    ],
+    "gtest-adapter.supportLocation": false
 }

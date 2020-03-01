@@ -1,6 +1,5 @@
 #include "TimerMock.h"
 
-
 TimerMock::TimerMock()
 {
 }
