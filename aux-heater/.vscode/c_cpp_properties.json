@@ -1,0 +1,41 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${config:arduino.path}/tools/**",
+                "${config:arduino.path}/hardware/arduino/avr/**",
+                "${workspaceFolder}/**",
+                "${config:arduino.path}/hardware/arduino/avr/cores/arduino/",
+                "${config:arduino.path}/hardware/arduino/avr/libraries/EEPROM/",
+                "${config:arduino.path}/hardware/arduino/avr/libraries/SPI/",
+                "${config:arduino.path}/hardware/arduino/avr/libraries/SoftwareSerial/",
+                "${config:arduino.path}/hardware/arduino/avr/libraries/Wire/",
+                "${config:arduino.path}/hardware/tools/avr/avr/include/",
+                "${config:arduino.path}/hardware/tools/avr/avr/include/avr/",
+                "${config:arduino.path}/hardware/tools/avr/avr/include/compat/",
+                "${config:arduino.path}/hardware/tools/avr/avr/include/util/",
+                "${config:arduino.path}/hardware/tools/avr/lib/gcc/avr/4.*.*/include/",
+                "${config:arduino.path}/hardware/tools/avr/lib/gcc/avr/4.*.*/include-fixed/",
+                "${config:arduino.path}/hardware/arduino/avr/**",
+                "${config:arduino.path}/tools/**",
+                "/home/ilja/arduino-1.8.12/hardware/arduino/avr/**",
+                "/home/ilja/arduino-1.8.12/tools/**"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE",
+                "USBCON",
+                "ARDUINO"
+            ],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "forcedInclude": [
+                "/home/ilja/arduino-1.8.12/hardware/arduino/avr/cores/arduino/Arduino.h"
+            ]
+        }
+    ],
+    "version": 4
+}
