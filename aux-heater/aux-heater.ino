@@ -6,8 +6,8 @@
 
 #include <Arduino.h>
 #include <SoftwareSerial.h>
-#include "src/Timer.h"
-#include "src/Util.h"
+#include "src/common/Timer.h"
+#include "src/common/Util.h"
 #include "src/AuxHeaterSerial.h"
 #include "src/GSMSerialHandler.h"
 #include "src/LedController.h"

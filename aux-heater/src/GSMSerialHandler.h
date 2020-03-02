@@ -1,8 +1,8 @@
 #pragma once
 #include <Arduino.h>
-#include "Util.h"
-#include "SerialCharResponseHandler.h"
-#include "SerialTimerResponseHandler.h"
+#include "common/Util.h"
+#include "serial/SerialCharResponseHandler.h"
+#include "serial/SerialTimerResponseHandler.h"
 
 constexpr char SIM_PIN_CODE[] = "0000"; // Pin code for sim card
 //constexpr char SIM_PIN_CODE[] = "58349965";

@@ -2,7 +2,7 @@
 
 AuxHeaterSerial::AuxHeaterSerial(Stream * auxSerial):SerialTimerResponseHandler(auxSerial)
 {
-	//this->auxSerial = auxSerial;
+	
 }
 
 AuxHeaterSerial::~AuxHeaterSerial()

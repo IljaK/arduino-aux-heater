@@ -1,5 +1,5 @@
 #pragma once
-#include "Util.h"
+#include "../common/Util.h"
 #include "BaseSerialHandler.h"
 
 class SerialCharResponseHandler: public BaseSerialHandler

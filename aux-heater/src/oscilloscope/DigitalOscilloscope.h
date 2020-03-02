@@ -1,7 +1,7 @@
 #pragma once
 #include <Arduino.h>
-#include "Util.h"
-#include "Timer.h"
+#include "../common/Util.h"
+#include "../common/Timer.h"
 #include "BitDataManager.h"
 
 class DigitalOscilloscope: public ITimerCallback

@@ -1,6 +1,6 @@
 #pragma once
-#include "Util.h"
-#include "Timer.h"
+#include "../common/Util.h"
+#include "../common/Timer.h"
 #include "BaseSerialHandler.h"
 
 class SerialTimerResponseHandler: public BaseSerialHandler

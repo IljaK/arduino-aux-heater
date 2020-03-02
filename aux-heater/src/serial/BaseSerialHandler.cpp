@@ -7,7 +7,6 @@ BaseSerialHandler::BaseSerialHandler(Stream * serial):ITimerCallback()
 
 BaseSerialHandler::~BaseSerialHandler()
 {
-	responseCallback = NULL;
 	StopTimeoutTimer();
 }
 
@@ -28,21 +27,7 @@ void BaseSerialHandler::ResponseDetectedInternal(bool IsTimeOut, bool isOverFlow
 
 void BaseSerialHandler::OnResponseReceived(bool IsTimeOut, bool isOverFlow)
 {
-	if (responseCallback != NULL)
-	{
-		void (*cb)() = responseCallback;
-		responseCallback = NULL;
-		cb();
-	}
 }
-/*
-size_t BaseSerialHandler::WriteData(uint8_t* byteArray, uint8_t length, void(*responseCallback)(), unsigned long microSecTimeOut)
-{
-	this->responseCallback = responseCallback;
-	size_t requestLength = serial->write(byteArray, length);
-	StartTimeoutTimer(microSecTimeOut);
-	return requestLength;
-}*/
 
 bool BaseSerialHandler::IsBusy()
 {

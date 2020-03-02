@@ -1,9 +1,8 @@
 #pragma once
-#include "Util.h"
-#include "Timer.h"
-#include "BaseSerialHandler.h"
-#include "BitDataManager.h"
-#include "SerialTimerResponseHandler.h"
+#include "common/Util.h"
+#include "common/Timer.h"
+#include "serial/BaseSerialHandler.h"
+#include "serial/SerialTimerResponseHandler.h"
 
 enum class HeaterCmdState : uint8_t
 {

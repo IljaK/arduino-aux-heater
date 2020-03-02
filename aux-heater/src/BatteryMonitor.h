@@ -1,6 +1,6 @@
 #pragma once
-#include "VoltMeter.h"
-#include "Util.h"
+#include "common/VoltMeter.h"
+#include "common/Util.h"
 #include <Arduino.h>
 
 
