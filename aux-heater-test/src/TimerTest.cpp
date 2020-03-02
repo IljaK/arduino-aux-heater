@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <Timer.h>
 #include <Arduino.h>
-#include "TimerMock.h"
+#include "mock/TimerMock.h"
 TEST(Timer, TimerTestRunStop)
 {
 	timeOffset = 0;

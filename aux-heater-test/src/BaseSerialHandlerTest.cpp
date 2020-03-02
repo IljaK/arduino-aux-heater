@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <Arduino.h>
 #include <Timer.h>
-#include "BaseSerialHandlerTestMock.h"
+#include "mock/BaseSerialHandlerTestMock.h"
 #include "SerialStream.h"
 
 

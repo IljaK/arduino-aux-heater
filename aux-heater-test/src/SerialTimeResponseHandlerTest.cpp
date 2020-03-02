@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
-#include "SerialTimerResponseHandlerMock.h"
-#include "BaseSerialHandlerMock.h"
 #include <Arduino.h>
+#include "mock/SerialTimerResponseHandlerMock.h"
+#include "mock/BaseSerialHandlerMock.h"
 #include "SerialStream.h"
 
 TEST(SerialTimeResponseHandler, BufferOverflowTest)

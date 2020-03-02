@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include "SerialCharResponseHandlerMock.h"
-#include "BaseSerialHandlerMock.h"
+#include "mock/SerialCharResponseHandlerMock.h"
+#include "mock/BaseSerialHandlerMock.h"
 #include <Arduino.h>
 #include "SerialStream.h"
 #include <GSMSerialHandler.h>

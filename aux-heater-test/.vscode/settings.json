@@ -30,8 +30,6 @@
         "limits": "cpp",
         "climits": "cpp"
     },
-    "gtest-adapter.debugConfig": [
-        "GTest"
-    ],
+    "gtest-adapter.debugConfig": "GTest",
     "gtest-adapter.supportLocation": false
 }

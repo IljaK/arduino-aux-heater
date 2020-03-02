@@ -17,11 +17,16 @@
                     "-D", "ARDUINO_TEST",
                     "-I", "${workspaceFolder}/src",
                     "-I", "${workspaceFolder}/../arduino-stub",
-                    "-I", "${workspaceFolder}/../aux-heater",
+                    "-I", "${workspaceFolder}/../aux-heater/src",
+                    "-I", "${workspaceFolder}/../aux-heater/src/common",
+                    "-I", "${workspaceFolder}/../aux-heater/src/serial",
 
-                    "${workspaceFolder}/../aux-heater/*.cpp",
+                    "${workspaceFolder}/../aux-heater/src/*.cpp",
+                    "${workspaceFolder}/../aux-heater/src/common/*.cpp",
+                    "${workspaceFolder}/../aux-heater/src/serial/*.cpp",
                     "${workspaceFolder}/../arduino-stub/*.cpp",
                     "${workspaceFolder}/src/*.cpp",
+                    "${workspaceFolder}/src/mock/*.cpp",
                     "${workspaceFolder}/app/*.cpp",
 
                     "-l", "gtest",

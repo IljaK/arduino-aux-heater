@@ -3,9 +3,9 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**",
+                "${workspaceFolder}/src/**",
                 "${workspaceFolder}/../arduino-stub/**",
-                "${workspaceFolder}/../aux-heater/**"
+                "${workspaceFolder}/../aux-heater/src/**"
             ],
             "defines": [
                 "ARDUINO_TEST"
@@ -21,9 +21,9 @@
             "name": "Linux",
             "includePath": [
                 "/usr/lib",
-                "${workspaceFolder}/**",
+                "${workspaceFolder}/src/**",
                 "${workspaceFolder}/../arduino-stub/**",
-                "${workspaceFolder}/../aux-heater/**"
+                "${workspaceFolder}/../aux-heater/src/**"
             ],
             "defines": [
                 "_LINUX_",
