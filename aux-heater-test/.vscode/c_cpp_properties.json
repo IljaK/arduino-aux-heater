@@ -3,6 +3,9 @@
         {
             "name": "Win32",
             "includePath": [
+                "D:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.24.28314/include/**",
+                "D:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.24.28314/atlmfc/include/**",
+
                 "${workspaceFolder}/src/**",
                 "${workspaceFolder}/../arduino-stub/**",
                 "${workspaceFolder}/../aux-heater/src/**"
@@ -12,7 +15,7 @@
             ],
             "cStandard": "c11",
             "cppStandard": "c++17",
-            "intelliSenseMode": "gcc-x64",
+            "intelliSenseMode": "msvc-x64",
             "forcedInclude": [
                 
             ]

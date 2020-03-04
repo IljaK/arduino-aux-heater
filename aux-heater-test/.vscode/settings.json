@@ -28,7 +28,12 @@
     },
     "files.associations": {
         "limits": "cpp",
-        "climits": "cpp"
+        "climits": "cpp",
+        "cstdio": "cpp",
+        "ctime": "cpp",
+        "string": "cpp",
+        "xutility": "cpp",
+        "algorithm": "cpp"
     },
     "gtest-adapter.debugConfig": "GTest",
     "gtest-adapter.supportLocation": false

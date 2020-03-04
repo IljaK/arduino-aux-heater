@@ -40,15 +40,30 @@
                 }
             },
             "windows": {
-                "command": "cl.exe",
+                "command": "D:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.24.28314/bin/Hostx64/x64/cl.exe",
                 "args": [
                     "/Zi",
                     "/EHsc",
-                    "/Fe:", "${workspaceFolder}/build/test_app.exe",
-                    "${workspaceFolder}/../aux-heater/*.cpp",
+                    "/external:W0",
+                    
+                    "/external:I", "D:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.24.28314/include",
+                    "/external:I", "D:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.24.28314/atlmfc/include",
+
+                    "/external:I", "${workspaceFolder}/src",
+                    "/external:I", "${workspaceFolder}/../arduino-stub",
+                    "/external:I", "${workspaceFolder}/../aux-heater/src",
+                    "/external:I", "${workspaceFolder}/../aux-heater/src/common",
+                    "/external:I", "${workspaceFolder}/../aux-heater/src/serial",
+
+                    "${workspaceFolder}/../aux-heater/src/*.cpp",
+                    "${workspaceFolder}/../aux-heater/src/common/*.cpp",
+                    "${workspaceFolder}/../aux-heater/src/serial/*.cpp",
                     "${workspaceFolder}/../arduino-stub/*.cpp",
                     "${workspaceFolder}/src/*.cpp",
-                    "${workspaceFolder}/app/*.cpp"
+                    "${workspaceFolder}/src/mock/*.cpp",
+                    "${workspaceFolder}/app/*.cpp",
+
+                    "/Fe:", "${workspaceFolder}/build/test_app.exe"
                 ],
                 "problemMatcher": ["$msCompile"],
                 "group": {

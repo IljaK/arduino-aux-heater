@@ -4,3 +4,4 @@ aux-heater-test/Debug/
 aux-heater-test/Release/
 aux-heater-test/packages/
 aux-heater-test/build/
+*.pdb

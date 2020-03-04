@@ -33,64 +33,64 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(ProjectDir)/../arduino-stub;$(ProjectDir)/../aux-heater;$(IncludePath)</IncludePath>
-    <SourcePath>$(ProjectDir)/../arduino-stub;$(ProjectDir)/../aux-heater;$(SourcePath)</SourcePath>
+    <IncludePath>$(ProjectDir)/../arduino-stub;$(ProjectDir)/../aux-heater/src;$(ProjectDir)/../aux-heater/src/serial;$(ProjectDir)/../aux-heater/src/common;$(IncludePath)</IncludePath>
+    <SourcePath>$(ProjectDir)/../arduino-stub;$(ProjectDir)/../aux-heater/src;$(ProjectDir)/../aux-heater/src/serial;$(ProjectDir)/../aux-heater/src/common;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(ProjectDir)/../arduino-stub;$(ProjectDir)/../aux-heater;$(IncludePath)</IncludePath>
-    <SourcePath>$(ProjectDir)/../arduino-stub;$(ProjectDir)/../aux-heater;$(SourcePath)</SourcePath>
+    <IncludePath>$(ProjectDir)/../arduino-stub;$(ProjectDir)/../aux-heater/src;$(ProjectDir)/../aux-heater/src/serial;$(ProjectDir)/../aux-heater/src/common;$(IncludePath)</IncludePath>
+    <SourcePath>$(ProjectDir)/../arduino-stub;$(ProjectDir)/../aux-heater/src;$(ProjectDir)/../aux-heater/src/serial;$(ProjectDir)/../aux-heater/src/common;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemGroup>
     <ClInclude Include="..\arduino-stub\Arduino.h" />
     <ClInclude Include="..\arduino-stub\Stream.h" />
-    <ClInclude Include="..\aux-heater\AuxHeaterSerial.h" />
-    <ClInclude Include="..\aux-heater\BaseSerialHandler.h" />
-    <ClInclude Include="..\aux-heater\BatteryMonitor.h" />
-    <ClInclude Include="..\aux-heater\BitDataManager.h" />
-    <ClInclude Include="..\aux-heater\CMDSerialHandler.h" />
-    <ClInclude Include="..\aux-heater\DigitalOscilloscope.h" />
-    <ClInclude Include="..\aux-heater\GSMSerialHandler.h" />
-    <ClInclude Include="..\aux-heater\LedController.h" />
-    <ClInclude Include="..\aux-heater\SerialCharResponseHandler.h" />
-    <ClInclude Include="..\aux-heater\SerialTimerResponseHandler.h" />
-    <ClInclude Include="..\aux-heater\Timer.h" />
-    <ClInclude Include="..\aux-heater\Util.h" />
-    <ClInclude Include="..\aux-heater\VoltMeter.h" />
-    <ClInclude Include="src\BaseSerialHandlerMock.h" />
-    <ClInclude Include="src\BaseSerialHandlerTestMock.h" />
-    <ClInclude Include="src\SerialCharResponseHandlerMock.h" />
+    <ClInclude Include="..\aux-heater\src\AuxHeaterSerial.h" />
+    <ClInclude Include="..\aux-heater\src\serial\BaseSerialHandler.h" />
+    <ClInclude Include="..\aux-heater\src\BatteryMonitor.h" />
+    <ClInclude Include="..\aux-heater\src\oscilloscope\BitDataManager.h" />
+    <ClInclude Include="..\aux-heater\src\CMDSerialHandler.h" />
+    <ClInclude Include="..\aux-heater\src\oscilloscope\DigitalOscilloscope.h" />
+    <ClInclude Include="..\aux-heater\src\GSMSerialHandler.h" />
+    <ClInclude Include="..\aux-heater\src\LedController.h" />
+    <ClInclude Include="..\aux-heater\src\serial\SerialCharResponseHandler.h" />
+    <ClInclude Include="..\aux-heater\src\serial\SerialTimerResponseHandler.h" />
+    <ClInclude Include="..\aux-heater\src\common\Timer.h" />
+    <ClInclude Include="..\aux-heater\src\common\Util.h" />
+    <ClInclude Include="..\aux-heater\src\common\VoltMeter.h" />
+    <ClInclude Include="src\mock\BaseSerialHandlerMock.h" />
+    <ClInclude Include="src\mock\BaseSerialHandlerTestMock.h" />
+    <ClInclude Include="src\mock\SerialCharResponseHandlerMock.h" />
     <ClInclude Include="src\SerialStream.h" />
-    <ClInclude Include="src\SerialTimerResponseHandlerMock.h" />
-    <ClInclude Include="src\TimerMock.h" />
+    <ClInclude Include="src\mock\SerialTimerResponseHandlerMock.h" />
+    <ClInclude Include="src\mock\TimerMock.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\arduino-stub\Arduino.cpp" />
     <ClCompile Include="..\arduino-stub\Stream.cpp" />
-    <ClCompile Include="..\aux-heater\AuxHeaterSerial.cpp" />
-    <ClCompile Include="..\aux-heater\BaseSerialHandler.cpp" />
-    <ClCompile Include="..\aux-heater\BatteryMonitor.cpp" />
-    <ClCompile Include="..\aux-heater\BitDataManager.cpp" />
-    <ClCompile Include="..\aux-heater\CMDSerialHandler.cpp" />
-    <ClCompile Include="..\aux-heater\DigitalOscilloscope.cpp" />
-    <ClCompile Include="..\aux-heater\GSMSerialHandler.cpp" />
-    <ClCompile Include="..\aux-heater\LedController.cpp" />
-    <ClCompile Include="..\aux-heater\SerialCharResponseHandler.cpp" />
-    <ClCompile Include="..\aux-heater\SerialTimerResponseHandler.cpp" />
-    <ClCompile Include="..\aux-heater\Timer.cpp" />
-    <ClCompile Include="..\aux-heater\Util.cpp" />
-    <ClCompile Include="..\aux-heater\VoltMeter.cpp" />
-    <ClCompile Include="src\BaseSerialHandlerMock.cpp" />
+    <ClCompile Include="..\aux-heater\src\AuxHeaterSerial.cpp" />
+    <ClCompile Include="..\aux-heater\src\serial\BaseSerialHandler.cpp" />
+    <ClCompile Include="..\aux-heater\src\BatteryMonitor.cpp" />
+    <ClCompile Include="..\aux-heater\src\oscilloscope\BitDataManager.cpp" />
+    <ClCompile Include="..\aux-heater\src\CMDSerialHandler.cpp" />
+    <ClCompile Include="..\aux-heater\src\oscilloscope\DigitalOscilloscope.cpp" />
+    <ClCompile Include="..\aux-heater\src\GSMSerialHandler.cpp" />
+    <ClCompile Include="..\aux-heater\src\LedController.cpp" />
+    <ClCompile Include="..\aux-heater\src\serial\SerialCharResponseHandler.cpp" />
+    <ClCompile Include="..\aux-heater\src\serial\SerialTimerResponseHandler.cpp" />
+    <ClCompile Include="..\aux-heater\src\common\Timer.cpp" />
+    <ClCompile Include="..\aux-heater\src\common\Util.cpp" />
+    <ClCompile Include="..\aux-heater\src\common\VoltMeter.cpp" />
+    <ClCompile Include="src\mock\BaseSerialHandlerMock.cpp" />
     <ClCompile Include="src\BaseSerialHandlerTest.cpp" />
-    <ClCompile Include="src\BaseSerialHandlerTestMock.cpp" />
+    <ClCompile Include="src\mock\BaseSerialHandlerTestMock.cpp" />
     <ClCompile Include="src\GsmSerialHandlerTest.cpp" />
-    <ClCompile Include="src\SerialCharResponseHandlerMock.cpp" />
+    <ClCompile Include="src\mock\SerialCharResponseHandlerMock.cpp" />
     <ClCompile Include="src\SerialCharResponseHandlerTest.cpp" />
     <ClCompile Include="src\SerialStream.cpp" />
     <ClCompile Include="src\SerialTimeResponseHandlerTest.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="src\SerialTimerResponseHandlerMock.cpp" />
-    <ClCompile Include="src\TimerMock.cpp" />
+    <ClCompile Include="src\mock\SerialTimerResponseHandlerMock.cpp" />
+    <ClCompile Include="src\mock\TimerMock.cpp" />
     <ClCompile Include="src\TimerTest.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
