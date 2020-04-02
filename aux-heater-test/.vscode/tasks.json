@@ -40,30 +40,29 @@
                 }
             },
             "windows": {
-                "command": "D:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.24.28314/bin/Hostx64/x64/cl.exe",
+                "command": "D:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.24.28314\\bin\\Hostx64\\x64\\cl.exe",
                 "args": [
                     "/Zi",
                     "/EHsc",
-                    "/external:W0",
-                    
-                    "/external:I", "D:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.24.28314/include",
-                    "/external:I", "D:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.24.28314/atlmfc/include",
 
-                    "/external:I", "${workspaceFolder}/src",
-                    "/external:I", "${workspaceFolder}/../arduino-stub",
-                    "/external:I", "${workspaceFolder}/../aux-heater/src",
-                    "/external:I", "${workspaceFolder}/../aux-heater/src/common",
-                    "/external:I", "${workspaceFolder}/../aux-heater/src/serial",
+                    "/I", "D:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.24.28314\\include",
+                    "/I", "D:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.24.28314\\atlmfc\\include",
 
-                    "${workspaceFolder}/../aux-heater/src/*.cpp",
-                    "${workspaceFolder}/../aux-heater/src/common/*.cpp",
-                    "${workspaceFolder}/../aux-heater/src/serial/*.cpp",
-                    "${workspaceFolder}/../arduino-stub/*.cpp",
-                    "${workspaceFolder}/src/*.cpp",
-                    "${workspaceFolder}/src/mock/*.cpp",
-                    "${workspaceFolder}/app/*.cpp",
+                    "/I", "${workspaceFolder}\\src",
+                    "/I", "${workspaceFolder}\\..\\arduino-stub",
+                    "/I", "${workspaceFolder}\\..\\aux-heater\\src",
+                    "/I", "${workspaceFolder}\\..\\aux-heater\\src\\common",
+                    "/I", "${workspaceFolder}\\..\\aux-heater\\src\\serial",
 
-                    "/Fe:", "${workspaceFolder}/build/test_app.exe"
+                    "${workspaceFolder}\\..\\aux-heater\\src\\*.cpp",
+                    "${workspaceFolder}\\..\\aux-heater\\src\\common\\*.cpp",
+                    "${workspaceFolder}\\..\\aux-heater\\src\\serial\\*.cpp",
+                    "${workspaceFolder}\\..\\arduino-stub\\*.cpp",
+                    "${workspaceFolder}\\src\\*.cpp",
+                    "${workspaceFolder}\\src\\mock\\*.cpp",
+                    "${workspaceFolder}\\app\\*.cpp",
+
+                    "/Fe:${workspaceFolder}\\build\\test_app.exe"
                 ],
                 "problemMatcher": ["$msCompile"],
                 "group": {

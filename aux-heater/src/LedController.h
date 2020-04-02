@@ -5,83 +5,72 @@
 struct LedBlinkFrequency
 {
 private:
+	// Old
 	// First 3 bits will store tact Length + 1 bit led state
-	uint16_t data = 0;
+	//uint16_t tactData = 0;
+
+	// tactInfo uint_8
+	// [x,xxx,xxxx]
+	// 1 bit led state  + 3 bits current bit index + 4 bits store length
+	uint8_t tactInfo = 0;
+	uint16_t tactData = 0;
 
 public:
 
 	uint8_t GetTactLength() {
-		// Get rid of first bit
-		return (uint8_t)(data >> (DataBytes() - (uint8_t)4));
+		return getBitsValue(&tactInfo, 4);
 
 	}
 	void SetTactLength(uint8_t value) {
-		uint8_t max = MaxLength();
-
-		if (value > max) value = max;
-
-		uint16_t mask = data & 0x0FFF;
-		uint8_t shiftAmount = DataBytes() - (uint8_t)4;
-		data = (uint16_t)((value << shiftAmount) | mask);
+		setBitsValue(&tactInfo, value, 4);
 	}
 
-	bool GetBitValue(uint16_t index) {
-		return (data & ((uint16_t)1 << (uint16_t)index)) != 0;
-	}
-
-	void SetBitValue(uint16_t index, bool value) {
-		if (value) data = data | (1 << index);
-		else data = data & ~(1 << index);
-	}
-
-	void AddValue(bool value) {
-		uint8_t length = GetTactLength();
-		if (length >= MaxLength()) return;
-
-		SetBitValue(length, value);
-		SetTactLength(length++);
-	}
-
-	uint8_t MaxLength() {
-		return (uint8_t)9;
-	}
-
-	uint8_t DataBytes() {
-		return sizeof(data) * (uint8_t)8;
-	}
-
-	bool GetStateBit()
-	{
-		return GetBitValue((uint8_t)11);
+	bool GetStateBit() {
+		return getBitsValue(&tactInfo, 1, 7);
 	}
 
 	void SetStateBit(bool value) {
-		SetBitValue((uint8_t)11, value);
+		setBitsValue(&tactInfo, value, 1, 7);
 	}
 
-	void SetFrequency(uint8_t length, uint8_t value) {
-		uint16_t mask = data & 0xFF00;
-		data = mask | value;
-		SetTactLength(length);
+	// TODO: uint8_t length, uint16_t value
+	void SetFrequency(uint8_t length, uint16_t value) {
+		tactData = value;
+		setBitsValue(&tactInfo, length, 4);
+	}
+
+	uint8_t GetTactIndex()
+	{
+		return getBitsValue(&tactInfo, 3, 4);
+	}
+
+	void SetTactIndex(uint8_t value)
+	{
+		setBitsValue(&tactInfo, value, 3, 4);
+	}
+
+	bool GetBitValue(uint8_t index)
+	{
+		return getBitsValue(&tactData, 1, index);
 	}
 };
 
 
-class LedController: Timer
+class LedController: ITimerCallback
 {
 private:
-	unsigned long startTS = 0;
-	uint16_t tactDuration = 0;
+	uint16_t tactDuration;
 	LedBlinkFrequency blinkFreq;
 	void SetLedState(uint8_t state);
 
 public:
 	LedController();
 	~LedController();
+
 	uint16_t TactDuration();
-	void Loop();
-	void SetFrequency(uint16_t tactDuration, uint8_t length, uint8_t frequency);
+	void SetFrequency(uint16_t tactDuration, uint8_t length, uint16_t frequency);
 	void Stop();
+	void Loop();
 
 	void Glow();
 	void Off();

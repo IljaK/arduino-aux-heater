@@ -8,13 +8,18 @@
             "name": "GTest",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/test_app",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
-            "MIMode": "gdb"
+            "MIMode": "gdb",
+            "windows": {
+                "program": "${workspaceFolder}/Debug/aux-heater-test-google.exe",
+            },
+            "linux": {
+                "program": "${workspaceFolder}/build/test_app",
+            }
         }
     ]
 }

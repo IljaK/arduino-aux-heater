@@ -11,7 +11,6 @@ SerialTimerResponseHandler::~SerialTimerResponseHandler()
 
 void SerialTimerResponseHandler::Loop()
 {
-
 	BaseSerialHandler::Loop();
 	
 	if (registeredBytes < serial->available()) {

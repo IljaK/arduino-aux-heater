@@ -1,6 +1,8 @@
 #pragma once
 #include <Arduino.h>
 
+constexpr uint8_t BITS_PER_BYTE = 8u;
+
 constexpr uint8_t DEBUG_RX_PIN = 6u;
 constexpr uint8_t DEBUG_TX_PIN = 7u;
 
@@ -34,6 +36,11 @@ extern inline void tunedDelay(uint16_t delay);
 
 extern uint8_t reverseByte(uint8_t x);
 extern uint8_t getBitFromByte(uint8_t targetByte, uint8_t index);
+
+extern uint8_t getBitsValue(uint8_t *target, uint8_t length, uint8_t start = 0);
+extern void setBitsValue(uint8_t *target, uint8_t value, uint8_t length, uint8_t start = 0);
+extern uint16_t getBitsValue(uint16_t *target, uint8_t length, uint8_t start = 0);
+extern void setBitsValue(uint16_t* target, uint16_t value, uint8_t length, uint8_t start = 0);
 
 extern bool IsBytesAreEqual(uint8_t * byteArray1, int length1, uint8_t * byteArray2, int length2);
 extern void CopyByteArray(uint8_t * source, uint8_t * destination, int size);

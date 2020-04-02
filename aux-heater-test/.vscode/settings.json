@@ -36,5 +36,5 @@
         "algorithm": "cpp"
     },
     "gtest-adapter.debugConfig": "GTest",
-    "gtest-adapter.supportLocation": false
+    "gtest-adapter.supportLocation": true
 }

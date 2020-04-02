@@ -1,15 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="BaseSerialHandlerMock.cpp">
-      <Filter>Mock</Filter>
-    </ClCompile>
-    <ClCompile Include="BaseSerialHandlerTestMock.cpp">
-      <Filter>Mock</Filter>
-    </ClCompile>
-    <ClCompile Include="BaseSerialHandlerTest.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
     <ClCompile Include="..\arduino-stub\Arduino.cpp">
       <Filter>arduino-stub</Filter>
     </ClCompile>
@@ -55,41 +46,21 @@
     <ClCompile Include="..\aux-heater\src\common\VoltMeter.cpp">
       <Filter>aux-heater</Filter>
     </ClCompile>
-    <ClCompile Include="TimerTest.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="UtilTest.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="VoltMeterTest.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="GsmSerialHandlerTest.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="SerialCharResponseHandlerTest.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="SerialTimeResponseHandlerTest.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="TimerMock.cpp">
-      <Filter>Mock</Filter>
-    </ClCompile>
-    <ClCompile Include="SerialCharResponseHandlerMock.cpp">
-      <Filter>Mock</Filter>
-    </ClCompile>
-    <ClCompile Include="SerialTimerResponseHandlerMock.cpp">
-      <Filter>Mock</Filter>
-    </ClCompile>
+    <ClCompile Include="src\mock\BaseSerialHandlerMock.cpp" />
+    <ClCompile Include="src\BaseSerialHandlerTest.cpp" />
+    <ClCompile Include="src\mock\BaseSerialHandlerTestMock.cpp" />
+    <ClCompile Include="src\GsmSerialHandlerTest.cpp" />
+    <ClCompile Include="src\mock\SerialCharResponseHandlerMock.cpp" />
+    <ClCompile Include="src\SerialCharResponseHandlerTest.cpp" />
+    <ClCompile Include="src\SerialStream.cpp" />
+    <ClCompile Include="src\SerialTimeResponseHandlerTest.cpp" />
+    <ClCompile Include="src\mock\SerialTimerResponseHandlerMock.cpp" />
+    <ClCompile Include="src\mock\TimerMock.cpp" />
+    <ClCompile Include="src\TimerTest.cpp" />
+    <ClCompile Include="src\UtilTest.cpp" />
+    <ClCompile Include="src\VoltMeterTest.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BaseSerialHandlerMock.h">
-      <Filter>Mock</Filter>
-    </ClInclude>
-    <ClInclude Include="BaseSerialHandlerTestMock.h">
-      <Filter>Mock</Filter>
-    </ClInclude>
     <ClInclude Include="..\arduino-stub\Arduino.h">
       <Filter>arduino-stub</Filter>
     </ClInclude>
@@ -135,15 +106,12 @@
     <ClInclude Include="..\aux-heater\src\common\VoltMeter.h">
       <Filter>aux-heater</Filter>
     </ClInclude>
-    <ClInclude Include="TimerMock.h">
-      <Filter>Mock</Filter>
-    </ClInclude>
-    <ClInclude Include="SerialCharResponseHandlerMock.h">
-      <Filter>Mock</Filter>
-    </ClInclude>
-    <ClInclude Include="SerialTimerResponseHandlerMock.h">
-      <Filter>Mock</Filter>
-    </ClInclude>
+    <ClInclude Include="src\mock\BaseSerialHandlerMock.h" />
+    <ClInclude Include="src\mock\BaseSerialHandlerTestMock.h" />
+    <ClInclude Include="src\mock\SerialCharResponseHandlerMock.h" />
+    <ClInclude Include="src\SerialStream.h" />
+    <ClInclude Include="src\mock\SerialTimerResponseHandlerMock.h" />
+    <ClInclude Include="src\mock\TimerMock.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

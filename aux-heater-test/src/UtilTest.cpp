@@ -16,3 +16,39 @@ TEST(Util, SplitArgumentsTest)
 
 	EXPECT_EQ(args, 3);
 }
+
+TEST(Util, Bit8ValueTest)
+{
+	uint8_t expect = 235; // 11101011
+
+	uint8_t input = 0xff;
+	uint8_t inVal = 2; // 10 binary
+
+	setBitsValue(&input, inVal, 3, 2);
+
+	EXPECT_EQ(input, expect);
+
+	uint8_t outVal = getBitsValue(&input, 3, 2);
+
+	EXPECT_EQ(inVal, outVal);
+
+	EXPECT_EQ(input, expect);
+}
+
+TEST(Util, Bit16ValueTest)
+{
+	uint16_t expect = 235; // 11101011
+
+	uint16_t input = 0xff;
+	uint16_t inVal = 2; // 10 binary
+
+	setBitsValue(&input, inVal, 3, 2);
+
+	EXPECT_EQ(input, expect);
+
+	uint16_t outVal = getBitsValue(&input, 3, 2);
+
+	EXPECT_EQ(inVal, outVal);
+
+	EXPECT_EQ(input, expect);
+}

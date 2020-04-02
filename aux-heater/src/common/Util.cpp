@@ -35,6 +35,71 @@ uint8_t getBitFromByte(uint8_t targetByte, uint8_t index)
 	return (targetByte >> index) & 1;
 }
 
+uint8_t getBitsValue(uint8_t * target, uint8_t length, uint8_t start)
+{
+	uint8_t headerShift = (BITS_PER_BYTE - start - length);
+	uint8_t result = *target;
+	result = result << headerShift;
+	result = result >> (headerShift + start);
+
+	return result;
+}
+
+uint16_t getBitsValue(uint16_t * target, uint8_t length, uint8_t start)
+{
+	uint16_t headerShift = ((BITS_PER_BYTE * 2) - start - length);
+	uint16_t result = *target;
+	result = result << headerShift;
+	result = result >> (headerShift + start);
+
+	return result;
+}
+
+void setBitsValue(uint8_t * target, uint8_t value, uint8_t length, uint8_t start)
+{
+	uint8_t headerShift = (BITS_PER_BYTE - start - length);
+
+	uint8_t mask = 0xFF << (start + headerShift);
+	mask = mask >> headerShift;
+	mask = ~mask;
+
+	uint8_t result = *target;
+
+	// Flush require bits
+	result = result & mask;
+
+	// Flush value header + shift to position
+	value = (value << (headerShift + start)) >> headerShift;
+
+	// Store bits
+	result = result | value;
+
+	*target = result;
+}
+
+void setBitsValue(uint16_t* target, uint16_t value, uint8_t length, uint8_t start)
+{
+	uint16_t headerShift = ((BITS_PER_BYTE * 2) - start - length);
+
+	uint16_t mask = 0xFFFF << (start + headerShift);
+	mask = mask >> headerShift;
+	mask = ~mask;
+
+	uint8_t result = *target;
+
+	// Flush require bits
+	result = result & mask;
+
+	// Flush value header + shift to position
+	value = (value << (headerShift + start)) >> headerShift;
+
+	// Store bits
+	result = result | value;
+
+	*target = result;
+}
+
+
 bool IsBytesAreEqual(uint8_t * byteArray1, int length1, uint8_t * byteArray2, int length2)
 {
 	if (length1 != length2 || length1 == 0) return false;
