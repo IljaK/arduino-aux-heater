@@ -56,7 +56,7 @@ public:
 };
 
 
-class LedController: ITimerCallback
+class LedController
 {
 private:
 	uint16_t tactDuration;

@@ -1,6 +1,6 @@
 #include "LedController.h"
 
-LedController::LedController():ITimerCallback()
+LedController::LedController()
 {
 	Glow();
 }
