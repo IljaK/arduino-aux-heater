@@ -1,4 +1,4 @@
-Arduino project for controlling audi a4 b6 auxylary heater from phone.
+Arduino project for controlling audi a4 b6 auxilary heater from phone.
 Also includes battery monitoring and sms messages for very low level.
 
 To launch project:
