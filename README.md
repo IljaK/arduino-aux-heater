@@ -13,5 +13,4 @@ For Visual Studio Code:
 1) Install C/C++ extension https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.vscode-arduino
 2) Install Arduino extension https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools
 
-For unit testing uder Visual Studio Code:
-3) Install Google test adapter extension https://marketplace.visualstudio.com/items?itemName=davidschuldenfrei.gtest-adapter
+For unit testing uder Visual Studio Code - Google test adapter extension https://marketplace.visualstudio.com/items?itemName=davidschuldenfrei.gtest-adapter
