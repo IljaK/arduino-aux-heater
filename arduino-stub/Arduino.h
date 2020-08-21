@@ -18,14 +18,19 @@
 #define INPUT_PULLUP 0x2
 #define LED_BUILTIN 13
 
-#define PIN_A0   (14)
-#define PIN_A1   (15)
-#define PIN_A2   (16)
-#define PIN_A3   (17)
-#define PIN_A4   (18)
-#define PIN_A5   (19)
-#define PIN_A6   (20)
-#define PIN_A7   (21)
+// A6-A11 share with digital pins
+static const uint8_t A0 = 18;
+static const uint8_t A1 = 19;
+static const uint8_t A2 = 20;
+static const uint8_t A3 = 21;
+static const uint8_t A4 = 22;
+static const uint8_t A5 = 23;
+static const uint8_t A6 = 24;	// D4
+static const uint8_t A7 = 25;	// D6
+static const uint8_t A8 = 26;	// D8
+static const uint8_t A9 = 27;	// D9
+static const uint8_t A10 = 28;	// D10
+static const uint8_t A11 = 29;	// D12
 
 extern unsigned long millis();
 extern unsigned long micros();

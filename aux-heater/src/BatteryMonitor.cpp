@@ -1,7 +1,7 @@
 #include "BatteryMonitor.h"
 
 
-BatteryMonitor::BatteryMonitor(void(*stateCallback)(VoltageLevelState)):VoltMeter(20000.0f, 4700.0f)
+BatteryMonitor::BatteryMonitor(float r1, float r2, void(*stateCallback)(VoltageLevelState)):VoltMeter(r1, r2)
 {
 	this->stateCallback = stateCallback;
 	StartMeasureTimer(VoltMeterState::WAIT_NEXT, DELAY_BETWEEN_MEASURE);
@@ -19,7 +19,10 @@ VoltageLevelState BatteryMonitor::CurrentState()
 void BatteryMonitor::OnVoltageMeasured()
 {
 	char resultVoltage[16];
-	dtostrf(Voltage(), 4, 2, resultVoltage);
+	dtostrf(PinVoltage(), 5, 3, resultVoltage);
+	outPrintf("PIN Voltage: %s", resultVoltage);
+	
+	dtostrf(Voltage(), 5, 3, resultVoltage);
 	outPrintf("Voltage: %s", resultVoltage);
 
 	VoltageLevelState nextState = GetNextState(currentState);
@@ -72,10 +75,10 @@ void BatteryMonitor::HandleAttempt(VoltageLevelState state)
 	if (matchState != state) {
 		matchedAttempts = 0;
 		matchState = state;
-		outPrintf("Handle Battery attempt: %d", (int)state);
 	}
 	matchedAttempts++;
 	if (matchedAttempts >= matchRequire) {
+		outPrintf("Handle Battery LEVEL: %d", (int)state);
 		currentState = state;
 		matchedAttempts = 0;
 		// TODO: Trigger message send && reset timer

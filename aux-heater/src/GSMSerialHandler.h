@@ -106,6 +106,7 @@ private:
 	char smsSender[16];
 
 	GSMFlowState flowState = GSMFlowState::INITIALIZATION;
+	const char *request = NULL;
 	bool tryedPass = false;
 	uint8_t cRegState = 0;
 

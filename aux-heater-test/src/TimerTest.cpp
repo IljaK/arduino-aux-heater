@@ -5,6 +5,7 @@
 TEST(Timer, TimerTestRunStop)
 {
 	timeOffset = 0;
+	TimerMock::Reset();
 
 			
 	TimerMock * timerMock = new TimerMock();
@@ -22,6 +23,8 @@ TEST(Timer, TimerTestRunStop)
 	Timer::Loop();
 
 	EXPECT_TRUE(timerMock->IsCompleted());
+
+	Timer::StopAll(timerMock);
 
 	//swprintf(message, 128, L"Timer Complete Failed! now: %lu, Remain: %lu", micros(), timerMock->Remain());
 	//Assert::IsTrue(timerMock->IsCompleted(), message);
@@ -52,11 +55,15 @@ TEST(Timer, TimerTestOverflowMicros)
 	EXPECT_TRUE(timerMock->IsCompleted());
 	//swprintf(message, 128, L"Timer Overflow Complete Failed! now: %lu, Remain: %lu", micros(), timerMock->Remain());
 	//Assert::IsTrue(timerMock->IsCompleted(), message);
+
+
+	Timer::StopAll(timerMock);
 }
 
 TEST(Timer, TimerFillTest)
 {
 	timeOffset = 0;
+	TimerMock::Reset();
 
 	//int maxTimers = 1 + (rand() % MAXBYTE);
 	TimerMock timers[MAXBYTE];
@@ -100,5 +107,9 @@ TEST(Timer, TimerFillTest)
 	// Check all completed
 	for (int i = 0; i < MAXBYTE; i++) {
 		EXPECT_TRUE(timers[i].IsCompleted());
+	}
+
+	for (int i = 0; i < MAXBYTE; i++) {
+		Timer::StopAll(&timers[i]);
 	}
 }

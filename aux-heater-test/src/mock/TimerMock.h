@@ -1,7 +1,7 @@
 #pragma once
 #include <Timer.h>
 
-class TimerMock: public ITimerCallback
+class TimerMock: public Timer, public ITimerCallback
 {
 private:
 	TimerID timerId = 0;
@@ -13,5 +13,7 @@ public:
 	void Start(unsigned long duration);
 	uint8_t TimerId() { return timerId; }
 	unsigned long Remain();
+
+	static void Reset();
 };
 

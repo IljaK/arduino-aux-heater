@@ -13,14 +13,16 @@ GSMSerialHandler::GSMSerialHandler(StringCallback smsCallback, Stream * serial):
 GSMSerialHandler::~GSMSerialHandler()
 {
 	if (flowTimer != 0) Timer::Stop(flowTimer);
+	flowTimer = 0;
 }
 void GSMSerialHandler::OnTimerComplete(TimerID timerId)
 {
 	if (timerId == flowTimer) {
 		flowTimer = 0;
 		LaunchStateRequest();
+	} else {
+		SerialCharResponseHandler::OnTimerComplete(timerId);
 	}
-	SerialCharResponseHandler::OnTimerComplete(timerId);
 }
 
 void GSMSerialHandler::StartFlowTimer(unsigned long duration)
@@ -36,24 +38,33 @@ void GSMSerialHandler::OnResponseReceived(bool isTimeOut, bool isOverFlow)
 
 	if (size == 0 && !isTimeOut) return;
 
-	outPrintf("A6: [%s] [%d], type: [%d]", buffer, size, (uint8_t)flowState);
+	if (request) {
+		outPrintf("Received: [request: %s] [%s] [%d], type: [%d]", request, buffer, size, (uint8_t)flowState);
+	} else {
+		outPrintf("Received: [%s] [%d], type: [%d]", buffer, size, (uint8_t)flowState);
+	}
 
 	if (isTimeOut) {
 		HandleErrorResponse(buffer, size);
+		request = NULL;
 		return;
 	}
 
 	if (flowState == GSMFlowState::AUTH_INCOMING_MSG) {
 		flowState = GSMFlowState::READY;
+		request = NULL;
 		HandleIncomingMessage(buffer, size);
 	}
 	else if (strcmp(buffer, GSM_OK_RESPONSE) == 0) {
+		request = NULL;
 		HandleOKResponse(buffer, size);
 	}
 	else if (strstr(buffer, GSM_ERROR_RESPONSE) > 0) {
+		request = NULL;
 		HandleErrorResponse(buffer, size);
 	}
 	else {
+		request = NULL;
 		HandleDataResponse(buffer, size);
 	}
 
@@ -272,10 +283,11 @@ void GSMSerialHandler::HandleErrorResponse(char *response, size_t size)
 	switch (flowState)
 	{
 	case GSMFlowState::INITIALIZATION:
-		break;
+	case GSMFlowState::SIM_PIN_STATE:
 	case GSMFlowState::SHORT_RESPONSE:
 	case GSMFlowState::MSG_TEXT_MODE:
-	case GSMFlowState::SIM_PIN_STATE:
+		// Just stay in this state => retry
+		break;
 	case GSMFlowState::SIM_LOGIN:
 		flowState = GSMFlowState::LOCKED;
 		return;
@@ -299,32 +311,38 @@ void GSMSerialHandler::LaunchStateRequest()
 	switch (flowState)
 	{
 	case GSMFlowState::INITIALIZATION:
+		request = GSM_INIT_CMD;
 		serial->write(GSM_INIT_CMD, strlen(GSM_INIT_CMD));
 		// Just continue
 		break;
 	case GSMFlowState::SHORT_RESPONSE:
+		request = GSM_SHORT_RESPONSE;
 		serial->write(GSM_INIT_CMD, strlen(GSM_INIT_CMD));
 		serial->write(GSM_SHORT_RESPONSE, strlen(GSM_SHORT_RESPONSE));
 		break;
 	case GSMFlowState::REG_GSM_SERVICE:
+		request = GSM_REG_CMD;
 		serial->write(GSM_INIT_CMD, strlen(GSM_INIT_CMD));
 		serial->write(GSM_REG_CMD, strlen(GSM_REG_CMD));
 		serial->write(GSM_CMD_SET_SYMBOL);
 		serial->write('1');
 		break;
 	case GSMFlowState::MSG_TEXT_MODE:
+		request = GSM_MSG_TEXT_CMD;
 		serial->write(GSM_INIT_CMD, strlen(GSM_INIT_CMD));
 		serial->write(GSM_MSG_TEXT_CMD, strlen(GSM_MSG_TEXT_CMD));
 		serial->write(GSM_CMD_SET_SYMBOL);
 		serial->write('1');
 		break;
 	case GSMFlowState::MSG_INCOMING_FORMAT:
+		request = GSM_MSG_ARRIVE_CMD;
 		serial->write(GSM_INIT_CMD, strlen(GSM_INIT_CMD));
 		serial->write(GSM_MSG_ARRIVE_CMD, strlen(GSM_MSG_ARRIVE_CMD));
 		serial->write(GSM_CMD_SET_SYMBOL);
 		serial->write("1,2,0,0,0", 9);
 		break;
 	case GSMFlowState::FIND_PRIMARY_PHONE:
+		request = GSM_FIND_USER_CMD;
 		serial->write(GSM_INIT_CMD, strlen(GSM_INIT_CMD));
 		serial->write(GSM_FIND_USER_CMD, strlen(GSM_FIND_USER_CMD));
 		serial->write(GSM_CMD_SET_SYMBOL);
@@ -335,11 +353,13 @@ void GSMSerialHandler::LaunchStateRequest()
 
 
 	case GSMFlowState::SIM_PIN_STATE:
+		request = GSM_SIM_PIN_CMD;
 		serial->write(GSM_INIT_CMD, strlen(GSM_INIT_CMD));
 		serial->write(GSM_SIM_PIN_CMD, strlen(GSM_SIM_PIN_CMD));
 		serial->write(GSM_CMD_ASK_SYMBOL);
 		break;
 	case GSMFlowState::SIM_LOGIN:
+		request = GSM_SIM_PIN_CMD;
 		serial->write(GSM_INIT_CMD, strlen(GSM_INIT_CMD));
 		serial->write(GSM_SIM_PIN_CMD, strlen(GSM_SIM_PIN_CMD));
 		serial->write(GSM_CMD_SET_SYMBOL);

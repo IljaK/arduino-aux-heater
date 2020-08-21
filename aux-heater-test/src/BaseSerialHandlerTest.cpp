@@ -3,11 +3,13 @@
 #include <Timer.h>
 #include "mock/BaseSerialHandlerTestMock.h"
 #include "SerialStream.h"
+#include "mock/TimerMock.h"
 
 
 TEST(BaseSerialHandler, BufferOverflowTest)
 {
 	timeOffset = 0;
+	TimerMock::Reset();
 	char data1[] = "some arg"; // length = 8
 
 	SerialStream stream;
@@ -51,6 +53,7 @@ TEST(BaseSerialHandler, BufferOverflowTest)
 TEST(BaseSerialHandler, SerialHandlerTimeoutTest)
 {
 	timeOffset = 0;
+	TimerMock::Reset();
 
 	SerialStream stream;
 	BaseSerialHandlerTestMock serialHandler(&stream);
@@ -69,4 +72,6 @@ TEST(BaseSerialHandler, SerialHandlerTimeoutTest)
 	serialHandler.Loop();
 
 	EXPECT_TRUE(serialHandler.isResponseReceived);
+
+	Timer::StopAll(&serialHandler);
 }

@@ -40,7 +40,7 @@ public:
 
 	VoltageLevelState CurrentState();
 
-	BatteryMonitor(void(*actionCallback)(VoltageLevelState) = NULL);
+	BatteryMonitor(float r1, float r2, void(*actionCallback)(VoltageLevelState) = NULL);
 	~BatteryMonitor();
 };
 

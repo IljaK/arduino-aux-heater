@@ -22,6 +22,7 @@ class Timer
 {
 private:
 	static TimerNode *pFirst;
+protected:
 	static unsigned long frameTS;
 public:
 	static TimerID Start(ITimerCallback *pCaller, unsigned long duration);

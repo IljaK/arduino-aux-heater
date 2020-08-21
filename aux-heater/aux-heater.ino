@@ -21,7 +21,7 @@ GSMSerialHandler gsmSerialHandler(&handleSMSCommand, &Serial);
 SoftwareSerial outSerial(DEBUG_RX_PIN, DEBUG_TX_PIN);
 //CMDSerialHandler cmdSerialHandler(&digitalSerial, &handleUsbCommand);
 
-BatteryMonitor batteryMonitor(&handleLevelChanged);
+BatteryMonitor batteryMonitor(20000.0f, 4700.0f, &handleLevelChanged);
 LedController ledController;
 
 extern Stream *outStream;
@@ -36,7 +36,7 @@ void setup() {
 	auxSerial.begin(AUX_BAUD_RATE);
 	ledController.SetFrequency(100, 8, 0b00000001);
 
-	outSerial.begin(COMMON_BAUD_RATE);
+	outSerial.begin(DEBUG_BAUD_RATE);
 	outPrintf("Serial init...");
 
 	while (!Serial) {

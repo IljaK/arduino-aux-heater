@@ -28,10 +28,10 @@ void VoltMeter::OnTimerComplete(TimerID timerId)
 			StartMeasureTimer(VoltMeterState::MEASURE, DELAY_BEFORE_MEASURE);
 			break;
 		case VoltMeterState::MEASURE:
-			digitalWrite(VOLTMETER_TRIGGER_PIN, LOW);
 			StartMeasureTimer(VoltMeterState::WAIT_NEXT, DELAY_BETWEEN_MEASURE);
 			MeasureVoltage();
 			OnVoltageMeasured();
+			digitalWrite(VOLTMETER_TRIGGER_PIN, LOW);
 			break;
 		}
 	}
@@ -51,9 +51,10 @@ void VoltMeter::StartMeasureTimer(VoltMeterState state, uint32_t delay)
 void VoltMeter::MeasureVoltage()
 {
 	long vcc = ReadVCC();
-	outPrintf("VCC: %d", (int)(vcc));
 	int analog_value = analogRead(VOLTMETER_MEASURE_PIN);
-	pinValue = (float)(((double)analog_value * (double)vcc) / 1024000.0);
+	outPrintf("VCC: %d", (int)(vcc));
+	outPrintf("Analog Val: %d", analog_value);
+	pinValue = (float)(((double)analog_value * (double)vcc * (double)1.02f) / 1023000.0);
 }
 
 

@@ -3,12 +3,15 @@
 #include "mock/BaseSerialHandlerMock.h"
 #include <Arduino.h>
 #include "SerialStream.h"
+#include "mock/TimerMock.h"
 
 
 
 TEST(SerialCharResponseHandler, SeparatorParsingTest)
 {
 	timeOffset = 0;
+	TimerMock::Reset();
+
 	char separator[] = "\r\r\r\n";
 	SerialStream serial;
 	SerialCharResponseHandlerMock charResponseHandler((const char *)separator, &serial);
@@ -52,6 +55,7 @@ TEST(SerialCharResponseHandler, SeparatorParsingTest)
 TEST(SerialCharResponseHandler, BufferOverflowTest)
 {
 	timeOffset = 0;
+	TimerMock::Reset();
 	char data1[] = "some arg"; // length = 8
 
 	char separator[] = "\r\n";

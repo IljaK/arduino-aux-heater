@@ -3,10 +3,13 @@
 #include "mock/SerialTimerResponseHandlerMock.h"
 #include "mock/BaseSerialHandlerMock.h"
 #include "SerialStream.h"
+#include "mock/TimerMock.h"
 
 TEST(SerialTimeResponseHandler, BufferOverflowTest)
 {
 	timeOffset = 0;
+	TimerMock::Reset();
+
 	char data1[] = "some arg"; // length = 8
 
 	SerialStream serial;
@@ -47,6 +50,8 @@ TEST(SerialTimeResponseHandler, ResponseTimerTest)
 	char data1[] = "1"; // length = 8
 
 	timeOffset = 0;
+	TimerMock::Reset();
+
 	SerialStream serial;
 	SerialTimerResponseHandlerMock timerResponseHandler(&serial);
 
@@ -80,6 +85,8 @@ TEST(SerialTimeResponseHandler, ResponseTimerTest)
 				swprintf(message, 128, L"Command detected as time out %d \"%S\"", i, timerResponseHandler.receivedCommand);
 				Assert::Fail(message);
 			} */
+
+			Timer::StopAll(&timerResponseHandler);
 			return;
 		}
 		timeOffset += timerResponseHandler.ResponseByteTimeOut();

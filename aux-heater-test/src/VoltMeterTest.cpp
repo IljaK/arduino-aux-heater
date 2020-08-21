@@ -4,12 +4,15 @@
 #include <VoltMeter.h>
 #include <Util.h>
 #include <math.h>
+#include "mock/TimerMock.h"
 
 
 
 TEST(VoltMeter, MeasureValueTest)
 {
 	timeOffset = 0;
+	TimerMock::Reset();
+
 	double expectedVoltage = 12.0;
 
 	VoltMeter voltMeter = VoltMeter(20000.0f, 4700.0f);
@@ -30,6 +33,8 @@ TEST(VoltMeter, MeasureValueTest)
 
 	EXPECT_GE(voltage, pinVoltage);
 	EXPECT_EQ(round(voltage), round(expectedVoltage));
+
+	Timer::StopAll(&voltMeter);
 
 	//wchar_t message[128];
 	//if (voltage < pinVoltage) {

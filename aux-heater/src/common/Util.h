@@ -2,23 +2,21 @@
 #include <Arduino.h>
 
 constexpr uint8_t BITS_PER_BYTE = 8u;
+constexpr uint8_t AUX_RX_PIN = 3u;
+constexpr uint8_t AUX_TX_PIN = 4u;
 
 constexpr uint8_t DEBUG_RX_PIN = 6u;
 constexpr uint8_t DEBUG_TX_PIN = 7u;
+constexpr uint8_t DEBUG_ON_PIN = 8u;
 
-constexpr uint8_t AUX_RX_PIN = 4u;
-constexpr uint8_t AUX_TX_PIN = 3u;
-
-
-//constexpr uint8_t DIGITAL_SET_PIN = 6u;
-//constexpr uint8_t DIGITAL_RX_PIN = 4u;
-//constexpr uint8_t DIGITAL_TX_PIN = 5u;
-
-constexpr uint8_t VOLTMETER_MEASURE_PIN = PIN_A4;
+constexpr uint8_t VOLTMETER_MEASURE_PIN = A4;
 constexpr uint8_t VOLTMETER_TRIGGER_PIN = 5u;
 
 constexpr uint32_t AUX_BAUD_RATE = 2400u;
 constexpr uint32_t COMMON_BAUD_RATE = 9600u;
+constexpr uint32_t DEBUG_BAUD_RATE = 57600u;
+
+
 constexpr uint8_t COMMON_DATA_BITS_AMOUNT = 8u;
 constexpr uint8_t COMMON_STOP_BITS_AMOUNT = 1u;
 

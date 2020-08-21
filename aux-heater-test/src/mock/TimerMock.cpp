@@ -32,3 +32,7 @@ unsigned long TimerMock::Remain()
 	if (IsCompleted()) return 0;
 	return Timer::Remain(timerId);
 }
+void TimerMock::Reset()
+{
+	frameTS = 0;
+}

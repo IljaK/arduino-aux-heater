@@ -260,6 +260,8 @@ void ShiftQuotations(char **subStrArray, size_t arraySize)
 
 void outPrintf(const char *format, ...)
 {
+	if (digitalRead(DEBUG_ON_PIN) == LOW) return;
+
 	char outMessage[128];
 
 	va_list arglist;

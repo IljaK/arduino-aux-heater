@@ -2,5 +2,6 @@
     "board": "arduino:avr:nano",
     "configuration": "cpu=atmega328old",
     "sketch": "aux-heater.ino",
-    "port": "/dev/ttyUSB0"
+    "port": "/dev/ttyUSB0",
+    "programmer": "Arduino as ISP"
 }
