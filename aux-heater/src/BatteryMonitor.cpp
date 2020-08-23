@@ -53,7 +53,6 @@ void BatteryMonitor::OnVoltageMeasured()
 			matchState = currentState;
 		}
 	}
-
 }
 
 bool BatteryMonitor::IsNormalized()

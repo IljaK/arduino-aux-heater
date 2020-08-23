@@ -57,7 +57,9 @@ void loop() {
 
 void handleLevelChanged(VoltageLevelState level) {
 
-	switch (batteryMonitor.CurrentState())
+	outPrintf("handleLevelChanged %d", (uint8_t)level);
+
+	switch (level)
 	{
 	case VoltageLevelState::CRITICAL_LEVEL:
 	case VoltageLevelState::DEAD_LEVEL:
@@ -101,6 +103,7 @@ bool handleHeaterComplete(Stream *stream) {
 
 bool handleLevelMessage(Stream *stream) {
 
+
 	bool result = false;
 
 	switch (batteryMonitor.CurrentState())
@@ -121,7 +124,13 @@ bool handleLevelMessage(Stream *stream) {
 		stream->write("Overflow battery charge! ");
 		result = true;
 		break;
+	default:
+		stream->write("Battery level: ");
+		result = true;
+		break;
 	}
+
+	outPrintf("handleLevelMessage state: %d result: %d", (uint8_t)batteryMonitor.CurrentState(), (uint8_t)result);
 
 	if (result) {
 		char resultVoltage[16];

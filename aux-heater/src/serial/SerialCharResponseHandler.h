@@ -10,12 +10,12 @@ private:
 
 	size_t separatorMatchedLength = 0;
 
-	bool LoadSymbolFromBuffer(uint8_t symbol);
 	void ResetBuffer();
 	bool AppendSymbolToBuffer(uint8_t symbol);
 	bool IsSeparatorRemainMatch(int remainSeparatorLength, uint8_t symbol);
 
 protected:
+	virtual bool LoadSymbolFromBuffer(uint8_t symbol);
 	size_t bufferLength = 0;
 	char buffer[SERIAL_RX_BUFFER_SIZE];
 public:

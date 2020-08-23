@@ -5,8 +5,6 @@
 #include "serial/SerialTimerResponseHandler.h"
 
 constexpr char SIM_PIN_CODE[] = "0000"; // Pin code for sim card
-//constexpr char SIM_PIN_CODE[] = "58349965";
-//constexpr char SIM_PIN_CODE[] = "4362";
 
 constexpr char GSM_RESPONSE_SEPARATOR[] = "\r\n";
 constexpr char GSM_OK_RESPONSE[] = "OK";
@@ -42,6 +40,7 @@ constexpr char GSM_REG_CMD[] = "+CREG"; // set 1 for sim registration
 constexpr char GSM_MSG_TEXT_CMD[] = "+CMGF"; // Force msg text mode
 constexpr char GSM_MSG_ARRIVE_CMD[] = "+CNMI"; // Message arrive event "AT+CNMI=1,2,0,0,0"
 constexpr char GSM_SMS_SEND_CMD[] = "+CMGS"; // Send sms message
+constexpr char GSM_MSG_TEXT_INPUT_RESPONSE[] = "> "; // Response after sucess send cmd
 constexpr char GSM_FIND_USER_CMD[] = "+CPBF"; // Find phonebook entries
 
 //constexpr char GSM_EVENT_DATA_CMD[] = "+CIEV"; // Data event
@@ -100,7 +99,7 @@ class GSMSerialHandler : public SerialCharResponseHandler //SerialTimerResponseH
 private:
 	TimerID flowTimer = 0;
 
-	char primaryPhone[16] = "+37258349965";
+	char primaryPhone[16] = "\0";
 	uint8_t lowestIndex = 255;
 
 	char smsSender[16];
@@ -125,6 +124,9 @@ private:
 
 	void StartFlowTimer(unsigned long duration);
 
+protected:
+	bool LoadSymbolFromBuffer(uint8_t symbol) override;
+
 public:
 	GSMSerialHandler(StringCallback smsCallback, Stream * serial);
 	~GSMSerialHandler();
@@ -136,6 +138,8 @@ public:
 
 	bool IsNetworkConnected();
 	bool IsRoaming();
+
+	GSMFlowState FlowState();
 
 };
 

@@ -176,8 +176,8 @@ void GSMSerialHandler::HandleDataResponse(char *response, size_t size)
 			}
 			
 		}*/
-		// +CMT: "+372000000",,"2019/07/25,23:25:32+03":
-		// +CMT: "+37258349965","Ilja aux-1","19/07/31,13:29:43+12"
+		// +CMT: "+372000000",,"2019/07/25,23:25:32+03"
+		// +CMT: "+32353","2356 aux-1","19/07/31,13:29:43+12"
 
 		if (strncmp(response, GSM_TS_DATA_CMD, strlen(GSM_TS_DATA_CMD)) == 0) {
 			char *cmt = response + strlen(GSM_TS_DATA_CMD) + 2;
@@ -368,7 +368,7 @@ void GSMSerialHandler::LaunchStateRequest()
 		tryedPass = true;
 		break;
 	case GSMFlowState::READY:
-		//outPrintf("GSM Ready!");
+		outPrintf("GSM Ready!");
 		return;
 	default:
 		return;
@@ -426,13 +426,32 @@ void GSMSerialHandler::FinalizeSendMessage()
 	if (messageCallback(serial))
 	{
 		//Send message end
-		serial->write(LF_ASCII_SYMBOL);
+		serial->write(CRTLZ_ASCII_SYMBOL);
 	}
 	else {
 		// Send message cancel callback
 		serial->write(ESC_ASCII_SYMBOL);
 	}
+	messageCallback = NULL;
+
 	StartTimeoutTimer(SERIAL_RESPONSE_TIMEOUT);
+}
+
+bool GSMSerialHandler::LoadSymbolFromBuffer(uint8_t symbol)
+{
+	bool result = SerialCharResponseHandler::LoadSymbolFromBuffer(symbol);
+
+		// Check sms text iptut extra response
+	if (flowState == GSMFlowState::SEND_SMS_BEGIN && !result) {
+		if (bufferLength == strlen(GSM_MSG_TEXT_INPUT_RESPONSE)) {
+			if (strncmp(buffer, GSM_MSG_TEXT_INPUT_RESPONSE, bufferLength) == 0) {
+				ResponseDetectedInternal(false, false);
+				return true;
+			}
+		}
+	}
+	
+	return result;
 }
 
 bool GSMSerialHandler::IsNetworkConnected()
@@ -442,4 +461,9 @@ bool GSMSerialHandler::IsNetworkConnected()
 bool GSMSerialHandler::IsRoaming()
 {
 	return cRegState == 5u;
+}
+
+GSMFlowState GSMSerialHandler::FlowState()
+{
+	return flowState;
 }
