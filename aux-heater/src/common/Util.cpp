@@ -262,11 +262,11 @@ void outPrintf(const char *format, ...)
 {
 	if (digitalRead(DEBUG_ON_PIN) == LOW) return;
 
-	char outMessage[128];
+	char outMessage[96];
 
 	va_list arglist;
 	va_start(arglist, format);
-	vsnprintf(outMessage, 128, format, arglist);
+	vsnprintf(outMessage, 96, format, arglist);
 	va_end(arglist);
 
 	char outPart[SERIAL_RX_BUFFER_SIZE];

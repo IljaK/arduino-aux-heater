@@ -37,11 +37,6 @@ void setup() {
 	ledController.SetFrequency(100, 8, 0b00000001);
 
 	outSerial.begin(DEBUG_BAUD_RATE);
-	outPrintf("Serial init...");
-
-	while (!Serial) {
-		; // wait for serial port to connect. Needed for native USB port only
-	}
 
 	outPrintf("Setup done!");
 }
@@ -57,34 +52,34 @@ void loop() {
 
 void handleLevelChanged(VoltageLevelState level) {
 
-	outPrintf("handleLevelChanged %d", (uint8_t)level);
-
-	switch (level)
-	{
-	case VoltageLevelState::CRITICAL_LEVEL:
-	case VoltageLevelState::DEAD_LEVEL:
-	case VoltageLevelState::LOW_LEVEL:
-	case VoltageLevelState::OVERFLOW_LEVEL:
-		gsmSerialHandler.SendSMSMessage(&handleLevelMessage);
-		break;
+	switch (level) {
+		case VoltageLevelState::CRITICAL_LEVEL:
+		case VoltageLevelState::DEAD_LEVEL:
+		case VoltageLevelState::LOW_LEVEL:
+		case VoltageLevelState::OVERFLOW_LEVEL:
+			gsmSerialHandler.SendSMSMessage(&handleLevelMessage);
+			break;
 	}
 }
 
 void handleSMSCommand(char *command, size_t size) {
-	outPrintf("handleSMSCommand: %s", command);
 	if (strcasecmp(command, GSM_AUX_ENABLE) == 0) {
 		//digitalWrite(6u, HIGH);
-
-		//StreamCallback cb = (StreamCallback *)&this->OnHeaterCmdComplete;
 		auxSerialHandler.LaunchHeater(&handleHeaterComplete);
 	}
 	else if (strcasecmp(command, GSM_AUX_DISABLE) == 0) {
 		//digitalWrite(6u, LOW);
 		auxSerialHandler.StopHeater(&handleHeaterComplete);
 	}
+	// For test
+	else if (strcasecmp(command, "test") == 0) {
+		gsmSerialHandler.NotifyByCallHangUp();
+	}
 }
 
 bool handleHeaterComplete(Stream *stream) {
+
+	outPrintf("handleHeaterComplete");
 
 	if (stream->available() > 0) {
 		char response[32];
@@ -93,10 +88,9 @@ bool handleHeaterComplete(Stream *stream) {
 
 		printBytes(response, 32, bytes, bytesAmount);
 
-		outWrite("AUX: ");
-		outWrite(response);
-		outWrite('\n');
+		outPrintf("AUX: %s", response);
 	}
+	gsmSerialHandler.NotifyByCallHangUp();
 	return true;
 }
 

@@ -11,7 +11,6 @@ AuxHeaterSerial::~AuxHeaterSerial()
 
 void AuxHeaterSerial::LaunchHeater(StreamCallback resultCallback)
 {
-	outPrintf("LaunchHeater");
 	HandleCMD(HeaterCmdState::LAUNCH, resultCallback);
 }
 
@@ -41,7 +40,6 @@ void AuxHeaterSerial::HandleCMD(HeaterCmdState cmd, StreamCallback actionCallbac
 
 void AuxHeaterSerial::StopHeater(StreamCallback actionCallback)
 {
-	outPrintf("StopHeater");
 	HandleCMD(HeaterCmdState::STOP, actionCallback);
 }
 
@@ -206,7 +204,4 @@ void AuxHeaterSerial::OnResponseReceived(bool IsTimeOut, bool isOverFlow)
 
 		outPrintf("Response: %s", byteResult);
 	}
-
-	//printBytes(byteResult, 128)
-	// TODO printout result
 }

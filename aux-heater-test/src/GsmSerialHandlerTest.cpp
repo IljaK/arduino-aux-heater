@@ -68,6 +68,10 @@ TEST(GSMSerialHandlerTestMock, ATResponseTest)
 
 	// Msg text format
 	respondSerial((char *)"\r\nOK\r\n", &serial, &gsmHandler);
+	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::CALL_STATE_INFO);
+
+	// Call state update info
+	respondSerial((char *)"\r\nOK\r\n", &serial, &gsmHandler);
 	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::FIND_PRIMARY_PHONE);
 
 	respondSerial((char *)"\r\n+CPBF: 1,\"+372111111\",145,\"1 aux-1\"\r\n", &serial, &gsmHandler);
@@ -76,13 +80,42 @@ TEST(GSMSerialHandlerTestMock, ATResponseTest)
 
 	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
 
+	// Send SMS logic test
 	gsmHandler.SendSMSMessage(&messageCallback);
 
 	char smsTextResponse[] = "\r\n> ";
 	respondSerial(smsTextResponse, &serial, &gsmHandler);
 
 	respondSerial((char *)"\r\nOK\r\n", &serial, &gsmHandler);
-	
 	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
 
+	// Incoming SMS logic test + save sender number
+	respondSerial((char *)"\r\n+CMT: \"+372111111\",\"ilja aux-1\",\"20/08/24,17:58:10+12\"\r\n", &serial, &gsmHandler);
+	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
+
+	respondSerial((char *)"Test\r\n", &serial, &gsmHandler);
+	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
+
+	// Call->hangup logic test
+	gsmHandler.NotifyByCallHangUp();
+	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::CALL_PROGRESS);
+
+	// Call initialized
+	respondSerial((char *)"\r\n+CLCC: 1,0,2,0,0,\"+3721111111\",145,\"241 aux-1\"\r\n", &serial, &gsmHandler);
+	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::CALL_PROGRESS);
+	// Call established
+	respondSerial((char *)"\r\n+CLCC: 1,0,3,0,0,\"+3721111111\",145,\"241 aux-1\"\r\n", &serial, &gsmHandler);
+
+	timeOffset += CALL_WAIT_DURATION;
+	Timer::Loop();
+	gsmHandler.Loop();
+
+	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::CALL_HANGUP);
+
+	// Call ended
+	respondSerial((char *)"\r\n+CLCC: 1,0,6,0,0,\"+3721111111\",145,\"241 aux-1\"\r\n", &serial, &gsmHandler);
+	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::CALL_HANGUP);
+
+	respondSerial((char *)"\r\nOK\r\n", &serial, &gsmHandler);
+	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
 }
