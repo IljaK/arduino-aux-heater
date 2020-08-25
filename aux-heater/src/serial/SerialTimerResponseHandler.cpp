@@ -37,7 +37,7 @@ void SerialTimerResponseHandler::StartTimer()
 }
 void SerialTimerResponseHandler::StopTimer()
 {
-	if (messageTimer > 0) {
+	if (messageTimer != 0) {
 		Timer::Stop(messageTimer);
 		messageTimer = 0;
 	}

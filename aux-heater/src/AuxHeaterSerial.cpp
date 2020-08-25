@@ -87,7 +87,7 @@ void AuxHeaterSerial::LaunchCMD()
 	serial->write((uint8_t)129u);
 
 	StopTimer();
-	messageTimer = Timer::Start(this, 162124u);
+	messageTimer = Timer::Start(this, 162124ul);
 }
 void AuxHeaterSerial::StopCMD()
 {
@@ -130,7 +130,7 @@ void AuxHeaterSerial::StopCMD()
 	serial->write((uint8_t)139u);
 
 	StopTimer();
-	messageTimer = Timer::Start(this, 152016u);
+	messageTimer = Timer::Start(this, 152016ul);
 }
 
 void AuxHeaterSerial::HandleResult()
@@ -149,7 +149,7 @@ void AuxHeaterSerial::HandleResult()
 	StreamCallback cb = actionCallback;
 	actionCallback = NULL;
 
-	cb(serial);
+	if (cb != NULL) cb(serial);
 }
 
 void AuxHeaterSerial::OnTimerComplete(TimerID timerId)
@@ -171,8 +171,9 @@ void AuxHeaterSerial::OnTimerComplete(TimerID timerId)
 			if (serial->available()) HandleResult();
 			break;
 		}
+	} else {
+		SerialTimerResponseHandler::OnTimerComplete(timerId);
 	}
-	SerialTimerResponseHandler::OnTimerComplete(timerId);
 }
 
 bool AuxHeaterSerial::IsBusy() {
