@@ -156,8 +156,6 @@ void GSMSerialHandler::HandleDataResponse(char *response, size_t size)
 
 		char *simState = response + cmdLen + 2;
 
-		outPrintf(simState);
-
 		if (strncmp(GSM_SIM_STATE_READY, simState, strlen(GSM_SIM_STATE_READY)) == 0) {
 			flowState = GSMFlowState::SIM_PIN_STATE_READY;
 		}
@@ -172,37 +170,6 @@ void GSMSerialHandler::HandleDataResponse(char *response, size_t size)
 	case GSMFlowState::WAIT_SIM_INIT:
 	case GSMFlowState::READY:
 	{
-		// +CIEV
-		/*
-		if (strncmp(response, GSM_EVENT_DATA_CMD, strlen(GSM_EVENT_DATA_CMD)) == 0) {
-
-			// [+CTZV:19/07/28, 10:45:57, +03] [27]
-
-			char *args[2];
-			uint8_t argsLength = SplitString(response, COMMA, args, 2, false);
-
-			if (args[0] == 0) return;
-
-			// Shift space + : signs = 2
-			char *eventArg = args[0] + strlen(GSM_EVENT_DATA_CMD) + 2;
-
-			// [+CIEV: "MESSAGE", 1][18]
-			if (strncmp(eventArg + 1, GSM_EVENT_DATA_MESSAGE, strlen(GSM_EVENT_DATA_MESSAGE)) == 0) {
-				
-			}
-			// [+CIEV: service, 1] [18]
-			if (strncmp(eventArg, GSM_EVENT_DATA_SERVICE, strlen(GSM_EVENT_DATA_SERVICE)) == 0) {
-				isService = atoi(args[1]) == 1;
-			}
-			// [+CIEV: roam, 0]
-			else if (strncmp(eventArg, GSM_EVENT_DATA_ROAMING, strlen(GSM_EVENT_DATA_ROAMING)) == 0) {
-				isRoaming = atoi(args[1]) == 1;
-				if (flowState == GSMFlowState::WAIT_SIM_INIT) {
-					flowState = GSMFlowState::MSG_TEXT_MODE;
-				}
-			}
-			
-		}*/
 		// +CMT: "+372000000",,"2019/07/25,23:25:32+03"
 		// +CMT: "+32353","2356 aux-1","19/07/31,13:29:43+12"
 
@@ -240,17 +207,34 @@ void GSMSerialHandler::HandleDataResponse(char *response, size_t size)
 				LaunchStateRequest();
 			}
 		}
-		else if (strncmp(response, GSM_SMS_SEND_CMD, strlen(GSM_SMS_SEND_CMD)) == 0) {
+		else if (strncmp(response, GSM_CALL_STATE_CMD, strlen(GSM_CALL_STATE_CMD)) == 0) {
+			char *clccContent = response + strlen(GSM_CALL_STATE_CMD) + 2;
+			char *clccArgs[8];
+			size_t len = SplitString(clccContent, COMMA_ASCII_SYMBOL, clccArgs, 8, false);
 
-			// +CMGS: 12
-			//char *cLength = response + strlen(GSM_SMS_SEND_CMD) + 2;
-			//uint8_t messageLength = atoi(cLength);
-			//outPrintf("Message length: %s", cLength);
+			if (atoi(clccArgs[1]) == 1 && atoi(clccArgs[2]) == 4) {
+				// Incoming call!
+				// TODO: Might do some logic in future
+				HangupCallCMD();
+			}
 		}
 		break;
 	}
 	case GSMFlowState::CALL_PROGRESS:
-		if (strncmp(response, GSM_CALL_STATE_CMD, strlen(GSM_CALL_STATE_CMD)) == 0) {
+	{
+		if (strncmp(response, GSM_CALL_RESULT_ERROR1, strlen(GSM_CALL_RESULT_ERROR1)) == 0) {
+			flowState = GSMFlowState::READY;
+		}
+		else if (strncmp(response, GSM_CALL_RESULT_ERROR2, strlen(GSM_CALL_RESULT_ERROR2)) == 0) {
+			flowState = GSMFlowState::READY;
+		}
+		else if (strncmp(response, GSM_CALL_RESULT_ERROR3, strlen(GSM_CALL_RESULT_ERROR3)) == 0) {
+			flowState = GSMFlowState::READY;
+		}
+		else if (strncmp(response, GSM_CALL_RESULT_ERROR4, strlen(GSM_CALL_RESULT_ERROR4)) == 0) {
+			flowState = GSMFlowState::READY;
+		}
+		else if (strncmp(response, GSM_CALL_STATE_CMD, strlen(GSM_CALL_STATE_CMD)) == 0) {
 			// +CLCC: 1,0,3,0,0,"+37211111",145,"3123 aux-1"
 			char *clccContent = response + strlen(GSM_CALL_STATE_CMD) + 2;
 			char *clccArgs[8];
@@ -267,6 +251,7 @@ void GSMSerialHandler::HandleDataResponse(char *response, size_t size)
 			}
 		}
 		break;
+	}
 	default:
 		break;
 	}

@@ -57,6 +57,11 @@ constexpr char GSM_CALL_CMD[] = "ATD"; // Call event
 constexpr char GSM_CALL_BREAK_CMD[] = "ATH"; // Call event
 constexpr char GSM_CALL_STATE_CMD[] = "+CLCC"; // Data event
 
+constexpr char GSM_CALL_RESULT_ERROR1[] = "NO DIALTONE";
+constexpr char GSM_CALL_RESULT_ERROR2[] = "BUSY";
+constexpr char GSM_CALL_RESULT_ERROR3[] = "NO CARRIER";
+constexpr char GSM_CALL_RESULT_ERROR4[] = "NO ANSWER";
+
 constexpr char GSM_AUX_ENABLE[] = "on"; // Data event
 constexpr char GSM_AUX_DISABLE[] = "off"; // Data event
 constexpr char GSM_AUX_PHONE_POSTFIX[] = "aux-"; // Data event
@@ -68,7 +73,7 @@ constexpr char GSM_SIM_AUTH_READY[] = "SMS Ready";
 constexpr char GSM_SIM_STATE_READY[] = "READY"; // Pin code for sim card
 constexpr char GSM_SIM_STATE_SIM_PIN[] = "SIM PIN"; // Pin code for sim card
 
-constexpr uint32_t CALL_WAIT_DURATION = 3200000U; // ESC
+constexpr uint32_t CALL_WAIT_DURATION = 10000000U;
 
 enum class GSMFlowState : uint8_t
 {
