@@ -39,14 +39,6 @@ TEST(GSMSerialHandlerTestMock, ATResponseTest)
 	gsmHandler.Loop();
 
 	// AT Response
-	respondSerial((char *)"\r\nAT\r\n\r\nOK\r\n", &serial, &gsmHandler);
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::SHORT_RESPONSE);
-
-	// ATE0 Response
-	respondSerial((char *)"\r\nOK\r\n", &serial, &gsmHandler);
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::REG_GSM_SERVICE);
-
-	// +CREG Response
 	respondSerial((char *)"\r\nOK\r\n", &serial, &gsmHandler);
 	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::SIM_PIN_STATE);
 
@@ -60,17 +52,12 @@ TEST(GSMSerialHandlerTestMock, ATResponseTest)
 
 	// Service response OK
 	respondSerial((char *)"\r\nSMS Ready\r\n", &serial, &gsmHandler);
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::MSG_TEXT_MODE);
+	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::TIME_REQUEST);
 
-	// Msg text mode
-	respondSerial((char *)"\r\nOK\r\n", &serial, &gsmHandler);
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::MSG_INCOMING_FORMAT);
+	// Time response
+	respondSerial((char *)"\r\n+CCLK: \"20/08/25,21:08:38+12\"\r\n", &serial, &gsmHandler);
+	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::TIME_REQUEST);
 
-	// Msg text format
-	respondSerial((char *)"\r\nOK\r\n", &serial, &gsmHandler);
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::CALL_STATE_INFO);
-
-	// Call state update info
 	respondSerial((char *)"\r\nOK\r\n", &serial, &gsmHandler);
 	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::FIND_PRIMARY_PHONE);
 
@@ -93,7 +80,9 @@ TEST(GSMSerialHandlerTestMock, ATResponseTest)
 	respondSerial((char *)"\r\n+CMT: \"+372111111\",\"ilja aux-1\",\"20/08/24,17:58:10+12\"\r\n", &serial, &gsmHandler);
 	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
 
-	respondSerial((char *)"Test\r\n", &serial, &gsmHandler);
+	// Long sms
+	respondSerial((char *)"Test super long sms: kgkdkgre[wpegj'oewg'poergprelfjwelo fjwoej", &serial, &gsmHandler);
+	respondSerial((char *)"fewlqg;wglweg\r\n", &serial, &gsmHandler);
 	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
 
 	// Call->hangup logic test

@@ -12,14 +12,12 @@
 #include "src/GSMSerialHandler.h"
 #include "src/LedController.h"
 #include "src/BatteryMonitor.h"
-//#include "src/CMDSerialHandler.h"
 
 SoftwareSerial auxSerial(AUX_RX_PIN, AUX_TX_PIN);
 AuxHeaterSerial auxSerialHandler(&auxSerial);
 GSMSerialHandler gsmSerialHandler(&handleSMSCommand, &Serial);
 
 SoftwareSerial outSerial(DEBUG_RX_PIN, DEBUG_TX_PIN);
-//CMDSerialHandler cmdSerialHandler(&digitalSerial, &handleUsbCommand);
 
 BatteryMonitor batteryMonitor(20000.0f, 4700.0f, &handleLevelChanged);
 LedController ledController;
@@ -34,7 +32,7 @@ void setup() {
 	outStream = &outSerial;
 
 	auxSerial.begin(AUX_BAUD_RATE);
-	ledController.SetFrequency(100, 8, 0b00000001);
+	ledController.SetFrequency(100, 11, 0b00000001);
 
 	outSerial.begin(DEBUG_BAUD_RATE);
 
@@ -42,12 +40,15 @@ void setup() {
 }
 
 void loop() {
+
+	updateTime();
+
 	Timer::Loop();
 
 	auxSerialHandler.Loop();
 	gsmSerialHandler.Loop();
 	ledController.Loop();
-	//cmdSerialHandler.Loop();
+
 }
 
 void handleLevelChanged(VoltageLevelState level) {
@@ -62,14 +63,19 @@ void handleLevelChanged(VoltageLevelState level) {
 	}
 }
 
-void handleSMSCommand(char *command, size_t size) {
+void handleSMSCommand(char *command, size_t size, time_t sendTS) {
+
+	time_t diff = difftime(time(NULL), sendTS);
+
 	if (strcasecmp(command, GSM_AUX_ENABLE) == 0) {
-		//digitalWrite(6u, HIGH);
-		auxSerialHandler.LaunchHeater(&handleHeaterComplete);
+		if (diff <= 60) { // 1 min
+			auxSerialHandler.LaunchHeater(&handleHeaterComplete);
+		}
 	}
 	else if (strcasecmp(command, GSM_AUX_DISABLE) == 0) {
-		//digitalWrite(6u, LOW);
-		auxSerialHandler.StopHeater(&handleHeaterComplete);
+		if (diff <= 300) { // 5 min
+			auxSerialHandler.StopHeater(&handleHeaterComplete);
+		}
 	}
 	// For test
 	else if (strcasecmp(command, "test") == 0) {
@@ -78,8 +84,6 @@ void handleSMSCommand(char *command, size_t size) {
 }
 
 bool handleHeaterComplete(Stream *stream) {
-
-	outPrintf("handleHeaterComplete");
 
 	if (stream->available() > 0) {
 		char response[32];
@@ -96,8 +100,6 @@ bool handleHeaterComplete(Stream *stream) {
 
 
 bool handleLevelMessage(Stream *stream) {
-
-
 	bool result = false;
 
 	switch (batteryMonitor.CurrentState())

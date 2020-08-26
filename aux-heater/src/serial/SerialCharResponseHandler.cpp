@@ -38,7 +38,7 @@ bool SerialCharResponseHandler::LoadSymbolFromBuffer(uint8_t symbol)
 
 		if (separatorMatchedLength >= separatorLength) {
 			separatorMatchedLength = 0;
-			ResponseDetectedInternal(false, true);
+			ResponseDetectedInternal(false, false);
 			return true;
 		}
 		return false;

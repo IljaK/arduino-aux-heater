@@ -52,9 +52,9 @@ void VoltMeter::MeasureVoltage()
 {
 	long vcc = ReadVCC();
 	int analog_value = analogRead(VOLTMETER_MEASURE_PIN);
-	outPrintf("VCC: %d", (int)(vcc));
-	outPrintf("Analog Val: %d", analog_value);
-	pinValue = (float)(((double)analog_value * (double)vcc * (double)1.018f) / 1023000.0);
+	//outPrintf("VCC: %d", (int)(vcc));
+	//outPrintf("Analog Val: %d", analog_value);
+	pinValue = (float)(((double)analog_value * (double)vcc * (double)1.017f) / 1023000.0);
 }
 
 

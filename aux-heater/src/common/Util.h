@@ -1,16 +1,18 @@
 #pragma once
 #include <Arduino.h>
+#include <time.h>
 
 constexpr uint8_t BITS_PER_BYTE = 8u;
 constexpr uint8_t AUX_RX_PIN = 3u;
 constexpr uint8_t AUX_TX_PIN = 4u;
 
+constexpr uint8_t VOLTMETER_MEASURE_PIN = A4;
+constexpr uint8_t VOLTMETER_TRIGGER_PIN = 5u;
+
 constexpr uint8_t DEBUG_RX_PIN = 6u;
 constexpr uint8_t DEBUG_TX_PIN = 7u;
 constexpr uint8_t DEBUG_ON_PIN = 8u;
 
-constexpr uint8_t VOLTMETER_MEASURE_PIN = A4;
-constexpr uint8_t VOLTMETER_TRIGGER_PIN = 5u;
 
 constexpr uint32_t AUX_BAUD_RATE = 2400u;
 constexpr uint32_t COMMON_BAUD_RATE = 9600u;
@@ -24,10 +26,11 @@ constexpr uint32_t SERIAL_RESPONSE_TIMEOUT = 1000000u;
 
 constexpr uint8_t QUOTATION = '"';
 
+extern unsigned long prevMicrosSeconds;
+
 //constexpr uint32_t baudRates[] = { 1200, 2400, 4800, 9600, 14400, 19200, 28800, 57600, 115200 };
 
 typedef bool (*StreamCallback)(Stream *);
-typedef void (*StringCallback)(char *, size_t);
 typedef void (*StringArrayCallback)(char **, size_t);
 
 extern inline void tunedDelay(uint16_t delay);
@@ -61,3 +64,7 @@ extern size_t outWrite(int n);
 extern size_t outWrite(const char *str);
 extern size_t outWrite(const uint8_t *buffer, size_t size);
 extern size_t outWrite(const char *buffer, size_t size);
+
+extern void timeStruct(char *localTime, tm *tmStruct);
+extern void setSystemTime(tm *tmStruct);
+extern void updateTime();

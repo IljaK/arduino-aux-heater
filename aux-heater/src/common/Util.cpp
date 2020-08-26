@@ -3,6 +3,7 @@
 #pragma warning(disable : 4996)
 
 Stream *outStream = NULL;
+unsigned long prevMicrosSeconds = 0;
 
 inline void tunedDelay(uint16_t duration)
 {
@@ -310,5 +311,66 @@ size_t outWrite(const char *str) {
 }
 size_t outWrite(const char *buffer, size_t size) {
 	return outWrite((const uint8_t *)buffer, size);
+}
+
+void timeStruct(char *localTime, tm *tmStruct) {
+
+	// format: "20/08/25,21:08:38+12"
+
+	// Cut quotations
+	if (localTime[0] == QUOTATION) localTime++;
+	size_t length = strlen(localTime);
+	if (localTime[length -1 ] == QUOTATION) localTime[length -1 ] = 0;
+
+	// Split string to date & time
+	char *dataArray[2];
+	SplitString(localTime, ',', dataArray, 2, false);
+
+	// dataArray[0] - date 20/08/25
+	// dataArray[1] - time 21:08:38+12
+
+	char *dateArray[3];
+	SplitString(dataArray[0], '/', dateArray, 3, false);
+	char *timeArray[3];
+	SplitString(dataArray[1], ':', timeArray, 3, false);
+
+	char *pointer = strchr(timeArray[2], '+');
+	uint8_t gmt = 0;
+	if (pointer) {
+		gmt = atoi(pointer+1) / 4;
+		pointer[0] = 0;
+	}
+
+	uint16_t year = atoi(dateArray[0]);
+	if (year < 100) year += 2000u;
+
+	tmStruct->tm_year = year - 1900u;
+	tmStruct->tm_mon = atoi(dateArray[1]) - 1;
+	tmStruct->tm_mday = atoi(dateArray[2]);
+	tmStruct->tm_hour = atoi(timeArray[0]);
+	tmStruct->tm_min = atoi(timeArray[1]);
+	tmStruct->tm_sec = atoi(timeArray[2]);
+}
+
+void setSystemTime(tm * tmStruct)
+{
+	prevMicrosSeconds = micros();
+	set_system_time(mktime(tmStruct));
+}
+
+void updateTime()
+{
+	unsigned long microsTS = micros();
+	unsigned long seconds = (microsTS - prevMicrosSeconds) / 1000000ul;
+	if (seconds > 0) {
+		#ifdef ARDUINO_TEST
+		time_t curTime = systemTime;
+		#else
+		time_t curTime = time(NULL);
+		#endif
+		curTime += seconds;
+		set_system_time(curTime);
+		prevMicrosSeconds += (seconds * 1000000ul);
+	}
 }
 

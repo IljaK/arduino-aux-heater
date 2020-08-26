@@ -18,10 +18,7 @@ VoltageLevelState BatteryMonitor::CurrentState()
 
 void BatteryMonitor::OnVoltageMeasured()
 {
-	char resultVoltage[16];
-	dtostrf(PinVoltage(), 5, 3, resultVoltage);
-	outPrintf("PIN Voltage: %s", resultVoltage);
-	
+	char resultVoltage[16];	
 	dtostrf(Voltage(), 5, 3, resultVoltage);
 	outPrintf("Voltage: %s", resultVoltage);
 

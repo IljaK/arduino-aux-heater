@@ -52,3 +52,17 @@ TEST(Util, Bit16ValueTest)
 
 	EXPECT_EQ(input, expect);
 }
+
+TEST(Util, UpdateTimeTest)
+{
+	timeOffset = 0;
+	systemTime = 0;
+	prevMicrosSeconds = 0;
+
+	updateTime();
+	EXPECT_EQ(systemTime, 0);
+
+	timeOffset = 2000000ul;
+	updateTime();
+	EXPECT_EQ(systemTime, 2);
+}

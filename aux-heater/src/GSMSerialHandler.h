@@ -1,5 +1,6 @@
 #pragma once
 #include <Arduino.h>
+#include "time.h"
 #include "common/Util.h"
 #include "serial/SerialCharResponseHandler.h"
 #include "serial/SerialTimerResponseHandler.h"
@@ -26,19 +27,22 @@ constexpr uint8_t ESC_ASCII_SYMBOL = 27u; // ESC
 // +CME ERROR:
 // +CMS ERROR:
 
-// AT+CMGF=1 - set sms in text mode
 // AT+CPBR=1 - get number from sim card
-// AT+CNMI=1,2,0,0,0 - print new arrived messages
 
-constexpr char GSM_SHORT_RESPONSE[] = "E0"; // Disable request in response
+// Saved variables:
+// ATE0
+// AT+CREG=1
+// AT+CMGF=1
+// AT+CNMI=2,2,0,0,0
+// AT+CLCC=1
+
 //constexpr char GSM_SIM_ICCID[] = "+QCCID"; // Get sim ccid
 constexpr char GSM_SIGNAL_CMD[] = "+CSQ"; // Signal quality test, value range is 0-31 , 31 is the best
-constexpr char GSM_SIM_PIN_CMD[] = "+CPIN"; // Rad sim pin code state
+constexpr char GSM_SIM_PIN_CMD[] = "+CPIN"; // Read sim pin code state
 constexpr char GSM_REG_CMD[] = "+CREG"; // set 1 for sim registration
+constexpr char GSM_TIME_CMD[] = "+CCLK"; // set 1 for sim registration
 
 // AT+CPBS="SM" - set phonebook sim card
-constexpr char GSM_MSG_TEXT_CMD[] = "+CMGF"; // Force msg text mode
-constexpr char GSM_MSG_ARRIVE_CMD[] = "+CNMI"; // Message arrive event "AT+CNMI=2,2,0,0,0"
 constexpr char GSM_SMS_SEND_CMD[] = "+CMGS"; // Send sms message
 constexpr char GSM_MSG_TEXT_INPUT_RESPONSE[] = "> "; // Response after sucess send cmd
 constexpr char GSM_FIND_USER_CMD[] = "+CPBF"; // Find phonebook entries
@@ -69,9 +73,6 @@ constexpr uint32_t CALL_WAIT_DURATION = 3200000U; // ESC
 enum class GSMFlowState : uint8_t
 {
 	INITIALIZATION,
-	SHORT_RESPONSE,
-	//CHECK_SIM_CCID,
-	REG_GSM_SERVICE,
 
 	SIM_PIN_STATE,
 	SIM_PIN_STATE_READY,
@@ -81,10 +82,7 @@ enum class GSMFlowState : uint8_t
 	SIM_LOGIN,
 	WAIT_SIM_INIT,
 
-	MSG_TEXT_MODE,
-	MSG_INCOMING_FORMAT,
-
-	CALL_STATE_INFO,
+	TIME_REQUEST,
 	FIND_PRIMARY_PHONE,
 
 	READY,
@@ -106,16 +104,19 @@ enum class IncomingMessageState : uint8_t
 	NOT_AUTH_INCOMING_MSG
 };
 
+typedef void (*SMSCallback)(char *, size_t, time_t);
+
 class GSMSerialHandler : public SerialCharResponseHandler //SerialTimerResponseHandler
 {
 private:
 	TimerID flowTimer = 0;
 	TimerID hangUpTimer = 0;
 
-	char primaryPhone[16] = "\0";
+	char primaryPhone[16] = "";
 	uint8_t lowestIndex = 255;
 
 	char smsSender[16];
+	time_t smsSendTS = 0;
 
 	GSMFlowState flowState = GSMFlowState::INITIALIZATION;
 	IncomingMessageState messageState = IncomingMessageState::NONE;
@@ -124,7 +125,7 @@ private:
 	bool tryedPass = false;
 	uint8_t cRegState = 0;
 
-	StringCallback smsCallback;
+	SMSCallback smsCallback;
 	StreamCallback messageCallback;
 
 	bool IsProperResponse(char *response, size_t size);
@@ -144,7 +145,7 @@ protected:
 	bool LoadSymbolFromBuffer(uint8_t symbol) override;
 
 public:
-	GSMSerialHandler(StringCallback smsCallback, Stream * serial);
+	GSMSerialHandler(SMSCallback smsCallback, Stream * serial);
 	~GSMSerialHandler();
 
 	void OnTimerComplete(TimerID timerId) override;

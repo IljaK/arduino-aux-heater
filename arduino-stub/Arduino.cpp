@@ -5,9 +5,11 @@
 #include <windows.h>
 #endif
 #include <ctype.h>
+#include <time.h>
 
 unsigned long timeOffset = 0;
 uint16_t analogValues[21];
+time_t systemTime = 0;
 
 unsigned long micros()
 {
@@ -19,7 +21,7 @@ unsigned long micros()
 
 unsigned long millis()
 {
-	return micros() * 1000ul;
+	return micros() / 1000ul;
 }
 
 void delay(unsigned long milliseconds)
@@ -85,4 +87,9 @@ char *dtostrf(double __val, signed char __width, unsigned char __prec, char *__s
 {
 	// TODO:
 	return __s;
+}
+
+void set_system_time(time_t timestamp)
+{
+	systemTime = timestamp;
 }

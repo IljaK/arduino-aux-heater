@@ -8,6 +8,8 @@
 #include <cstdlib>
 #include <climits>
 
+#include <time.h>
+
 #define MAXBYTE UCHAR_MAX
 
 #define LOW 0x0
@@ -45,8 +47,11 @@ extern void analogReference(uint8_t mode);
 extern void analogWrite(uint8_t, int);
 
 extern unsigned long timeOffset;
+extern time_t systemTime;
 extern uint16_t analogValues[];
 extern int strcasecmp(const char *str1,const char *str2);
 extern uint16_t voltageToPinValue(double r1, double r2, double voltage, double vcc);
 
 extern char *dtostrf(double __val, signed char __width, unsigned char __prec, char *__s);
+
+extern void set_system_time(time_t timestamp);
