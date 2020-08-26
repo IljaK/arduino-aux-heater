@@ -65,7 +65,9 @@ void handleLevelChanged(VoltageLevelState level) {
 
 void handleSMSCommand(char *command, size_t size, time_t sendTS) {
 
-	time_t diff = difftime(time(NULL), sendTS);
+	time_t now = time(NULL);
+
+	int32_t diff = difftime(now, sendTS);
 
 	if (strcasecmp(command, GSM_AUX_ENABLE) == 0) {
 		if (diff <= 60) { // 1 min

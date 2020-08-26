@@ -360,6 +360,8 @@ void setSystemTime(tm * tmStruct)
 
 void updateTime()
 {
+	if (prevMicrosSeconds == 0) return;
+
 	unsigned long microsTS = micros();
 	unsigned long seconds = (microsTS - prevMicrosSeconds) / 1000000ul;
 	if (seconds > 0) {

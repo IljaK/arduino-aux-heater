@@ -77,7 +77,7 @@ TEST(GSMSerialHandlerTestMock, ATResponseTest)
 	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
 
 	// Incoming SMS logic test + save sender number
-	respondSerial((char *)"\r\n+CMT: \"+372111111\",\"ilja aux-1\",\"20/08/24,17:58:10+12\"\r\n", &serial, &gsmHandler);
+	respondSerial((char *)"\r\n+CMT: \"+372111111\",\"ilja aux-1\",\"20/08/27,00:25:23+12\"\r\n", &serial, &gsmHandler);
 	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
 
 	// Long sms
