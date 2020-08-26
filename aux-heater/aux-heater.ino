@@ -77,10 +77,6 @@ void handleSMSCommand(char *command, size_t size, time_t sendTS) {
 			auxSerialHandler.StopHeater(&handleHeaterComplete);
 		}
 	}
-	// For test
-	else if (strcasecmp(command, "test") == 0) {
-		gsmSerialHandler.NotifyByCallHangUp();
-	}
 }
 
 bool handleHeaterComplete(Stream *stream) {
@@ -126,7 +122,7 @@ bool handleLevelMessage(Stream *stream) {
 		break;
 	}
 
-	outPrintf("handleLevelMessage state: %d result: %d", (uint8_t)batteryMonitor.CurrentState(), (uint8_t)result);
+	outPrintf("State: %d result: %d", (uint8_t)batteryMonitor.CurrentState(), (uint8_t)result);
 
 	if (result) {
 		char resultVoltage[16];

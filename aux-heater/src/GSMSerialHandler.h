@@ -73,7 +73,7 @@ constexpr char GSM_SIM_AUTH_READY[] = "SMS Ready";
 constexpr char GSM_SIM_STATE_READY[] = "READY"; // Pin code for sim card
 constexpr char GSM_SIM_STATE_SIM_PIN[] = "SIM PIN"; // Pin code for sim card
 
-constexpr uint32_t CALL_WAIT_DURATION = 10000000U;
+constexpr uint32_t CALL_WAIT_DURATION = 5000000U;
 
 enum class GSMFlowState : uint8_t
 {
