@@ -6,9 +6,9 @@
                 "D:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.24.28314/include/**",
                 "D:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.24.28314/atlmfc/include/**",
 
-                "${workspaceFolder}/src/**",
-                "${workspaceFolder}/../arduino-stub/**",
-                "${workspaceFolder}/../aux-heater/src/**"
+                "${workspaceFolder}/aux-heater/src/**",
+                "${workspaceFolder}/arduino-stub/**",
+                "${workspaceFolder}/aux-heater/src/**"
             ],
             "defines": [
                 "ARDUINO_TEST"
@@ -24,9 +24,9 @@
             "name": "Linux",
             "includePath": [
                 "/usr/lib",
-                "${workspaceFolder}/src/**",
-                "${workspaceFolder}/../arduino-stub/**",
-                "${workspaceFolder}/../aux-heater/src/**"
+                "${workspaceFolder}/aux-heater/src/**",
+                "${workspaceFolder}/arduino-stub/**",
+                "${workspaceFolder}/aux-heater/src/**"
             ],
             "defines": [
                 "_LINUX_",
