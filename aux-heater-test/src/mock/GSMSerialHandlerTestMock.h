@@ -1,11 +1,18 @@
 #include "GSMSerialHandler.h"
-#include "BaseSerialHandlerMock.h"
+#include "SerialStream.h"
 
-class GSMSerialHandlerTestMock: public GSMSerialHandler, public BaseSerialHandlerMock
+class GSMSerialHandlerTestMock: public GSMSerialHandler
 {
 public: 
-	GSMSerialHandlerTestMock(Stream * serial);
+	SerialStream * serialStream;
+
+	GSMSerialHandlerTestMock(SerialStream * serialStream);
 	~GSMSerialHandlerTestMock();
+
+	void BeginInitialization();
+	void FinalizeInitialization();
+
+	void ReadResponse(char * response);
 
 	void OnResponseReceived(bool IsTimeOut, bool isOverFlow = false) override;
 };

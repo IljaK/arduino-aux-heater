@@ -35,6 +35,8 @@ constexpr uint8_t ESC_ASCII_SYMBOL = 27u; // ESC
 // AT+CMGF=1
 // AT+CNMI=2,2,0,0,0
 // AT+CLCC=1
+// AT+DDET=1
+// AT+CLIP=0
 
 //constexpr char GSM_SIM_ICCID[] = "+QCCID"; // Get sim ccid
 constexpr char GSM_SIGNAL_CMD[] = "+CSQ"; // Signal quality test, value range is 0-31 , 31 is the best
@@ -53,14 +55,14 @@ constexpr char GSM_EVENT_DATA_MESSAGE[] = "MESSAGE"; // Data event
 constexpr char GSM_EVENT_DATA_SERVICE[] = "service"; // Data event
 constexpr char GSM_EVENT_DATA_ROAMING[] = "roam"; // Data event
 
-constexpr char GSM_CALL_CMD[] = "ATD"; // Call event
-constexpr char GSM_CALL_BREAK_CMD[] = "ATH"; // Call event
-constexpr char GSM_CALL_STATE_CMD[] = "+CLCC"; // Data event
+constexpr char GSM_CALL_DIAL_CMD[] = "ATD"; // Call dial cmd
+constexpr char GSM_CALL_HANGUP_CMD[] = "ATH"; // Call hangup cmd 
+constexpr char GSM_CALL_ANSWER_CMD[] = "ATA"; // Call answer cmd 
+constexpr char GSM_CALL_STATE_CMD[] = "+CLCC"; // Call state
+constexpr char GSM_DTMF_CMD[] = "+DTMF"; // Call state
 
-constexpr char GSM_CALL_RESULT_ERROR1[] = "NO DIALTONE";
-constexpr char GSM_CALL_RESULT_ERROR2[] = "BUSY";
-constexpr char GSM_CALL_RESULT_ERROR3[] = "NO CARRIER";
-constexpr char GSM_CALL_RESULT_ERROR4[] = "NO ANSWER";
+constexpr char GSM_AUX_ENABLE_DTFM = '1'; // Data event
+constexpr char GSM_AUX_DISABLE_DTFM = '0'; // Data event
 
 constexpr char GSM_AUX_ENABLE[] = "on"; // Data event
 constexpr char GSM_AUX_DISABLE[] = "off"; // Data event
@@ -73,7 +75,8 @@ constexpr char GSM_SIM_AUTH_READY[] = "SMS Ready";
 constexpr char GSM_SIM_STATE_READY[] = "READY"; // Pin code for sim card
 constexpr char GSM_SIM_STATE_SIM_PIN[] = "SIM PIN"; // Pin code for sim card
 
-constexpr uint32_t CALL_WAIT_DURATION = 5000000U;
+constexpr uint32_t CALL_HANGUP_DELAY = 5000000U; // 5 seconds
+constexpr uint32_t CALL_ANSWER_DELAY = 500000U; // 0.5 seconds
 
 enum class GSMFlowState : uint8_t
 {
@@ -97,9 +100,10 @@ enum class GSMFlowState : uint8_t
 	SEND_SMS_BEGIN,
 	SEND_SMS_FLOW,
 
-	// Call states
-	CALL_PROGRESS,
-	CALL_HANGUP
+	// Call action cmd
+	CALL_DIAL,
+	CALL_HANGUP,
+	CALL_ANSWER
 };
 
 enum class IncomingMessageState : uint8_t
@@ -109,13 +113,30 @@ enum class IncomingMessageState : uint8_t
 	NOT_AUTH_INCOMING_MSG
 };
 
-typedef void (*SMSCallback)(char *, size_t, time_t);
+enum class GSMCallState : uint8_t
+{
+	ACTIVE,
+	HELD,
+
+	// Outgoing
+	DIALING,
+	ALERTING,
+
+	// Incoming
+	INCOMING,
+	WAITING,
+
+	DISCONNECT
+};
+
+typedef void (*SMSCallback)(char *message, size_t size, time_t timeStamp);
+typedef bool (*DTMFCallback)(char code);
 
 class GSMSerialHandler : public SerialCharResponseHandler //SerialTimerResponseHandler
 {
 private:
 	TimerID flowTimer = 0;
-	TimerID hangUpTimer = 0;
+	TimerID callTimer = 0;
 
 	char primaryPhone[16] = "";
 	uint8_t lowestIndex = 255;
@@ -124,33 +145,37 @@ private:
 	time_t smsSendTS = 0;
 
 	GSMFlowState flowState = GSMFlowState::INITIALIZATION;
-	IncomingMessageState messageState = IncomingMessageState::NONE;
+	IncomingMessageState smsState = IncomingMessageState::NONE;
+	GSMCallState callState = GSMCallState::DISCONNECT;
 
 	const char *request = NULL;
 	bool tryedPass = false;
 	uint8_t cRegState = 0;
 
 	SMSCallback smsCallback;
+	DTMFCallback dtmfCallback;
 	StreamCallback messageCallback;
 
 	bool IsProperResponse(char *response, size_t size);
-	void LaunchStateRequest();
+	void LaunchFlowRequest();
 
 	void HandleErrorResponse(char *response, size_t size);
 	void HandleDataResponse(char *response, size_t size);
 	void HandleOKResponse(char *response, size_t size);
 
-	void HandleIncomingMessage(char *response, size_t size);
 	void FinalizeSendMessage();
 
 	void StartFlowTimer(unsigned long duration);
 	void HangupCallCMD();
 
+	void AnswerCallCMD();
+	void StopCallTimer();
+
 protected:
 	bool LoadSymbolFromBuffer(uint8_t symbol) override;
 
 public:
-	GSMSerialHandler(SMSCallback smsCallback, Stream * serial);
+	GSMSerialHandler(SMSCallback smsCallback, DTMFCallback dtmfCallback, Stream * serial);
 	~GSMSerialHandler();
 
 	void OnTimerComplete(TimerID timerId) override;
@@ -161,8 +186,10 @@ public:
 
 	bool IsNetworkConnected();
 	bool IsRoaming();
+	bool IsAuthorized(char *entryName);
 
 	GSMFlowState FlowState();
-
+	GSMCallState CallState();
+	IncomingMessageState SMSState();
 };
 

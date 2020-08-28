@@ -15,7 +15,7 @@
 
 SoftwareSerial auxSerial(AUX_RX_PIN, AUX_TX_PIN);
 AuxHeaterSerial auxSerialHandler(&auxSerial);
-GSMSerialHandler gsmSerialHandler(&handleSMSCommand, &Serial);
+GSMSerialHandler gsmSerialHandler(&handleSMSCommand, &handleDtmfCommand, &Serial);
 
 SoftwareSerial outSerial(DEBUG_RX_PIN, DEBUG_TX_PIN);
 
@@ -66,7 +66,6 @@ void handleLevelChanged(VoltageLevelState level) {
 void handleSMSCommand(char *command, size_t size, time_t sendTS) {
 
 	time_t now = time(NULL);
-
 	int32_t diff = difftime(now, sendTS);
 
 	if (strcasecmp(command, GSM_AUX_ENABLE) == 0) {
@@ -79,6 +78,20 @@ void handleSMSCommand(char *command, size_t size, time_t sendTS) {
 			auxSerialHandler.StopHeater(&handleHeaterComplete);
 		}
 	}
+}
+
+bool handleDtmfCommand(char code) {
+
+	if (code == GSM_AUX_ENABLE_DTFM) {
+		auxSerialHandler.LaunchHeater(NULL);
+		return true;
+	}
+	else if (code == GSM_AUX_DISABLE_DTFM) {
+		auxSerialHandler.StopHeater(NULL);
+		return true;
+	}
+
+	return false;
 }
 
 bool handleHeaterComplete(Stream *stream) {

@@ -55,14 +55,16 @@ TEST(Util, Bit16ValueTest)
 
 TEST(Util, UpdateTimeTest)
 {
-	timeOffset = 0;
+	timeOffset = 1;
 	systemTime = 0;
-	prevMicrosSeconds = 0;
+	prevMicrosSeconds = 1;
+	time_t zeroTime = 0;
+	set_system_time(zeroTime);
 
 	updateTime();
 	EXPECT_EQ(systemTime, 0);
 
-	timeOffset = 2000000ul;
+	timeOffset += 2000000ul;
 	updateTime();
 	EXPECT_EQ(systemTime, 2);
 }

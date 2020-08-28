@@ -55,9 +55,15 @@ void Timer::Loop()
 				pPrev->pNext = freeNode->pNext;
 			}
 
+			freeNode->pCaller->OnTimerComplete(freeNode->id);
+
+			// During callback new node has been added!
+			if (freeNode->pNext != pFirst && pPrev == NULL && pNode != NULL) {
+				pNode = pFirst;
+			}
+
 			freeNode->remain = 0;
 			freeNode->pNext = NULL;
-			freeNode->pCaller->OnTimerComplete(freeNode->id);
 			delete(freeNode);
 
 			continue;
