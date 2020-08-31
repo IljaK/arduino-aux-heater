@@ -6,14 +6,15 @@
 #include "SerialStream.h"
 #include <BaseSerialHandler.h>
 #include "mock/TimerMock.h"
+#include <StackArray.h>
 
-bool messageCallback(Stream *stream)
+bool messageInputCallBack(Stream *stream)
 {
 	stream->write((char*)"Simple text");
 	return true;
 }
 
-TEST(GSMSerialHandlerTestMock, GSMInitializeTest)
+TEST(GSMSerialHandlerTest, GSMInitializeTest)
 {
 	timeOffset = 0;
 	TimerMock::Reset();
@@ -56,9 +57,8 @@ TEST(GSMSerialHandlerTestMock, GSMInitializeTest)
 	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
 }
 
-TEST(GSMSerialHandlerTestMock, SMSCallHangupTest)
+TEST(GSMSerialHandlerTest, LongSMSTest)
 {
-	// TODO;
 	timeOffset = 0;
 	TimerMock::Reset();
 	
@@ -72,7 +72,7 @@ TEST(GSMSerialHandlerTestMock, SMSCallHangupTest)
 
 
 	// Send SMS logic test
-	gsmHandler.SendSMSMessage(&messageCallback);
+	gsmHandler.SendSMSMessage(&messageInputCallBack);
 
 	char smsTextResponse[] = "\r\n> ";
 	gsmHandler.ReadResponse(smsTextResponse);
@@ -86,7 +86,34 @@ TEST(GSMSerialHandlerTestMock, SMSCallHangupTest)
 
 	// Long sms
 	gsmHandler.ReadResponse((char *)"Test super long sms: kgkdkgre[wpegj'oewg'poergprelfjwelo fjwoej");
+	EXPECT_EQ(gsmHandler.SMSState(), IncomingMessageState::AUTH_INCOMING_MSG);
+
 	gsmHandler.ReadResponse((char *)"fewlqg;wglweg\r\n");
+	EXPECT_EQ(gsmHandler.SMSState(), IncomingMessageState::NONE);
+	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
+}
+
+TEST(GSMSerialHandlerTest, CallHangupTest)
+{
+	timeOffset = 0;
+	TimerMock::Reset();
+	
+	SerialStream serial;
+	GSMSerialHandlerTestMock gsmHandler(&serial);
+
+	gsmHandler.BeginInitialization();
+	gsmHandler.FinalizeInitialization();
+
+	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
+
+
+	// Send SMS logic test
+	gsmHandler.SendSMSMessage(&messageInputCallBack);
+
+	char smsTextResponse[] = "\r\n> ";
+	gsmHandler.ReadResponse(smsTextResponse);
+
+	gsmHandler.ReadResponse((char *)"\r\nOK\r\n");
 	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
 
 	// Call initialized
@@ -110,6 +137,45 @@ TEST(GSMSerialHandlerTestMock, SMSCallHangupTest)
 
 	gsmHandler.ReadResponse((char *)"\r\nOK\r\n");
 	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
+}
 
+TEST(GSMSerialHandlerTest, SMSCallHangupTest)
+{
+	timeOffset = 0;
+	TimerMock::Reset();
 	
+	SerialStream serial;
+	GSMSerialHandlerTestMock gsmHandler(&serial);
+
+	gsmHandler.BeginInitialization();
+	gsmHandler.FinalizeInitialization();
+
+	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
+
+
+	// Send SMS logic test
+	gsmHandler.SendSMSMessage(&messageInputCallBack);
+
+	char smsTextResponse[] = "\r\n> ";
+	gsmHandler.ReadResponse(smsTextResponse);
+
+	gsmHandler.ReadResponse((char *)"\r\nOK\r\n");
+	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
+
+	// Incoming SMS logic test + save sender number
+	gsmHandler.ReadResponse((char *)"\r\n+CMT: \"+372111111\",\"ilja aux-1\",\"20/08/27,00:25:23+12\"\r\n");
+	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
+	EXPECT_EQ(gsmHandler.SMSState(), IncomingMessageState::AUTH_INCOMING_MSG);
+
+	// SMS with command
+	gsmHandler.ReadResponse((char *)"On\r\n");
+	EXPECT_EQ(gsmHandler.SMSState(), IncomingMessageState::NONE);
+	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
+
+	gsmHandler.NotifyByCallHangUp();
+	gsmHandler.Loop();
+	timeOffset+= GSM_CALL_DELAY;
+	gsmHandler.Loop();
+	Timer::Loop();
+	gsmHandler.Loop();
 }

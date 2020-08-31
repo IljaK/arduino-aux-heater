@@ -4,6 +4,7 @@
 #include "common/Util.h"
 #include "serial/SerialCharResponseHandler.h"
 #include "serial/SerialTimerResponseHandler.h"
+#include "common/StringStackArray.h"
 
 constexpr char SIM_PIN_CODE[] = "0000"; // Pin code for sim card
 
@@ -29,7 +30,7 @@ constexpr uint8_t ESC_ASCII_SYMBOL = 27u; // ESC
 
 // AT+CPBR=1 - get number from sim card
 
-// Saved variables:
+// Saved variables for sim800:
 // ATE0
 // AT+CREG=1
 // AT+CMGF=1
@@ -38,8 +39,10 @@ constexpr uint8_t ESC_ASCII_SYMBOL = 27u; // ESC
 // AT+DDET=1
 // AT+CLIP=0
 
+// AT+CSMINS - Sim card insert status
+
 //constexpr char GSM_SIM_ICCID[] = "+QCCID"; // Get sim ccid
-constexpr char GSM_SIGNAL_CMD[] = "+CSQ"; // Signal quality test, value range is 0-31 , 31 is the best
+//constexpr char GSM_SIGNAL_CMD[] = "+CSQ"; // Signal quality test, value range is 0-31 , 31 is the best
 constexpr char GSM_SIM_PIN_CMD[] = "+CPIN"; // Read sim pin code state
 constexpr char GSM_REG_CMD[] = "+CREG"; // set 1 for sim registration
 constexpr char GSM_TIME_CMD[] = "+CCLK"; // set 1 for sim registration
@@ -51,9 +54,6 @@ constexpr char GSM_FIND_USER_CMD[] = "+CPBF"; // Find phonebook entries
 
 //constexpr char GSM_EVENT_DATA_CMD[] = "+CIEV"; // Data event
 constexpr char GSM_TS_DATA_CMD[] = "+CMT"; // Data event
-constexpr char GSM_EVENT_DATA_MESSAGE[] = "MESSAGE"; // Data event
-constexpr char GSM_EVENT_DATA_SERVICE[] = "service"; // Data event
-constexpr char GSM_EVENT_DATA_ROAMING[] = "roam"; // Data event
 
 constexpr char GSM_CALL_DIAL_CMD[] = "ATD"; // Call dial cmd
 constexpr char GSM_CALL_HANGUP_CMD[] = "ATH"; // Call hangup cmd 
@@ -77,6 +77,9 @@ constexpr char GSM_SIM_STATE_SIM_PIN[] = "SIM PIN"; // Pin code for sim card
 
 constexpr uint32_t CALL_HANGUP_DELAY = 5000000U; // 5 seconds
 constexpr uint32_t CALL_ANSWER_DELAY = 500000U; // 0.5 seconds
+
+constexpr uint8_t SMS_CALL_HANGUP_SIZE = 2;
+constexpr uint32_t GSM_CALL_DELAY = 1000000U;
 
 enum class GSMFlowState : uint8_t
 {
@@ -132,23 +135,25 @@ enum class GSMCallState : uint8_t
 typedef void (*SMSCallback)(char *message, size_t size, time_t timeStamp);
 typedef bool (*DTMFCallback)(char code);
 
-class GSMSerialHandler : public SerialCharResponseHandler //SerialTimerResponseHandler
+class GSMSerialHandler : public SerialCharResponseHandler
 {
 private:
 	TimerID flowTimer = 0;
 	TimerID callTimer = 0;
+	TimerID callDelayTimer = 0;
 
-	char primaryPhone[16] = "";
+	char primaryPhone[18] = "";
 	uint8_t lowestIndex = 255;
 
-	char smsSender[16];
+	char smsSender[18];
 	time_t smsSendTS = 0;
+
+	StringStackArray callHangupStack = StringStackArray(SMS_CALL_HANGUP_SIZE);
 
 	GSMFlowState flowState = GSMFlowState::INITIALIZATION;
 	IncomingMessageState smsState = IncomingMessageState::NONE;
 	GSMCallState callState = GSMCallState::DISCONNECT;
 
-	const char *request = NULL;
 	bool tryedPass = false;
 	uint8_t cRegState = 0;
 
@@ -168,12 +173,13 @@ private:
 	void StartFlowTimer(unsigned long duration);
 	void HangupCallCMD();
 
+	void CallCMD();
 	void AnswerCallCMD();
 	void StopCallTimer();
+	void StartCallDelayTimer();
 
 protected:
 	bool LoadSymbolFromBuffer(uint8_t symbol) override;
-
 public:
 	GSMSerialHandler(SMSCallback smsCallback, DTMFCallback dtmfCallback, Stream * serial);
 	~GSMSerialHandler();

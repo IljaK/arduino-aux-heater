@@ -33,7 +33,12 @@
         "ctime": "cpp",
         "string": "cpp",
         "xutility": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "stack": "cpp",
+        "array": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "utility": "cpp"
     },
     "gtest-adapter.debugConfig": "GTest",
     "gtest-adapter.supportLocation": true

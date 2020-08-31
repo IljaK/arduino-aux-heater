@@ -1,6 +1,6 @@
 #include "GSMSerialHandlerTestMock.h"
 
-GSMSerialHandlerTestMock::GSMSerialHandlerTestMock(SerialStream * serialStream):GSMSerialHandler(NULL, NULL, serialStream)
+GSMSerialHandlerTestMock::GSMSerialHandlerTestMock(SerialStream * serialStream, SMSCallback smsCallback, DTMFCallback dtmfCallback):GSMSerialHandler(smsCallback, dtmfCallback, serialStream)
 {
 	this->serialStream = serialStream;
 }

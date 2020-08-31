@@ -6,7 +6,7 @@ class GSMSerialHandlerTestMock: public GSMSerialHandler
 public: 
 	SerialStream * serialStream;
 
-	GSMSerialHandlerTestMock(SerialStream * serialStream);
+	GSMSerialHandlerTestMock(SerialStream * serialStream, SMSCallback smsCallback = NULL, DTMFCallback dtmfCallback = NULL);
 	~GSMSerialHandlerTestMock();
 
 	void BeginInitialization();

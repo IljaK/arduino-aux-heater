@@ -6,7 +6,7 @@
 #include "mock/TimerMock.h"
 
 
-TEST(BaseSerialHandler, BufferOverflowTest)
+TEST(BaseSerialHandlerTest, BufferOverflowTest)
 {
 	timeOffset = 0;
 	TimerMock::Reset();
@@ -50,7 +50,7 @@ TEST(BaseSerialHandler, BufferOverflowTest)
 	//Assert::Fail(message);
 }
 
-TEST(BaseSerialHandler, SerialHandlerTimeoutTest)
+TEST(BaseSerialHandlerTest, SerialHandlerTimeoutTest)
 {
 	timeOffset = 0;
 	TimerMock::Reset();

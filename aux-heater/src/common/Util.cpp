@@ -335,10 +335,16 @@ void timeStruct(char *localTime, tm *tmStruct) {
 	SplitString(dataArray[1], ':', timeArray, 3, false);
 
 	char *pointer = strchr(timeArray[2], '+');
-	uint8_t gmt = 0;
+	uint8_t quaterGmt = 0;
 	if (pointer) {
-		gmt = atoi(pointer+1) / 4;
+		quaterGmt = atoi(pointer);
 		pointer[0] = 0;
+	} else {
+		pointer = strchr(timeArray[2], '-');
+		if (pointer) {
+			quaterGmt = atoi(pointer);
+			pointer[0] = 0;
+		}
 	}
 
 	uint16_t year = atoi(dateArray[0]);
