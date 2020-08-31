@@ -68,8 +68,8 @@ void handleSMSCommand(char *command, size_t size, time_t sendTS) {
 	time_t now = time(NULL);
 	int32_t diff = difftime(now, sendTS);
 
+	/*
 	char timeString[32];
-
 	tm tmStruct;
 	gmtime_r(&now, &tmStruct);
 	asctime_r(&tmStruct, timeString);
@@ -81,6 +81,7 @@ void handleSMSCommand(char *command, size_t size, time_t sendTS) {
 	outPrintf("SMS: %s", timeString);
 
 	outPrintf("handleSMSCommand diff: %ld", diff);
+	*/
 
 	if (strcasecmp(command, GSM_AUX_ENABLE) == 0) {
 		if (diff <= 60) { // 1 min
