@@ -3,7 +3,7 @@
 #include "mock/BaseSerialHandlerMock.h"
 #include "mock/GSMSerialHandlerTestMock.h"
 #include <Arduino.h>
-#include "SerialStream.h"
+#include "mock/SerialStream.h"
 #include <BaseSerialHandler.h>
 #include "mock/TimerMock.h"
 #include <StackArray.h>
@@ -33,15 +33,16 @@ TEST(GSMSerialHandlerTest, GSMInitializeTest)
 	gsmHandler.ReadResponse((char *)"\r\n+CPIN: SIM PIN\r\n\r\nOK\r\n");
 	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::SIM_LOGIN);
 
-	// PIN input OK Response
+	// Sim input response
 	gsmHandler.ReadResponse((char *)"\r\nOK\r\n");
 	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::WAIT_SIM_INIT);
 
-	// Service response OK
 	gsmHandler.ReadResponse((char *)"\r\nSMS Ready\r\n");
+	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::WAIT_SIM_INIT);
+
+	gsmHandler.ReadResponse((char *)"\r\nCall Ready\r\n");
 	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::TIME_REQUEST);
 
-	// Time sync
 	gsmHandler.ReadResponse((char *)"\r\n+CCLK: \"20/08/25,21:08:38+12\"\r\n");
 	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::TIME_REQUEST);
 
@@ -86,10 +87,10 @@ TEST(GSMSerialHandlerTest, LongSMSTest)
 
 	// Long sms
 	gsmHandler.ReadResponse((char *)"Test super long sms: kgkdkgre[wpegj'oewg'poergprelfjwelo fjwoej");
-	EXPECT_EQ(gsmHandler.SMSState(), IncomingMessageState::AUTH_INCOMING_MSG);
+	EXPECT_EQ(gsmHandler.SMSState(), GSMIncomingMessageState::AUTH_INCOMING_MSG);
 
 	gsmHandler.ReadResponse((char *)"fewlqg;wglweg\r\n");
-	EXPECT_EQ(gsmHandler.SMSState(), IncomingMessageState::NONE);
+	EXPECT_EQ(gsmHandler.SMSState(), GSMIncomingMessageState::NONE);
 	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
 }
 
@@ -165,11 +166,11 @@ TEST(GSMSerialHandlerTest, SMSCallHangupTest)
 	// Incoming SMS logic test + save sender number
 	gsmHandler.ReadResponse((char *)"\r\n+CMT: \"+372111111\",\"ilja aux-1\",\"20/08/27,00:25:23+12\"\r\n");
 	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
-	EXPECT_EQ(gsmHandler.SMSState(), IncomingMessageState::AUTH_INCOMING_MSG);
+	EXPECT_EQ(gsmHandler.SMSState(), GSMIncomingMessageState::AUTH_INCOMING_MSG);
 
 	// SMS with command
 	gsmHandler.ReadResponse((char *)"On\r\n");
-	EXPECT_EQ(gsmHandler.SMSState(), IncomingMessageState::NONE);
+	EXPECT_EQ(gsmHandler.SMSState(), GSMIncomingMessageState::NONE);
 	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
 
 	gsmHandler.NotifyByCallHangUp();

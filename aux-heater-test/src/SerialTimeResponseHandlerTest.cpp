@@ -2,7 +2,7 @@
 #include <Arduino.h>
 #include "mock/SerialTimerResponseHandlerMock.h"
 #include "mock/BaseSerialHandlerMock.h"
-#include "SerialStream.h"
+#include "mock/SerialStream.h"
 #include "mock/TimerMock.h"
 
 TEST(SerialTimeResponseHandler, BufferOverflowTest)

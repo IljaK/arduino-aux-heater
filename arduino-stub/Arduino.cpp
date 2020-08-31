@@ -93,3 +93,18 @@ void set_system_time(time_t timestamp)
 {
 	systemTime = timestamp;
 }
+
+time_t mk_gmtime(struct tm * timeptr)
+{
+	return 0;
+}
+
+void system_tick(void)
+{
+	systemTime++;
+}
+
+void set_zone(int32_t)
+{
+
+}

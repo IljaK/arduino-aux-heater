@@ -63,32 +63,18 @@ void handleLevelChanged(VoltageLevelState level) {
 	}
 }
 
-void handleSMSCommand(char *command, size_t size, time_t sendTS) {
+void handleSMSCommand(char *command, size_t size, time_t smsDispatchUTCts) {
 
 	time_t now = time(NULL);
-	int32_t diff = difftime(now, sendTS);
+	
+	int32_t diff = difftime(now, smsDispatchUTCts);
 
-	/*
-	char timeString[32];
-	tm tmStruct;
-	gmtime_r(&now, &tmStruct);
-	asctime_r(&tmStruct, timeString);
-	outPrintf("Now: %s", timeString);
-
-
-	gmtime_r(&sendTS, &tmStruct);
-	asctime_r(&tmStruct, timeString);
-	outPrintf("SMS: %s", timeString);
-
-	outPrintf("handleSMSCommand diff: %ld", diff);
-	*/
-
-	if (strcasecmp(command, GSM_AUX_ENABLE) == 0) {
+	if (strcasecmp(command, "on") == 0) {
 		if (diff <= 60) { // 1 min
 			auxSerialHandler.LaunchHeater(&handleHeaterComplete);
 		}
 	}
-	else if (strcasecmp(command, GSM_AUX_DISABLE) == 0) {
+	else if (strcasecmp(command, "off") == 0) {
 		if (diff <= 300) { // 5 min
 			auxSerialHandler.StopHeater(&handleHeaterComplete);
 		}
@@ -97,11 +83,11 @@ void handleSMSCommand(char *command, size_t size, time_t sendTS) {
 
 bool handleDtmfCommand(char code) {
 
-	if (code == GSM_AUX_ENABLE_DTFM) {
+	if (code == '1') {
 		auxSerialHandler.LaunchHeater(NULL);
 		return true;
 	}
-	else if (code == GSM_AUX_DISABLE_DTFM) {
+	else if (code == '0') {
 		auxSerialHandler.StopHeater(NULL);
 		return true;
 	}

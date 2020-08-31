@@ -3,7 +3,6 @@
 #pragma warning(disable : 4996)
 
 Stream *outStream = NULL;
-unsigned long prevMicrosSeconds = 0;
 
 inline void tunedDelay(uint16_t duration)
 {
@@ -198,16 +197,16 @@ size_t SplitString(char *source, char *separator, char **subStrArray, size_t arr
 
 	while (pChr[0] != 0) {
 
-		if (!(separator[0] != QUOTATION && separator[1] != 0)) {
+		if (!(separator[0] != '\"' && separator[1] != 0)) {
 			if (inQuotation) {
-				if (pChr[0] == QUOTATION) {
+				if (pChr[0] == '\"') {
 					inQuotation = false;
 				}
 				pChr++;
 				continue;
 			}
 			else {
-				if (pChr[0] == QUOTATION) {
+				if (pChr[0] == '\"') {
 					inQuotation = true;
 					pChr++;
 					continue;
@@ -249,14 +248,20 @@ void ShiftQuotations(char **subStrArray, size_t arraySize)
 {
 	for (size_t i = 0; i < arraySize; i++) {
 		if (subStrArray[i] != 0) {
-			size_t argLen = strlen(subStrArray[i]);
-			if (subStrArray[i][0] == QUOTATION && subStrArray[i][argLen - 1] == QUOTATION)
-			{
-				subStrArray[i] += 1;
-				subStrArray[i][argLen - 2] = 0;
-			}
+			subStrArray[i] = ShiftQuotations(subStrArray[i]);
 		}
 	}
+}
+
+char *ShiftQuotations(char *quatationString)
+{
+	size_t length = strlen(quatationString);
+	if (quatationString[0] == '\"' && quatationString[length - 1] == '\"')
+	{
+		quatationString += 1;
+		quatationString[length - 2] = 0;
+	}
+	return quatationString;
 }
 
 void outPrintf(const char *format, ...)
@@ -311,74 +316,5 @@ size_t outWrite(const char *str) {
 }
 size_t outWrite(const char *buffer, size_t size) {
 	return outWrite((const uint8_t *)buffer, size);
-}
-
-void timeStruct(char *localTime, tm *tmStruct) {
-
-	// format: "20/08/25,21:08:38+12"
-
-	// Cut quotations
-	if (localTime[0] == QUOTATION) localTime++;
-	size_t length = strlen(localTime);
-	if (localTime[length -1 ] == QUOTATION) localTime[length -1 ] = 0;
-
-	// Split string to date & time
-	char *dataArray[2];
-	SplitString(localTime, ',', dataArray, 2, false);
-
-	// dataArray[0] - date 20/08/25
-	// dataArray[1] - time 21:08:38+12
-
-	char *dateArray[3];
-	SplitString(dataArray[0], '/', dateArray, 3, false);
-	char *timeArray[3];
-	SplitString(dataArray[1], ':', timeArray, 3, false);
-
-	char *pointer = strchr(timeArray[2], '+');
-	uint8_t quaterGmt = 0;
-	if (pointer) {
-		quaterGmt = atoi(pointer);
-		pointer[0] = 0;
-	} else {
-		pointer = strchr(timeArray[2], '-');
-		if (pointer) {
-			quaterGmt = atoi(pointer);
-			pointer[0] = 0;
-		}
-	}
-
-	uint16_t year = atoi(dateArray[0]);
-	if (year < 100) year += 2000u;
-
-	tmStruct->tm_year = year - 1900u;
-	tmStruct->tm_mon = atoi(dateArray[1]) - 1;
-	tmStruct->tm_mday = atoi(dateArray[2]);
-	tmStruct->tm_hour = atoi(timeArray[0]);
-	tmStruct->tm_min = atoi(timeArray[1]);
-	tmStruct->tm_sec = atoi(timeArray[2]);
-}
-
-void setSystemTime(tm * tmStruct)
-{
-	prevMicrosSeconds = micros();
-	set_system_time(mktime(tmStruct));
-}
-
-void updateTime()
-{
-	if (prevMicrosSeconds == 0) return;
-
-	unsigned long microsTS = micros();
-	unsigned long seconds = (microsTS - prevMicrosSeconds) / 1000000ul;
-	if (seconds > 0) {
-		#ifdef ARDUINO_TEST
-		time_t curTime = systemTime;
-		#else
-		time_t curTime = time(NULL);
-		#endif
-		curTime += seconds;
-		set_system_time(curTime);
-		prevMicrosSeconds += (seconds * 1000000ul);
-	}
 }
 

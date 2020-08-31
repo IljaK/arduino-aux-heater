@@ -2,7 +2,7 @@
 #include <Arduino.h>
 #include <Timer.h>
 #include "mock/BaseSerialHandlerTestMock.h"
-#include "SerialStream.h"
+#include "mock/SerialStream.h"
 #include "mock/TimerMock.h"
 
 

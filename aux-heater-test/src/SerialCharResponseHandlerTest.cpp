@@ -2,7 +2,7 @@
 #include "mock/SerialCharResponseHandlerMock.h"
 #include "mock/BaseSerialHandlerMock.h"
 #include <Arduino.h>
-#include "SerialStream.h"
+#include "mock/SerialStream.h"
 #include "mock/TimerMock.h"
 
 

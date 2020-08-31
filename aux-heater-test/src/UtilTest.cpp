@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <Util.h>
+#include <TimeUtil.h>
 
 
 TEST(Util, SplitArgumentsTest)

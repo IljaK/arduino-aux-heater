@@ -9,6 +9,8 @@
 #include <climits>
 
 #include <time.h>
+/** One hour, expressed in seconds */
+#define ONE_HOUR 3600
 
 #define MAXBYTE UCHAR_MAX
 
@@ -49,9 +51,16 @@ extern void analogWrite(uint8_t, int);
 extern unsigned long timeOffset;
 extern time_t systemTime;
 extern uint16_t analogValues[];
+
+#ifndef _LINUX_
 extern int strcasecmp(const char *str1,const char *str2);
+#endif
+
 extern uint16_t voltageToPinValue(double r1, double r2, double voltage, double vcc);
 
 extern char *dtostrf(double __val, signed char __width, unsigned char __prec, char *__s);
 
 extern void set_system_time(time_t timestamp);
+extern time_t mk_gmtime(struct tm * timeptr);
+extern void system_tick(void);
+extern void set_zone(int32_t);

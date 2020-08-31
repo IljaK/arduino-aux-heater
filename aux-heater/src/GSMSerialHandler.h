@@ -1,7 +1,7 @@
 #pragma once
 #include <Arduino.h>
-#include "time.h"
 #include "common/Util.h"
+#include "common/TimeUtil.h"
 #include "serial/SerialCharResponseHandler.h"
 #include "serial/SerialTimerResponseHandler.h"
 #include "common/StringStackArray.h"
@@ -12,11 +12,6 @@ constexpr char GSM_RESPONSE_SEPARATOR[] = "\r\n";
 constexpr char GSM_OK_RESPONSE[] = "OK";
 constexpr char GSM_ERROR_RESPONSE[] = "ERROR";
 constexpr char GSM_INIT_CMD[] = "AT";
-
-constexpr uint8_t GSM_CMD_SET_SYMBOL = '=';
-constexpr uint8_t GSM_CMD_ASK_SYMBOL = '?';
-constexpr uint8_t COMMA_ASCII_SYMBOL = ',';
-constexpr uint8_t SEMICOLON_ASCII_SYMBOL = ';';
 
 constexpr uint8_t CR_ASCII_SYMBOL = 13u; // CR
 constexpr uint8_t LF_ASCII_SYMBOL = 10u; // LF
@@ -46,6 +41,7 @@ constexpr uint8_t ESC_ASCII_SYMBOL = 27u; // ESC
 constexpr char GSM_SIM_PIN_CMD[] = "+CPIN"; // Read sim pin code state
 constexpr char GSM_REG_CMD[] = "+CREG"; // set 1 for sim registration
 constexpr char GSM_TIME_CMD[] = "+CCLK"; // set 1 for sim registration
+constexpr char GSM_SWITCH_CMD[] = "+CFUN"; // Call state
 
 // AT+CPBS="SM" - set phonebook sim card
 constexpr char GSM_SMS_SEND_CMD[] = "+CMGS"; // Send sms message
@@ -61,17 +57,13 @@ constexpr char GSM_CALL_ANSWER_CMD[] = "ATA"; // Call answer cmd
 constexpr char GSM_CALL_STATE_CMD[] = "+CLCC"; // Call state
 constexpr char GSM_DTMF_CMD[] = "+DTMF"; // Call state
 
-constexpr char GSM_AUX_ENABLE_DTFM = '1'; // Data event
-constexpr char GSM_AUX_DISABLE_DTFM = '0'; // Data event
-
-constexpr char GSM_AUX_ENABLE[] = "on"; // Data event
-constexpr char GSM_AUX_DISABLE[] = "off"; // Data event
 constexpr char GSM_AUX_PHONE_POSTFIX[] = "aux-"; // Data event
 
 //constexpr char GSM_REG_CMD[] = "+CREG?"; // Check whether it has registered in the network
 //constexpr char GSM_SMS_TEXT_MODE[] = "AT+CMGF=1\r";
 
-constexpr char GSM_SIM_AUTH_READY[] = "SMS Ready";
+constexpr char GSM_SIM_AUTH_SMS_READY[] = "SMS Ready";
+constexpr char GSM_SIM_AUTH_CALL_READY[] = "Call Ready";
 constexpr char GSM_SIM_STATE_READY[] = "READY"; // Pin code for sim card
 constexpr char GSM_SIM_STATE_SIM_PIN[] = "SIM PIN"; // Pin code for sim card
 
@@ -86,9 +78,6 @@ enum class GSMFlowState : uint8_t
 	INITIALIZATION,
 
 	SIM_PIN_STATE,
-	SIM_PIN_STATE_READY,
-	SIM_PIN_STATE_PIN,
-	SIM_PIN_STATE_UNKNOWN,
 
 	SIM_LOGIN,
 	WAIT_SIM_INIT,
@@ -109,7 +98,15 @@ enum class GSMFlowState : uint8_t
 	CALL_ANSWER
 };
 
-enum class IncomingMessageState : uint8_t
+enum class GSMSimPinState:uint8_t
+{
+	SIM_PIN_STATE_UNKNOWN,
+	SIM_PIN_STATE_READY,
+	SIM_PIN_STATE_PIN,
+	SIM_PIN_STATE_ERROR
+};
+
+enum class GSMIncomingMessageState : uint8_t
 {
 	NONE,
 	AUTH_INCOMING_MSG,
@@ -132,6 +129,37 @@ enum class GSMCallState : uint8_t
 	DISCONNECT
 };
 
+struct GSMReadyState{
+private:
+	uint8_t readyState = 0;
+	// 0 bit - sms ready
+	// 1 bit - call ready
+public:
+	bool SMSReady()
+	{
+		return getBitsValue(&readyState, 1u, 0u);
+	}
+	void SMSReady(bool value)
+	{
+		setBitsValue(&readyState, value, 1u, 0u);
+	}
+	bool CallReady()
+	{
+		return getBitsValue(&readyState, 1u, 1u);
+	}
+	void CallReady(bool value)
+	{
+		setBitsValue(&readyState, value, 1u, 1u);
+	}
+	bool Ready() {
+		return readyState == 0b0000011;
+	}
+	void Ready(bool value) {
+		if (value) readyState = 0b0000011;
+		else readyState = 0;
+	}
+};
+
 typedef void (*SMSCallback)(char *message, size_t size, time_t timeStamp);
 typedef bool (*DTMFCallback)(char code);
 
@@ -146,15 +174,16 @@ private:
 	uint8_t lowestIndex = 255;
 
 	char smsSender[18];
-	time_t smsSendTS = 0;
+	time_t smsDispatchUTCts = 0;
 
 	StringStackArray callHangupStack = StringStackArray(SMS_CALL_HANGUP_SIZE);
 
+	GSMReadyState readyState;
+	GSMSimPinState simPinState = GSMSimPinState::SIM_PIN_STATE_UNKNOWN;
 	GSMFlowState flowState = GSMFlowState::INITIALIZATION;
-	IncomingMessageState smsState = IncomingMessageState::NONE;
+	GSMIncomingMessageState smsState = GSMIncomingMessageState::NONE;
 	GSMCallState callState = GSMCallState::DISCONNECT;
 
-	bool tryedPass = false;
 	uint8_t cRegState = 0;
 
 	SMSCallback smsCallback;
@@ -177,6 +206,7 @@ private:
 	void AnswerCallCMD();
 	void StopCallTimer();
 	void StartCallDelayTimer();
+	void UpdateReadyState();
 
 protected:
 	bool LoadSymbolFromBuffer(uint8_t symbol) override;
@@ -196,6 +226,6 @@ public:
 
 	GSMFlowState FlowState();
 	GSMCallState CallState();
-	IncomingMessageState SMSState();
+	GSMIncomingMessageState SMSState();
 };
 

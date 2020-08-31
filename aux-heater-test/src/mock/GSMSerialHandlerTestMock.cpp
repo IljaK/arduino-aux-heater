@@ -23,13 +23,16 @@ void GSMSerialHandlerTestMock::BeginInitialization()
 
 	// Service response OK
 	ReadResponse((char *)"\r\nSMS Ready\r\n");
+
+	// Service response OK
+	ReadResponse((char *)"\r\nCall Ready\r\n");
+
 }
 
 void GSMSerialHandlerTestMock::FinalizeInitialization()
 {
-	// Time sync
+	
 	ReadResponse((char *)"\r\n+CCLK: \"20/08/25,21:08:38+12\"\r\n");
-
 	// Service response OK
 	ReadResponse((char *)"\r\nOK\r\n");
 

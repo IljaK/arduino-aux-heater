@@ -1,6 +1,5 @@
 #pragma once
 #include <Arduino.h>
-#include <time.h>
 
 constexpr uint8_t BITS_PER_BYTE = 8u;
 constexpr uint8_t AUX_RX_PIN = 3u;
@@ -23,8 +22,6 @@ constexpr uint8_t COMMON_DATA_BITS_AMOUNT = 8u;
 constexpr uint8_t COMMON_STOP_BITS_AMOUNT = 1u;
 
 constexpr uint32_t SERIAL_RESPONSE_TIMEOUT = 1000000u;
-
-constexpr uint8_t QUOTATION = '"';
 
 extern unsigned long prevMicrosSeconds;
 
@@ -52,6 +49,7 @@ extern size_t printLongs(char *stringBuff, size_t bufferLength, unsigned long *s
 extern size_t SplitString(char *source, char *separator, char **subStrArray, size_t arraySize, bool skipEmpty = false);
 extern size_t SplitString(char *source, uint8_t separator, char **subStrArray, size_t arraySize, bool skipEmpty);
 
+extern char *ShiftQuotations(char *quatationString);
 extern void ShiftQuotations(char **subStrArray, size_t arraySize);
 
 extern void outPrintf(const char *format, ...);
@@ -64,7 +62,3 @@ extern size_t outWrite(int n);
 extern size_t outWrite(const char *str);
 extern size_t outWrite(const uint8_t *buffer, size_t size);
 extern size_t outWrite(const char *buffer, size_t size);
-
-extern void timeStruct(char *localTime, tm *tmStruct);
-extern void setSystemTime(tm *tmStruct);
-extern void updateTime();

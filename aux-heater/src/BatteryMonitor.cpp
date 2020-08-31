@@ -22,14 +22,6 @@ void BatteryMonitor::OnVoltageMeasured()
 	dtostrf(Voltage(), 5, 3, resultVoltage);
 	outPrintf("Voltage: %s", resultVoltage);
 
-
-	time_t now = time(NULL);
-	char timeString[32];
-	tm tmStruct;
-	gmtime_r(&now, &tmStruct);
-	asctime_r(&tmStruct, timeString);
-	outPrintf("Now: %s", timeString);
-
 	VoltageLevelState nextState = GetNextState(currentState);
 	if (nextState == currentState) {
 		// Check if normalized back
