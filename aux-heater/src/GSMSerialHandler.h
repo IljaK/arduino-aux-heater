@@ -30,8 +30,8 @@ constexpr uint8_t ESC_ASCII_SYMBOL = 27u; // ESC
 // AT+CREG=1
 // AT+CMGF=1
 // AT+CNMI=2,2,0,0,0
-// AT+CLCC=1
-// AT+DDET=1
+// AT+CLCC=1 // Call status report
+// AT+DDET=1 // DTFM signal detection
 // AT+CLIP=0
 
 // AT+CSMINS - Sim card insert status
@@ -129,7 +129,7 @@ enum class GSMCallState : uint8_t
 	DISCONNECT
 };
 
-struct GSMReadyState{
+struct GSMReadyState{ 
 private:
 	uint8_t readyState = 0;
 	// 0 bit - sms ready

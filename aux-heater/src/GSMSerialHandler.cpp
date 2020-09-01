@@ -107,37 +107,19 @@ void GSMSerialHandler::OnResponseReceived(bool isTimeOut, bool isOverFlow)
 
 void GSMSerialHandler::HandleDataResponse(char *response, size_t size)
 {
-	/*
-	// *PSUTTZ: 2020,8,31,13,9,53,"+12",1
-	if (strncmp(response, GSM_UTC_TIME, strlen(GSM_UTC_TIME)) == 0) {
-		char *utcData = response + strlen(GSM_UTC_TIME) + 2;
+	
+	if (strncmp(response, GSM_REG_CMD, strlen(GSM_REG_CMD)) == 0) {
+		// +CREG: 1,2
+		// Check roaming state
+		char *creg = response + strlen(GSM_REG_CMD) + 2;
+		char *cregArgs[2];
 
-		tmZone tmStruct;
-		timeUTCStruct(utcData, &tmStruct);
-		setSystemTime(&tmStruct);
-
-		readyState.UTCReady(true);
-		UpdateReadyState();
+		SplitString(creg, ',', cregArgs, 2, false);
+		cRegState = atoi(cregArgs[1]);
 	}
-	// +CPIN
-	else */
-	if (strncmp(response, GSM_SIM_PIN_CMD, strlen(GSM_SIM_PIN_CMD)) == 0) {
-		char *simState = response + strlen(GSM_SIM_PIN_CMD) + 2;
-
-		if (strncmp(GSM_SIM_STATE_READY, simState, strlen(GSM_SIM_STATE_READY)) == 0) {
-			simPinState = GSMSimPinState::SIM_PIN_STATE_READY;
-		}
-		else if (strncmp(GSM_SIM_STATE_SIM_PIN, simState, strlen(GSM_SIM_STATE_SIM_PIN)) == 0) {
-			simPinState = GSMSimPinState::SIM_PIN_STATE_PIN;
-		}
-		else {
-			simPinState = GSMSimPinState::SIM_PIN_STATE_ERROR;
-		}
-	}
-	// +CMT: "+372000000",,"2019/07/25,23:25:32+03"
-	// +CMT: "+32353","2356 aux-1","19/07/31,13:29:43+12"
-
 	else if (strncmp(response, GSM_TS_DATA_CMD, strlen(GSM_TS_DATA_CMD)) == 0) {
+		// +CMT: "+372000000",,"2019/07/25,23:25:32+03"
+		// +CMT: "+32353","2356 aux-1","19/07/31,13:29:43+12"
 		char *cmt = response + strlen(GSM_TS_DATA_CMD) + 2;
 		char *cmtArgs[3];
 		size_t len = SplitString(cmt, ',', cmtArgs, 3, false);
@@ -156,23 +138,6 @@ void GSMSerialHandler::HandleDataResponse(char *response, size_t size)
 		} else {
 			smsState = GSMIncomingMessageState::NOT_AUTH_INCOMING_MSG;
 		}
-	}
-	else if (strncmp(response, GSM_REG_CMD, strlen(GSM_REG_CMD)) == 0) {
-		// +CREG: 1,2
-		// Check roaming state
-		char *creg = response + strlen(GSM_REG_CMD) + 2;
-		char *cregArgs[2];
-
-		SplitString(creg, ',', cregArgs, 2, false);
-		cRegState = atoi(cregArgs[1]);
-	}
-	else if (strcmp(response, GSM_SIM_AUTH_SMS_READY) == 0) {
-		readyState.SMSReady(true);
-		UpdateReadyState();
-	}
-	else if (strcmp(response, GSM_SIM_AUTH_CALL_READY) == 0) {
-		readyState.CallReady(true);
-		UpdateReadyState();
 	}
 	else if (strncmp(response, GSM_CALL_STATE_CMD, strlen(GSM_CALL_STATE_CMD)) == 0) {
 		// +CLCC: 1,1,4,0,0,"+37211111",145,"ilja aux-1"
@@ -272,6 +237,27 @@ void GSMSerialHandler::HandleDataResponse(char *response, size_t size)
 		timeLocalStruct(cclk, &tmStruct);
 		setSystemTime(&tmStruct);
 	}
+	else if (strncmp(response, GSM_SIM_PIN_CMD, strlen(GSM_SIM_PIN_CMD)) == 0) {
+		char *simState = response + strlen(GSM_SIM_PIN_CMD) + 2;
+
+		if (strncmp(GSM_SIM_STATE_READY, simState, strlen(GSM_SIM_STATE_READY)) == 0) {
+			simPinState = GSMSimPinState::SIM_PIN_STATE_READY;
+		}
+		else if (strncmp(GSM_SIM_STATE_SIM_PIN, simState, strlen(GSM_SIM_STATE_SIM_PIN)) == 0) {
+			simPinState = GSMSimPinState::SIM_PIN_STATE_PIN;
+		}
+		else {
+			simPinState = GSMSimPinState::SIM_PIN_STATE_ERROR;
+		}
+	}
+	else if (strcmp(response, GSM_SIM_AUTH_SMS_READY) == 0) {
+		readyState.SMSReady(true);
+		UpdateReadyState();
+	}
+	else if (strcmp(response, GSM_SIM_AUTH_CALL_READY) == 0) {
+		readyState.CallReady(true);
+		UpdateReadyState();
+	}
 }
 
 void GSMSerialHandler::HandleOKResponse(char *response, size_t size)
@@ -311,7 +297,7 @@ void GSMSerialHandler::HandleOKResponse(char *response, size_t size)
 		flowState = GSMFlowState::READY;
 		break;
 	case GSMFlowState::FIND_PRIMARY_PHONE:
-		outPrintf("GSM READY! Primary phone: %s", primaryPhone);
+		outPrintf("Primary phone: %s", primaryPhone);
 		//break;
 	case GSMFlowState::SEND_SMS_FLOW:
 	case GSMFlowState::CALL_HANGUP:
@@ -524,7 +510,7 @@ bool GSMSerialHandler::LoadSymbolFromBuffer(uint8_t symbol)
 {
 	bool result = SerialCharResponseHandler::LoadSymbolFromBuffer(symbol);
 
-		// Check sms text iptut extra response
+		// Check sms text input extra response
 	if (flowState == GSMFlowState::SEND_SMS_BEGIN && !result) {
 		if (bufferLength == strlen(GSM_MSG_TEXT_INPUT_RESPONSE)) {
 			if (strncmp(buffer, GSM_MSG_TEXT_INPUT_RESPONSE, bufferLength) == 0) {

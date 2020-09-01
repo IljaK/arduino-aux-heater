@@ -37,7 +37,7 @@ uint8_t getBitFromByte(uint8_t targetByte, uint8_t index)
 
 uint8_t getBitsValue(uint8_t * target, uint8_t length, uint8_t start)
 {
-	uint8_t headerShift = (BITS_PER_BYTE - start - length);
+	uint8_t headerShift = (8u - start - length);
 	uint8_t result = *target;
 	result = result << headerShift;
 	result = result >> (headerShift + start);
@@ -47,7 +47,7 @@ uint8_t getBitsValue(uint8_t * target, uint8_t length, uint8_t start)
 
 uint16_t getBitsValue(uint16_t * target, uint8_t length, uint8_t start)
 {
-	uint16_t headerShift = ((BITS_PER_BYTE * 2) - start - length);
+	uint16_t headerShift = ((16u) - start - length);
 	uint16_t result = *target;
 	result = result << headerShift;
 	result = result >> (headerShift + start);
@@ -57,7 +57,7 @@ uint16_t getBitsValue(uint16_t * target, uint8_t length, uint8_t start)
 
 void setBitsValue(uint8_t * target, uint8_t value, uint8_t length, uint8_t start)
 {
-	uint8_t headerShift = (BITS_PER_BYTE - start - length);
+	uint8_t headerShift = (8u - start - length);
 
 	uint8_t mask = 0xFF << (start + headerShift);
 	mask = mask >> headerShift;
@@ -79,7 +79,7 @@ void setBitsValue(uint8_t * target, uint8_t value, uint8_t length, uint8_t start
 
 void setBitsValue(uint16_t* target, uint16_t value, uint8_t length, uint8_t start)
 {
-	uint16_t headerShift = ((BITS_PER_BYTE * 2) - start - length);
+	uint16_t headerShift = ((16u) - start - length);
 
 	uint16_t mask = 0xFFFF << (start + headerShift);
 	mask = mask >> headerShift;

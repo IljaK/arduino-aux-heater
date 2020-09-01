@@ -27,14 +27,14 @@ extern Stream *outStream;
 void setup() {
 
 	// USB port initialization
-	Serial.begin(COMMON_BAUD_RATE);
+	Serial.begin(SERIAL_BAUD_RATE);
 
 	outStream = &outSerial;
 
 	auxSerial.begin(AUX_BAUD_RATE);
 	ledController.SetFrequency(100, 11, 0b00000001);
 
-	outSerial.begin(DEBUG_BAUD_RATE);
+	outSerial.begin(SERIAL_BAUD_RATE);
 
 	outPrintf("Setup done!");
 }

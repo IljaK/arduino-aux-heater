@@ -2,7 +2,7 @@
 #include <StringStackArray.h>
 
 
-TEST(StringStackArrayTest, StackArrayTestAppendUnchift)
+TEST(StringStackArrayTest, StackArrayTestAppendUnshift)
 {
 	char smsSender[] = "+37211111";
 	StringStackArray callHangupStack(2);

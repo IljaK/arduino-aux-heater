@@ -46,15 +46,15 @@ void SerialTimerResponseHandler::StopTimer()
 
 uint8_t SerialTimerResponseHandler::GetDataBitsAmount()
 {
-	return COMMON_DATA_BITS_AMOUNT;
+	return 8u;
 }
 uint8_t SerialTimerResponseHandler::GetStopBitsAmount()
 {
-	return COMMON_STOP_BITS_AMOUNT;
+	return 1u;
 }
 uint32_t SerialTimerResponseHandler::GetBaudRate()
 {
-	return COMMON_BAUD_RATE;
+	return 9600u;
 }
 
 unsigned long SerialTimerResponseHandler::ResponseByteTimeOut()

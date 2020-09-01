@@ -12,6 +12,8 @@ struct tmZone: public tm
     }
 };
 
+extern unsigned long prevMicrosSeconds;
+
 extern void timeLocalStruct(char *localTime, tmZone *tmStruct);
 extern void timeUTCStruct(char *utcTime, tmZone *tmStruct);
 extern void timeStruct(tm *tmStruct, char **dateArray, char **timeArray);

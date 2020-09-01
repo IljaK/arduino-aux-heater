@@ -1,7 +1,6 @@
 #pragma once
 #include <Arduino.h>
 
-constexpr uint8_t BITS_PER_BYTE = 8u;
 constexpr uint8_t AUX_RX_PIN = 3u;
 constexpr uint8_t AUX_TX_PIN = 4u;
 
@@ -14,16 +13,9 @@ constexpr uint8_t DEBUG_ON_PIN = 8u;
 
 
 constexpr uint32_t AUX_BAUD_RATE = 2400u;
-constexpr uint32_t COMMON_BAUD_RATE = 9600u;
-constexpr uint32_t DEBUG_BAUD_RATE = 57600u;
-
-
-constexpr uint8_t COMMON_DATA_BITS_AMOUNT = 8u;
-constexpr uint8_t COMMON_STOP_BITS_AMOUNT = 1u;
+constexpr uint32_t SERIAL_BAUD_RATE = 57600u;
 
 constexpr uint32_t SERIAL_RESPONSE_TIMEOUT = 1000000u;
-
-extern unsigned long prevMicrosSeconds;
 
 //constexpr uint32_t baudRates[] = { 1200, 2400, 4800, 9600, 14400, 19200, 28800, 57600, 115200 };
 
