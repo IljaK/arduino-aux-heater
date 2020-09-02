@@ -41,5 +41,6 @@
         "utility": "cpp"
     },
     "gtest-adapter.debugConfig": "GTest",
-    "gtest-adapter.supportLocation": true
+    "gtest-adapter.supportLocation": true,
+    "cmake.sourceDirectory": "${workspaceFolder}/."
 }

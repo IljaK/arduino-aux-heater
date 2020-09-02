@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="aux-heater-test">
+      <UniqueIdentifier>{b53206b7-9d44-40dd-ae37-2e07e1e9296e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="aux-heater-test\mock">
+      <UniqueIdentifier>{55194e2d-c95d-426e-b063-8b5944292833}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="aux-heater">
+      <UniqueIdentifier>{8d3afa39-399d-40ac-8d5e-a8d400756c94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="arduino-stub">
+      <UniqueIdentifier>{ccfb66fe-9d70-448c-827d-b3b47c544719}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="aux-heater\common">
+      <UniqueIdentifier>{e7ccd199-6cae-421d-8620-e2e8d5a08261}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="aux-heater\serial">
+      <UniqueIdentifier>{c623c771-9e07-472b-a9c5-d29d66dd2dcc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\aux-heater-test\src\AuxHeaterSerialTest.cpp">
+      <Filter>aux-heater-test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater-test\src\BaseSerialHandlerTest.cpp">
+      <Filter>aux-heater-test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater-test\src\GsmSerialHandlerTest.cpp">
+      <Filter>aux-heater-test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater-test\src\LedControllerTest.cpp">
+      <Filter>aux-heater-test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater-test\src\SerialCharResponseHandlerTest.cpp">
+      <Filter>aux-heater-test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater-test\src\SerialTimeResponseHandlerTest.cpp">
+      <Filter>aux-heater-test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater-test\src\StackArrayTest.cpp">
+      <Filter>aux-heater-test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater-test\src\TimerTest.cpp">
+      <Filter>aux-heater-test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater-test\src\UtilTest.cpp">
+      <Filter>aux-heater-test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater-test\src\VoltMeterTest.cpp">
+      <Filter>aux-heater-test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater-test\src\mock\SerialCharResponseHandlerMock.cpp">
+      <Filter>aux-heater-test\mock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater-test\src\mock\SerialStream.cpp">
+      <Filter>aux-heater-test\mock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater-test\src\mock\SerialTimerResponseHandlerMock.cpp">
+      <Filter>aux-heater-test\mock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater-test\src\mock\TimerMock.cpp">
+      <Filter>aux-heater-test\mock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater-test\src\mock\GSMSerialHandlerTestMock.cpp">
+      <Filter>aux-heater-test\mock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater-test\app\test_app.cpp" />
+    <ClCompile Include="..\arduino-stub\Stream.cpp">
+      <Filter>arduino-stub</Filter>
+    </ClCompile>
+    <ClCompile Include="..\arduino-stub\Arduino.cpp">
+      <Filter>arduino-stub</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater\src\CMDSerialHandler.cpp">
+      <Filter>aux-heater</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater\src\GSMSerialHandler.cpp">
+      <Filter>aux-heater</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater\src\LedController.cpp">
+      <Filter>aux-heater</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater\src\AuxHeaterSerial.cpp">
+      <Filter>aux-heater</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater\src\BatteryMonitor.cpp">
+      <Filter>aux-heater</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater\src\common\TimeUtil.cpp">
+      <Filter>aux-heater\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater\src\common\Util.cpp">
+      <Filter>aux-heater\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater\src\common\VoltMeter.cpp">
+      <Filter>aux-heater\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater\src\common\Timer.cpp">
+      <Filter>aux-heater\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater\src\serial\SerialCharResponseHandler.cpp">
+      <Filter>aux-heater\serial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater\src\serial\SerialTimerResponseHandler.cpp">
+      <Filter>aux-heater\serial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater\src\serial\BaseSerialHandler.cpp">
+      <Filter>aux-heater\serial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater-test\src\mock\BaseSerialMock.cpp">
+      <Filter>aux-heater-test\mock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\aux-heater-test\src\mock\BaseSerialHandlerMock.cpp">
+      <Filter>aux-heater-test\mock</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\aux-heater-test\src\mock\GSMSerialHandlerTestMock.h">
+      <Filter>aux-heater-test\mock</Filter>
+    </ClInclude>
+    <ClInclude Include="..\aux-heater-test\src\mock\SerialCharResponseHandlerMock.h">
+      <Filter>aux-heater-test\mock</Filter>
+    </ClInclude>
+    <ClInclude Include="..\aux-heater-test\src\mock\SerialStream.h">
+      <Filter>aux-heater-test\mock</Filter>
+    </ClInclude>
+    <ClInclude Include="..\aux-heater-test\src\mock\SerialTimerResponseHandlerMock.h">
+      <Filter>aux-heater-test\mock</Filter>
+    </ClInclude>
+    <ClInclude Include="..\aux-heater-test\src\mock\TimerMock.h">
+      <Filter>aux-heater-test\mock</Filter>
+    </ClInclude>
+    <ClInclude Include="..\arduino-stub\Arduino.h">
+      <Filter>arduino-stub</Filter>
+    </ClInclude>
+    <ClInclude Include="..\arduino-stub\SoftwareSerial.h">
+      <Filter>arduino-stub</Filter>
+    </ClInclude>
+    <ClInclude Include="..\arduino-stub\Stream.h">
+      <Filter>arduino-stub</Filter>
+    </ClInclude>
+    <ClInclude Include="..\aux-heater\src\BatteryMonitor.h">
+      <Filter>aux-heater</Filter>
+    </ClInclude>
+    <ClInclude Include="..\aux-heater\src\CMDSerialHandler.h">
+      <Filter>aux-heater</Filter>
+    </ClInclude>
+    <ClInclude Include="..\aux-heater\src\GSMSerialHandler.h">
+      <Filter>aux-heater</Filter>
+    </ClInclude>
+    <ClInclude Include="..\aux-heater\src\LedController.h">
+      <Filter>aux-heater</Filter>
+    </ClInclude>
+    <ClInclude Include="..\aux-heater\src\AuxHeaterSerial.h">
+      <Filter>aux-heater</Filter>
+    </ClInclude>
+    <ClInclude Include="..\aux-heater\src\common\Timer.h">
+      <Filter>aux-heater\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\aux-heater\src\common\TimeUtil.h">
+      <Filter>aux-heater\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\aux-heater\src\common\Util.h">
+      <Filter>aux-heater\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\aux-heater\src\common\VoltMeter.h">
+      <Filter>aux-heater\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\aux-heater\src\common\StackArray.h">
+      <Filter>aux-heater\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\aux-heater\src\common\StringStackArray.h">
+      <Filter>aux-heater\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\aux-heater\src\serial\BaseSerialHandler.h">
+      <Filter>aux-heater\serial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\aux-heater\src\serial\SerialCharResponseHandler.h">
+      <Filter>aux-heater\serial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\aux-heater\src\serial\SerialTimerResponseHandler.h">
+      <Filter>aux-heater\serial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\aux-heater-test\src\mock\BaseSerialMock.h">
+      <Filter>aux-heater-test\mock</Filter>
+    </ClInclude>
+    <ClInclude Include="..\aux-heater-test\src\mock\BaseSerialHandlerMock.h">
+      <Filter>aux-heater-test\mock</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>

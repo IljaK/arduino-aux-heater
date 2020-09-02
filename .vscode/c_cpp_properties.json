@@ -3,12 +3,9 @@
         {
             "name": "Win32",
             "includePath": [
-                "D:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.24.28314/include/**",
-                "D:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.24.28314/atlmfc/include/**",
-
                 "${workspaceFolder}/aux-heater/src/**",
                 "${workspaceFolder}/arduino-stub/**",
-                "${workspaceFolder}/aux-heater/src/**"
+                "${workspaceFolder}/aux-heater-test/src/**"
             ],
             "defines": [
                 "ARDUINO_TEST"
@@ -26,7 +23,7 @@
                 "/usr/lib",
                 "${workspaceFolder}/aux-heater/src/**",
                 "${workspaceFolder}/arduino-stub/**",
-                "${workspaceFolder}/aux-heater/src/**"
+                "${workspaceFolder}/aux-heater-test/src/**"
             ],
             "defines": [
                 "_LINUX_",
@@ -36,9 +33,7 @@
             "cStandard": "c11",
             "cppStandard": "c++17",
             "intelliSenseMode": "gcc-x64",
-            "forcedInclude": [
-                
-            ]
+            "forcedInclude": []
         }
     ],
     "version": 4

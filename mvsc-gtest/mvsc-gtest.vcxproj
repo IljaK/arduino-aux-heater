@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{ba1be6bc-6df7-4ff8-ae15-aaa048fd2fa0}</ProjectGuid>
+    <ProjectGuid>{713807a9-47bc-4791-ab11-43fdcc24bde6}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
     <ConfigurationType>Application</ConfigurationType>
@@ -33,81 +33,77 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(ProjectDir)/../arduino-stub;$(ProjectDir)/../aux-heater/src;$(ProjectDir)/../aux-heater/src/serial;$(ProjectDir)/../aux-heater/src/common;$(IncludePath)</IncludePath>
-    <SourcePath>$(ProjectDir)/../arduino-stub;$(ProjectDir)/../aux-heater/src;$(ProjectDir)/../aux-heater/src/serial;$(ProjectDir)/../aux-heater/src/common;$(SourcePath)</SourcePath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(ProjectDir)/../arduino-stub;$(ProjectDir)/../aux-heater/src;$(ProjectDir)/../aux-heater/src/serial;$(ProjectDir)/../aux-heater/src/common;$(IncludePath)</IncludePath>
-    <SourcePath>$(ProjectDir)/../arduino-stub;$(ProjectDir)/../aux-heater/src;$(ProjectDir)/../aux-heater/src/serial;$(ProjectDir)/../aux-heater/src/common;$(SourcePath)</SourcePath>
+    <ExecutablePath>$(ProjectDir)..\aux-heater-test\src;$(ProjectDir)..\aux-heater\src;$(ProjectDir)..\arduino-stub\;$(ProjectDir)..\aux-heater\src\common;$(ProjectDir)..\aux-heater\src\serial;$(ExecutablePath)</ExecutablePath>
+    <SourcePath>$(ProjectDir)..\aux-heater-test\src;$(ProjectDir)..\arduino-stub;$(ProjectDir)..\aux-heater\src;$(ProjectDir)..\aux-heater\src\common;$(ProjectDir)..\aux-heater\src\serial;$(SourcePath)</SourcePath>
+    <IncludePath>$(ProjectDir)..\aux-heater-test\src;$(ProjectDir)..\aux-heater\src;$(ProjectDir)..\arduino-stub\;$(ProjectDir)..\aux-heater\src\common;$(ProjectDir)..\aux-heater\src\serial;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemGroup>
-    <ClInclude Include="..\arduino-stub\Arduino.h" />
-    <ClInclude Include="..\arduino-stub\Stream.h" />
-    <ClInclude Include="..\aux-heater\src\AuxHeaterSerial.h" />
-    <ClInclude Include="..\aux-heater\src\serial\BaseSerialHandler.h" />
-    <ClInclude Include="..\aux-heater\src\BatteryMonitor.h" />
-    <ClInclude Include="..\aux-heater\src\oscilloscope\BitDataManager.h" />
-    <ClInclude Include="..\aux-heater\src\CMDSerialHandler.h" />
-    <ClInclude Include="..\aux-heater\src\oscilloscope\DigitalOscilloscope.h" />
-    <ClInclude Include="..\aux-heater\src\GSMSerialHandler.h" />
-    <ClInclude Include="..\aux-heater\src\LedController.h" />
-    <ClInclude Include="..\aux-heater\src\serial\SerialCharResponseHandler.h" />
-    <ClInclude Include="..\aux-heater\src\serial\SerialTimerResponseHandler.h" />
-    <ClInclude Include="..\aux-heater\src\common\Timer.h" />
-    <ClInclude Include="..\aux-heater\src\common\Util.h" />
-    <ClInclude Include="..\aux-heater\src\common\VoltMeter.h" />
-    <ClInclude Include="src\mock\BaseSerialHandlerMock.h" />
-    <ClInclude Include="src\mock\BaseSerialHandlerTestMock.h" />
-    <ClInclude Include="src\mock\SerialCharResponseHandlerMock.h" />
-    <ClInclude Include="src\SerialStream.h" />
-    <ClInclude Include="src\mock\SerialTimerResponseHandlerMock.h" />
-    <ClInclude Include="src\mock\TimerMock.h" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\arduino-stub\Arduino.cpp" />
     <ClCompile Include="..\arduino-stub\Stream.cpp" />
+    <ClCompile Include="..\aux-heater-test\app\test_app.cpp" />
+    <ClCompile Include="..\aux-heater-test\src\AuxHeaterSerialTest.cpp" />
+    <ClCompile Include="..\aux-heater-test\src\BaseSerialHandlerTest.cpp" />
+    <ClCompile Include="..\aux-heater-test\src\GsmSerialHandlerTest.cpp" />
+    <ClCompile Include="..\aux-heater-test\src\LedControllerTest.cpp" />
+    <ClCompile Include="..\aux-heater-test\src\mock\BaseSerialHandlerMock.cpp" />
+    <ClCompile Include="..\aux-heater-test\src\mock\BaseSerialMock.cpp" />
+    <ClCompile Include="..\aux-heater-test\src\mock\GSMSerialHandlerTestMock.cpp" />
+    <ClCompile Include="..\aux-heater-test\src\mock\SerialCharResponseHandlerMock.cpp" />
+    <ClCompile Include="..\aux-heater-test\src\mock\SerialStream.cpp" />
+    <ClCompile Include="..\aux-heater-test\src\mock\SerialTimerResponseHandlerMock.cpp" />
+    <ClCompile Include="..\aux-heater-test\src\mock\TimerMock.cpp" />
+    <ClCompile Include="..\aux-heater-test\src\SerialCharResponseHandlerTest.cpp" />
+    <ClCompile Include="..\aux-heater-test\src\SerialTimeResponseHandlerTest.cpp" />
+    <ClCompile Include="..\aux-heater-test\src\StackArrayTest.cpp" />
+    <ClCompile Include="..\aux-heater-test\src\TimerTest.cpp" />
+    <ClCompile Include="..\aux-heater-test\src\UtilTest.cpp" />
+    <ClCompile Include="..\aux-heater-test\src\VoltMeterTest.cpp" />
     <ClCompile Include="..\aux-heater\src\AuxHeaterSerial.cpp" />
-    <ClCompile Include="..\aux-heater\src\serial\BaseSerialHandler.cpp" />
     <ClCompile Include="..\aux-heater\src\BatteryMonitor.cpp" />
-    <ClCompile Include="..\aux-heater\src\oscilloscope\BitDataManager.cpp" />
     <ClCompile Include="..\aux-heater\src\CMDSerialHandler.cpp" />
-    <ClCompile Include="..\aux-heater\src\oscilloscope\DigitalOscilloscope.cpp" />
-    <ClCompile Include="..\aux-heater\src\GSMSerialHandler.cpp" />
-    <ClCompile Include="..\aux-heater\src\LedController.cpp" />
-    <ClCompile Include="..\aux-heater\src\serial\SerialCharResponseHandler.cpp" />
-    <ClCompile Include="..\aux-heater\src\serial\SerialTimerResponseHandler.cpp" />
     <ClCompile Include="..\aux-heater\src\common\Timer.cpp" />
+    <ClCompile Include="..\aux-heater\src\common\TimeUtil.cpp" />
     <ClCompile Include="..\aux-heater\src\common\Util.cpp" />
     <ClCompile Include="..\aux-heater\src\common\VoltMeter.cpp" />
-    <ClCompile Include="src\mock\BaseSerialHandlerMock.cpp" />
-    <ClCompile Include="src\BaseSerialHandlerTest.cpp" />
-    <ClCompile Include="src\mock\BaseSerialHandlerTestMock.cpp" />
-    <ClCompile Include="src\GsmSerialHandlerTest.cpp" />
-    <ClCompile Include="src\mock\SerialCharResponseHandlerMock.cpp" />
-    <ClCompile Include="src\SerialCharResponseHandlerTest.cpp" />
-    <ClCompile Include="src\SerialStream.cpp" />
-    <ClCompile Include="src\SerialTimeResponseHandlerTest.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="src\mock\SerialTimerResponseHandlerMock.cpp" />
-    <ClCompile Include="src\mock\TimerMock.cpp" />
-    <ClCompile Include="src\TimerTest.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="src\UtilTest.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="src\VoltMeterTest.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="..\aux-heater\src\GSMSerialHandler.cpp" />
+    <ClCompile Include="..\aux-heater\src\LedController.cpp" />
+    <ClCompile Include="..\aux-heater\src\serial\BaseSerialHandler.cpp" />
+    <ClCompile Include="..\aux-heater\src\serial\SerialCharResponseHandler.cpp" />
+    <ClCompile Include="..\aux-heater\src\serial\SerialTimerResponseHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ClInclude Include="..\arduino-stub\Arduino.h" />
+    <ClInclude Include="..\arduino-stub\SoftwareSerial.h" />
+    <ClInclude Include="..\arduino-stub\Stream.h" />
+    <ClInclude Include="..\aux-heater-test\src\mock\BaseSerialHandlerMock.h" />
+    <ClInclude Include="..\aux-heater-test\src\mock\BaseSerialMock.h" />
+    <ClInclude Include="..\aux-heater-test\src\mock\GSMSerialHandlerTestMock.h" />
+    <ClInclude Include="..\aux-heater-test\src\mock\SerialCharResponseHandlerMock.h" />
+    <ClInclude Include="..\aux-heater-test\src\mock\SerialStream.h" />
+    <ClInclude Include="..\aux-heater-test\src\mock\SerialTimerResponseHandlerMock.h" />
+    <ClInclude Include="..\aux-heater-test\src\mock\TimerMock.h" />
+    <ClInclude Include="..\aux-heater\src\AuxHeaterSerial.h" />
+    <ClInclude Include="..\aux-heater\src\BatteryMonitor.h" />
+    <ClInclude Include="..\aux-heater\src\CMDSerialHandler.h" />
+    <ClInclude Include="..\aux-heater\src\common\StackArray.h" />
+    <ClInclude Include="..\aux-heater\src\common\StringStackArray.h" />
+    <ClInclude Include="..\aux-heater\src\common\Timer.h" />
+    <ClInclude Include="..\aux-heater\src\common\TimeUtil.h" />
+    <ClInclude Include="..\aux-heater\src\common\Util.h" />
+    <ClInclude Include="..\aux-heater\src\common\VoltMeter.h" />
+    <ClInclude Include="..\aux-heater\src\GSMSerialHandler.h" />
+    <ClInclude Include="..\aux-heater\src\LedController.h" />
+    <ClInclude Include="..\aux-heater\src\serial\BaseSerialHandler.h" />
+    <ClInclude Include="..\aux-heater\src\serial\SerialCharResponseHandler.h" />
+    <ClInclude Include="..\aux-heater\src\serial\SerialTimerResponseHandler.h" />
   </ItemGroup>
   <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1\build\native\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets" Condition="Exists('packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1\build\native\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets')" />
+    <Import Project="packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1.3\build\native\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets" Condition="Exists('packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1.3\build\native\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets')" />
   </ImportGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -141,9 +137,9 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;ARDUINO_TEST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -175,6 +171,6 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1\build\native\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1\build\native\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets'))" />
+    <Error Condition="!Exists('packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1.3\build\native\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1.3\build\native\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets'))" />
   </Target>
 </Project>

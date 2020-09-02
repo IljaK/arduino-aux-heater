@@ -6,3 +6,6 @@ aux-heater-test/packages/
 aux-heater-test/build/
 *.pdb
 *.hex
+mvsc-gtest/.vs/
+mvsc-gtest/Debug/
+mvsc-gtest/packages/
