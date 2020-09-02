@@ -3,7 +3,7 @@
 
 
 
-BaseSerialHandlerMock::BaseSerialHandlerMock()
+BaseSerialHandlerMock::BaseSerialHandlerMock(SerialStream *serial):BaseSerialHandler(serial), BaseSerialMock(serial)
 {
 }
 
@@ -12,15 +12,9 @@ BaseSerialHandlerMock::~BaseSerialHandlerMock()
 {
 }
 
-void BaseSerialHandlerMock::HandleResponseReceived(bool IsTimeOut, bool isOverFlow)
+void BaseSerialHandlerMock::OnResponseReceived(bool IsTimeOut, bool isOverFlow)
 {
-	isResponseReceived = true;
-	isResponseTimeOut = IsTimeOut;
-	isResponseOverFlow = isOverFlow;
+	BaseSerialMock::HandleResponseReceived(IsTimeOut, isOverFlow);
+	BaseSerialHandler::OnResponseReceived(IsTimeOut, isOverFlow);
 }
 
-void BaseSerialHandlerMock::Clear() {
-	isResponseReceived = false;
-	isResponseTimeOut = false;
-	isResponseOverFlow = false;
-}

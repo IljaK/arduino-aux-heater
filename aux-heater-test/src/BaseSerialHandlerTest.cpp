@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <Arduino.h>
 #include <Timer.h>
-#include "mock/BaseSerialHandlerTestMock.h"
+#include "mock/BaseSerialHandlerMock.h"
 #include "mock/SerialStream.h"
 #include "mock/TimerMock.h"
 
@@ -13,7 +13,7 @@ TEST(BaseSerialHandlerTest, BufferOverflowTest)
 	char data1[] = "some arg"; // length = 8
 
 	SerialStream stream;
-	BaseSerialHandlerTestMock serialHandler(&stream);
+	BaseSerialHandlerMock serialHandler(&stream);
 
 	serialHandler.Loop();
 
@@ -56,7 +56,7 @@ TEST(BaseSerialHandlerTest, SerialHandlerTimeoutTest)
 	TimerMock::Reset();
 
 	SerialStream stream;
-	BaseSerialHandlerTestMock serialHandler(&stream);
+	BaseSerialHandlerMock serialHandler(&stream);
 	serialHandler.Loop();
 
 	uint8_t aray[] = { 5,5,5 };

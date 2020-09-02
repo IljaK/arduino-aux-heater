@@ -16,7 +16,7 @@ void LedController::Loop()
 		
 		unsigned long index = (millis() / (unsigned long)tactDuration) % (unsigned long)blinkFreq.GetTactLength();
 
-		uint8_t bit = (uint8_t)blinkFreq.GetBitValue((uint16_t)index);
+		uint8_t bit = (uint8_t)blinkFreq.GetBitValue((uint8_t)index);
 
 		if (bit != (uint8_t)blinkFreq.GetStateBit()) {
 			SetLedState(bit);
