@@ -15,6 +15,9 @@ TimerMock::~TimerMock()
 void TimerMock::OnTimerComplete(TimerID timerId) {
 	if (timerId == this->timerId) {
 		this->timerId = 0;
+		if (resetOnComplete) {
+			this->timerId = Timer::Start(this, duration);
+		}
 	}
 }
 bool TimerMock::IsCompleted() {
@@ -25,6 +28,7 @@ void TimerMock::Start(unsigned long duration) {
 		Timer::Stop(timerId);
 		timerId = 0;
 	}
+	this->duration = duration;
 	timerId = Timer::Start(this, duration);
 }
 unsigned long TimerMock::Remain()

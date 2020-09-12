@@ -38,6 +38,7 @@
     <IncludePath>$(ProjectDir)..\aux-heater-test\src;$(ProjectDir)..\aux-heater\src;$(ProjectDir)..\arduino-stub\;$(ProjectDir)..\aux-heater\src\common;$(ProjectDir)..\aux-heater\src\serial;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="..\aux-heater\aux-heater.ino" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

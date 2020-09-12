@@ -49,18 +49,30 @@ void Timer::Loop()
 			pNode = pNode->pNext;
 
 			if (freeNode == pFirst) {
-				pFirst = freeNode->pNext;
+				pFirst = pNode;
 				pPrev = NULL;
 			} else {
-				pPrev->pNext = freeNode->pNext;
+				pPrev->pNext = pNode;
 			}
 
 			freeNode->pCaller->OnTimerComplete(freeNode->id);
 
-			// During callback new node has been added!
-			if (freeNode->pNext != pFirst && pPrev == NULL && pNode != NULL) {
-				pNode = pFirst;
+			// pPrev node could be changed during callback
+			if (pNode != NULL) {
+				if ((pPrev == NULL && pFirst != pNode) || (pPrev != NULL && pPrev->pNext != pNode)) {
+					for (TimerNode* pN = pFirst; pN; pN = pN->pNext) {
+						if (pN->pNext && pN->pNext == pNode) {
+							pPrev = pN;
+							break;
+						}
+					}
+				}
 			}
+
+			// During callback new node has been added!
+			//if (freeNode->pNext != pFirst && pPrev == NULL && pNode != NULL) {
+			//	pNode = pFirst;
+			//}
 
 			freeNode->remain = 0;
 			freeNode->pNext = NULL;

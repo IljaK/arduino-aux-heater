@@ -113,3 +113,32 @@ TEST(Timer, TimerFillTest)
 		Timer::StopAll(&timers[i]);
 	}
 }
+
+TEST(Timer, TimerAddOnCallbackTest)
+{
+	timeOffset = 0;
+	TimerMock::Reset();
+
+	const uint8_t length = 3;
+	TimerMock timers[length];
+
+	for (int i = 0; i < length; i++) {
+		timers[i].Start(1);
+		timers[i].resetOnComplete = true;
+	}
+
+	timeOffset += 1;
+	Timer::Loop();
+
+	for (int i = 0; i < length; i++) {
+		EXPECT_FALSE(timers[i].IsCompleted());
+		timers[i].resetOnComplete = false;
+	}
+
+	timeOffset += 1;
+	Timer::Loop();
+
+	for (int i = 0; i < length; i++) {
+		EXPECT_TRUE(timers[i].IsCompleted());
+	}
+}

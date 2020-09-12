@@ -19,7 +19,7 @@ GSMSerialHandler gsmSerialHandler(&handleSMSCommand, &handleDtmfCommand, &Serial
 
 SoftwareSerial outSerial(DEBUG_RX_PIN, DEBUG_TX_PIN);
 
-BatteryMonitor batteryMonitor(20000.0f, 4700.0f, &handleLevelChanged);
+BatteryMonitor batteryMonitor(4700.0f, 2200.0f, &handleLevelChanged);
 LedController ledController;
 
 extern Stream *outStream;

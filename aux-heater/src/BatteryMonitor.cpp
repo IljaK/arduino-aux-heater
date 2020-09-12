@@ -4,7 +4,6 @@
 BatteryMonitor::BatteryMonitor(float r1, float r2, void(*stateCallback)(VoltageLevelState)):VoltMeter(r1, r2)
 {
 	this->stateCallback = stateCallback;
-	StartMeasureTimer(VoltMeterState::WAIT_NEXT, DELAY_BETWEEN_MEASURE);
 }
 
 BatteryMonitor::~BatteryMonitor()

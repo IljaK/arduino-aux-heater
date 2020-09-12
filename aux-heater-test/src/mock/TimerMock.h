@@ -6,6 +6,9 @@ class TimerMock: public Timer, public ITimerCallback
 private:
 	TimerID timerId = 0;
 public:
+	unsigned long duration = 0;
+	bool resetOnComplete = false;
+
 	TimerMock();
 	~TimerMock();
 	void OnTimerComplete(TimerID timerId) override;
