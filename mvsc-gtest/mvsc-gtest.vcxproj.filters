@@ -192,5 +192,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="..\aux-heater\aux-heater.ino">
+      <Filter>aux-heater</Filter>
+    </None>
   </ItemGroup>
 </Project>
