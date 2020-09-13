@@ -32,11 +32,14 @@ void setup() {
 	outStream = &outSerial;
 
 	auxSerial.begin(AUX_BAUD_RATE);
+    auxSerial.stopListening();
+
 	ledController.SetFrequency(100, 11, 0b00000001);
 
 	outSerial.begin(SERIAL_BAUD_RATE);
+    outSerial.stopListening();
 
-	outPrintf("Setup done!");
+	outWrite(F("Setup done!"));
 }
 
 void loop() {
@@ -102,9 +105,12 @@ bool handleHeaterComplete(Stream *stream) {
 		uint8_t bytes[8];
 		uint8_t bytesAmount = stream->readBytes(bytes, 8);
 
-		printBytes(response, 32, bytes, bytesAmount);
+        if (isDebugListener()) {
+            printBytes(response, 32, bytes, bytesAmount);
 
-		outPrintf("AUX: %s", response);
+            outWrite(F("AUX: "));
+            outWrite(response);
+        }
 	}
 	gsmSerialHandler.NotifyByCallHangUp();
 	return true;
@@ -117,28 +123,34 @@ bool handleLevelMessage(Stream *stream) {
 	switch (batteryMonitor.CurrentState())
 	{
 	case VoltageLevelState::CRITICAL_LEVEL:
-		stream->write("Critical battery level! ");
+		stream->write(F("Critical battery level! "));
 		result = true;
 		break;
 	case VoltageLevelState::DEAD_LEVEL:
-		stream->write("Battery died! ");
+		stream->write(F("Battery died! "));
 		result = true;
 		break;
 	case VoltageLevelState::LOW_LEVEL:
-		stream->write("Low battery level! ");
+		stream->write(F("Low battery level! "));
 		result = true;
 		break;
 	case VoltageLevelState::OVERFLOW_LEVEL:
-		stream->write("Overflow battery charge! ");
+		stream->write(F("Overflow battery charge! "));
 		result = true;
 		break;
 	default:
-		stream->write("Battery level: ");
+		stream->write(F("Battery level: "));
 		result = true;
 		break;
 	}
 
-	outPrintf("State: %d result: %d", (uint8_t)batteryMonitor.CurrentState(), (uint8_t)result);
+    if (isDebugListener()) {
+        outWrite("State: ");
+        outWrite((uint8_t)batteryMonitor.CurrentState());
+        outWrite(" result: ");
+        outWrite((uint8_t)result);
+	    outWrite("\r\n", 2);
+    }
 
 	if (result) {
 		char resultVoltage[16];
@@ -150,44 +162,3 @@ bool handleLevelMessage(Stream *stream) {
 	return result;
 }
 
-/*
-void handleUsbCommand(char **arguments, size_t length)
-{
-	// input string is 32 char array
-
-	//outPrintf("Args %d:", length);
-	//for (uint8_t i = 0; i < length; i++) {
-	//	outPrintf("%d) %s", i+1, arguments[i]);
-	//}
-	
-	
-	if (strncmp(arguments[0], "volts", 5) == 0) {
-
-		char resultVoltage[16];
-		dtostrf(batteryMonitor.Voltage(), 15, 2, resultVoltage);
-
-		char analogVoltage[16];
-		dtostrf(batteryMonitor.PinVoltage(), 15, 2, analogVoltage);
-
-		outPrintf("A6: %sv (%sv)", resultVoltage, analogVoltage);
-	}
-	else if (strncmp(arguments[0], "on", 2) == 0) {
-		//auxSerialHandler.LaunchHeater(&onHeaterCmdComplete);
-	}
-	else if (strncmp(arguments[0], "off", 2) == 0) {
-		//auxSerialHandler.StopHeater(&onHeaterCmdComplete);
-	}
-	
-	else if (strncmp(arguments[0], GSM_INIT_CMD, strlen(GSM_INIT_CMD)) == 0) {
-
-		//gsmSerialHandler.FlushData();
-
-		char resp[32];
-		resp[0] = 0;
-		strcpy(resp, arguments[0]);
-		strcat(resp, "\r");
-
-		//gsmSerialHandler.WriteData((uint8_t *)resp, (uint8_t)strlen(resp));
-	}
-}
-*/

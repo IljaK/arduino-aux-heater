@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <string>
 #include <ctime>
+#include "EEprom.h"
 #include "Stream.h"
 
 #include <cstdlib>

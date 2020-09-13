@@ -56,7 +56,15 @@ void GSMSerialHandler::OnResponseReceived(bool isTimeOut, bool isOverFlow)
 
 	if (size == 0 && !isTimeOut) return;
 
-	outPrintf("->[%s] [%d], type: [%d]", buffer, size, (uint8_t)flowState);
+    if (isDebugListener()) {
+        outWrite("->[");
+        outWrite(buffer);
+        outWrite("] [");
+        outWrite(size);
+        outWrite("], type: [");
+        outWrite((uint8_t)flowState);
+        outWrite("]");
+    }
 
 	if (isTimeOut) {
 		HandleErrorResponse(buffer, size);
@@ -297,7 +305,11 @@ void GSMSerialHandler::HandleOKResponse(char *response, size_t size)
 		flowState = GSMFlowState::READY;
 		break;
 	case GSMFlowState::FIND_PRIMARY_PHONE:
-		outPrintf("Primary phone: %s", primaryPhone);
+        if (isDebugListener()) {
+            outWrite(F("Primary phone: "));
+            outWrite(primaryPhone);
+	        outWrite("\r\n", 2);
+        }
 		//break;
 	case GSMFlowState::SEND_SMS_FLOW:
 	case GSMFlowState::CALL_HANGUP:
@@ -336,62 +348,61 @@ void GSMSerialHandler::HandleErrorResponse(char *response, size_t size)
 
 void GSMSerialHandler::LaunchFlowRequest()
 {
-	switch (flowState)
+   switch (flowState)
 	{
 	case GSMFlowState::INITIALIZATION:
-		serial->write(GSM_INIT_CMD, strlen(GSM_INIT_CMD));
-		// Just continue
+        WriteGsmSerial(true, NULL);
 		break;
 
 	case GSMFlowState::TIME_REQUEST:
-		serial->write(GSM_INIT_CMD, strlen(GSM_INIT_CMD));
-		serial->write(GSM_TIME_CMD, strlen(GSM_TIME_CMD));
-		serial->write('?');
+        WriteGsmSerial(true, (char *)GSM_TIME_CMD, true);
 		break;
 
 	case GSMFlowState::FIND_PRIMARY_PHONE:
-		serial->write(GSM_INIT_CMD, strlen(GSM_INIT_CMD));
-		serial->write(GSM_FIND_USER_CMD, strlen(GSM_FIND_USER_CMD));
-		serial->write('=');
-		serial->write('\"');
-		serial->write(GSM_AUX_PHONE_POSTFIX, strlen(GSM_AUX_PHONE_POSTFIX));
-		serial->write('\"');
+        WriteGsmSerial(true, (char*)GSM_FIND_USER_CMD, false, true, (char*)GSM_AUX_PHONE_POSTFIX, true);
 		break;
 
 	case GSMFlowState::SIM_PIN_STATE:
-		serial->write(GSM_INIT_CMD, strlen(GSM_INIT_CMD));
-		serial->write(GSM_SIM_PIN_CMD, strlen(GSM_SIM_PIN_CMD));
-		serial->write('?');
+        WriteGsmSerial(true, (char*)GSM_SIM_PIN_CMD, true);
 		break;
 
 	case GSMFlowState::SIM_LOGIN:
-		serial->write(GSM_INIT_CMD, strlen(GSM_INIT_CMD));
-		serial->write(GSM_SIM_PIN_CMD, strlen(GSM_SIM_PIN_CMD));
-		serial->write('=');
-		serial->write(SIM_PIN_CODE, strlen(SIM_PIN_CODE));
+        WriteGsmSerial(true, (char*)GSM_SIM_PIN_CMD, false, true, (char*)SIM_PIN_CODE, true);
 		break;
 		
 	case GSMFlowState::SEND_SMS_BEGIN:
-		serial->write(GSM_INIT_CMD, strlen(GSM_INIT_CMD));
-		serial->write(GSM_SMS_SEND_CMD, strlen(GSM_SMS_SEND_CMD));
-
-		serial->write('=');
-
-		serial->write('\"');
-		serial->write(primaryPhone, strlen(primaryPhone));
-		serial->write('\"');
+        WriteGsmSerial(true, (char*)GSM_SMS_SEND_CMD, false, true, primaryPhone, true);
 		break;
 	case GSMFlowState::CALL_HANGUP:
-		serial->write(GSM_CALL_HANGUP_CMD, strlen(GSM_CALL_HANGUP_CMD));
+        WriteGsmSerial(false, (char*)GSM_CALL_HANGUP_CMD);
 		break;
 	case GSMFlowState::CALL_ANSWER:
-		serial->write(GSM_CALL_ANSWER_CMD, strlen(GSM_CALL_ANSWER_CMD));
+        WriteGsmSerial(false, (char*)GSM_CALL_ANSWER_CMD);
 		break;
-	case GSMFlowState::CALL_DIAL:
-	case GSMFlowState::READY:
-	default:
-		return;
 	}
+}
+
+void GSMSerialHandler::WriteGsmSerial(bool initPrefix, char * cmd, bool isCheck, bool isSet, char *setValue, bool setInQuotations)
+{
+    if (initPrefix) {
+        serial->write(GSM_INIT_CMD, strlen(GSM_INIT_CMD));
+    }
+    if (cmd != NULL) {
+        serial->write(cmd, strlen(cmd));
+    }
+    if (isCheck) {
+        serial->write('?');
+    }
+    else if (isSet) {
+        serial->write('=');
+        if (setInQuotations) {
+            serial->write('\"');
+        }
+        serial->write(setValue, strlen(setValue));
+        if (setInQuotations) {
+            serial->write('\"');
+        }
+    }
 
 	//FlushData();
 

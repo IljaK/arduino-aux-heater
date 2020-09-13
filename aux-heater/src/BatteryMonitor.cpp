@@ -17,9 +17,10 @@ VoltageLevelState BatteryMonitor::CurrentState()
 
 void BatteryMonitor::OnVoltageMeasured()
 {
-	char resultVoltage[16];	
-	dtostrf(Voltage(), 5, 3, resultVoltage);
-	outPrintf("Voltage: %s", resultVoltage);
+    if (isDebugListener()) {
+        outWrite(F("Voltage: "));
+        outWrite((double)Voltage(), 5, 3);
+    }
 
 	VoltageLevelState nextState = GetNextState(currentState);
 	if (nextState == currentState) {
@@ -73,7 +74,11 @@ void BatteryMonitor::HandleAttempt(VoltageLevelState state)
 	}
 	matchedAttempts++;
 	if (matchedAttempts >= matchRequire) {
-		outPrintf("Handle Battery LEVEL: %d", (int)state);
+        if (isDebugListener()) {
+            outWrite(F("Handle Battery LEVEL: "));
+            outWrite((uint8_t)state);
+	        outWrite("\r\n", 2);
+        }
 		currentState = state;
 		matchedAttempts = 0;
 		// TODO: Trigger message send && reset timer

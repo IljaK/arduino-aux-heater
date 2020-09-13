@@ -38,7 +38,6 @@
     <IncludePath>$(ProjectDir)..\aux-heater-test\src;$(ProjectDir)..\aux-heater\src;$(ProjectDir)..\arduino-stub\;$(ProjectDir)..\aux-heater\src\common;$(ProjectDir)..\aux-heater\src\serial;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="..\aux-heater\aux-heater.ino" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -64,7 +63,6 @@
     <ClCompile Include="..\aux-heater-test\src\VoltMeterTest.cpp" />
     <ClCompile Include="..\aux-heater\src\AuxHeaterSerial.cpp" />
     <ClCompile Include="..\aux-heater\src\BatteryMonitor.cpp" />
-    <ClCompile Include="..\aux-heater\src\CMDSerialHandler.cpp" />
     <ClCompile Include="..\aux-heater\src\common\Timer.cpp" />
     <ClCompile Include="..\aux-heater\src\common\TimeUtil.cpp" />
     <ClCompile Include="..\aux-heater\src\common\Util.cpp" />
@@ -77,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\arduino-stub\Arduino.h" />
+    <ClInclude Include="..\arduino-stub\EEprom.h" />
     <ClInclude Include="..\arduino-stub\SoftwareSerial.h" />
     <ClInclude Include="..\arduino-stub\Stream.h" />
     <ClInclude Include="..\aux-heater-test\src\mock\BaseSerialHandlerMock.h" />
@@ -88,7 +87,6 @@
     <ClInclude Include="..\aux-heater-test\src\mock\TimerMock.h" />
     <ClInclude Include="..\aux-heater\src\AuxHeaterSerial.h" />
     <ClInclude Include="..\aux-heater\src\BatteryMonitor.h" />
-    <ClInclude Include="..\aux-heater\src\CMDSerialHandler.h" />
     <ClInclude Include="..\aux-heater\src\common\StackArray.h" />
     <ClInclude Include="..\aux-heater\src\common\StringStackArray.h" />
     <ClInclude Include="..\aux-heater\src\common\Timer.h" />

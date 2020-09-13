@@ -2,8 +2,8 @@
 #include "Timer.h"
 
 constexpr uint32_t DELAY_BEFORE_MEASURE = 1000u;
-constexpr uint32_t DELAY_BETWEEN_MEASURE = 30000000u; //60000000u; // 60 sec
-constexpr uint32_t DELAY_ATTEMPT_MEASURE = 20000000u;
+constexpr uint32_t DELAY_BETWEEN_MEASURE = 500000u; //60000000u; // 60 sec
+constexpr uint32_t DELAY_ATTEMPT_MEASURE = 1000000u;
 
 enum class VoltMeterState : uint8_t
 {

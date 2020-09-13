@@ -79,7 +79,7 @@ void AuxHeaterSerial::LaunchCMD()
 
 	digitalWrite(AUX_TX_PIN, LOW);
 	//delayMicroseconds(300000u);
-	delay(300ul);
+	delay(300u);
 	digitalWrite(AUX_TX_PIN, HIGH);
 	delayMicroseconds(59432u);
 	serial->write((uint8_t)145u);
@@ -194,15 +194,4 @@ unsigned long AuxHeaterSerial::ResponseByteTimeOut()
 void AuxHeaterSerial::OnResponseReceived(bool IsTimeOut, bool isOverFlow)
 {
 	SerialTimerResponseHandler::OnResponseReceived(IsTimeOut, isOverFlow);
-
-	if (serial->available() > 0) {
-
-		uint8_t result[32];
-		size_t length = serial->readBytes(result, 32);
-
-		char byteResult[128];
-		printBytes(byteResult, 128, result, length);
-
-		outPrintf("Response: %s", byteResult);
-	}
 }

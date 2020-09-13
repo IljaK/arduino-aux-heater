@@ -4,24 +4,6 @@
 
 Stream *outStream = NULL;
 
-inline void tunedDelay(uint16_t duration)
-{
-#ifdef ARDUINO
-	uint8_t tmp = 0;
-
-	asm volatile("sbiw    %0, 0x01 \n\t"
-	"ldi %1, 0xFF \n\t"
-	"cpi %A0, 0xFF \n\t"
-	"cpc %B0, %1 \n\t"
-	"brne .-10 \n\t"
-	: "+w" (duration), "+a" (tmp)
-	: "0" (duration)
-	);
-#else 
-	delay(duration);
-#endif
-}
-
 uint8_t reverseByte(uint8_t x)
 {
 	x = (((x & 0xaaaaaaaa) >> 1) | ((x & 0x55555555) << 1));
@@ -85,7 +67,7 @@ void setBitsValue(uint16_t* target, uint16_t value, uint8_t length, uint8_t star
 	mask = mask >> headerShift;
 	mask = ~mask;
 
-	uint8_t result = *target;
+	uint16_t result = *target;
 
 	// Flush require bits
 	result = result & mask;
@@ -263,7 +245,7 @@ char *ShiftQuotations(char *quatationString)
 	}
 	return quatationString;
 }
-
+/*
 void outPrintf(const char *format, ...)
 {
 	if (digitalRead(DEBUG_ON_PIN) == LOW) return;
@@ -296,10 +278,27 @@ void outPrintf(const char *format, ...)
 
 	outWrite("\r\n", 2);
 }
+*/
+
+bool isDebugListener() {
+    return (digitalRead(DEBUG_ON_PIN) == HIGH);
+}
 
 size_t outWrite(uint8_t data) {
 	if (!outStream) return 0;
 	return outStream->write(data);
+}
+size_t outWrite(double value, signed char width, unsigned char prec) {
+	if (!outStream) return 0;
+
+    const size_t size = 16;
+    char outString[size];
+    if (width > size) {
+        width = size - 1;
+    }
+	dtostrf(value, width, prec, outString);
+
+    return outWrite(outString);
 }
 size_t outWrite(unsigned long n) { return outWrite((uint8_t)n); }
 size_t outWrite(long n) { return outWrite((uint8_t)n); }
@@ -316,5 +315,10 @@ size_t outWrite(const char *str) {
 }
 size_t outWrite(const char *buffer, size_t size) {
 	return outWrite((const uint8_t *)buffer, size);
+}
+
+size_t outWrite(const __FlashStringHelper *str) {
+    if (!outStream) return 0;
+    return outStream->write(str);
 }
 

@@ -64,8 +64,8 @@ constexpr char GSM_AUX_PHONE_POSTFIX[] = "aux-"; // Data event
 
 constexpr char GSM_SIM_AUTH_SMS_READY[] = "SMS Ready";
 constexpr char GSM_SIM_AUTH_CALL_READY[] = "Call Ready";
-constexpr char GSM_SIM_STATE_READY[] = "READY"; // Pin code for sim card
-constexpr char GSM_SIM_STATE_SIM_PIN[] = "SIM PIN"; // Pin code for sim card
+constexpr char GSM_SIM_STATE_READY[] = "READY"; // Ready sim card state
+constexpr char GSM_SIM_STATE_SIM_PIN[] = "SIM PIN"; // Pin code input sim card state
 
 constexpr uint32_t CALL_HANGUP_DELAY = 5000000U; // 5 seconds
 constexpr uint32_t CALL_ANSWER_DELAY = 500000U; // 0.5 seconds
@@ -152,10 +152,10 @@ public:
 		setBitsValue(&readyState, value, 1u, 1u);
 	}
 	bool Ready() {
-		return readyState == 0b0000011;
+		return readyState == 0b0000011u;
 	}
 	void Ready(bool value) {
-		if (value) readyState = 0b0000011;
+		if (value) readyState = 0b0000011u;
 		else readyState = 0;
 	}
 };
@@ -207,6 +207,8 @@ private:
 	void StopCallTimer();
 	void StartCallDelayTimer();
 	void UpdateReadyState();
+
+    void WriteGsmSerial(bool initPrefix, char * cmd, bool isCheck = false, bool isSet = false, char *setValue = NULL, bool setInQuotations = false);
 
 protected:
 	bool LoadSymbolFromBuffer(uint8_t symbol) override;

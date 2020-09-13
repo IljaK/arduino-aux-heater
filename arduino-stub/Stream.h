@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include "EEprom.h"
 
 #define SERIAL_RX_BUFFER_SIZE 64
 
@@ -30,6 +31,7 @@ public:
 	inline size_t write(long n) { return write((uint8_t)n); }
 	inline size_t write(unsigned int n) { return write((uint8_t)n); }
 	inline size_t write(int n) { return write((uint8_t)n); }
+	size_t write(const __FlashStringHelper* str) { return 0; }
 
 	size_t write(uint8_t byte) { return sizeof(byte); }
 	size_t write(uint16_t data) { return write((uint8_t)data); }

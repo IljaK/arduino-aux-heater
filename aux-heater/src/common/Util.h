@@ -22,8 +22,6 @@ constexpr uint32_t SERIAL_RESPONSE_TIMEOUT = 1000000u;
 typedef bool (*StreamCallback)(Stream *);
 typedef void (*StringArrayCallback)(char **, size_t);
 
-extern inline void tunedDelay(uint16_t delay);
-
 extern uint8_t reverseByte(uint8_t x);
 extern uint8_t getBitFromByte(uint8_t targetByte, uint8_t index);
 
@@ -44,9 +42,15 @@ extern size_t SplitString(char *source, uint8_t separator, char **subStrArray, s
 extern char *ShiftQuotations(char *quatationString);
 extern void ShiftQuotations(char **subStrArray, size_t arraySize);
 
-extern void outPrintf(const char *format, ...);
+//[[deprecated("Replaced by outWrite(), use separate for each argument")]]
+//extern void outPrintf(const char *format, ...);
+
+extern bool isDebugListener();
+
+extern size_t outWrite(const __FlashStringHelper *str);
+extern size_t outWrite(double value, signed char width, unsigned char prec);
 extern size_t outWrite(const char *str);
-extern size_t outWrite(uint8_t);
+extern size_t outWrite(uint8_t n);
 extern size_t outWrite(unsigned long n);
 extern size_t outWrite(long n);
 extern size_t outWrite(unsigned int n);

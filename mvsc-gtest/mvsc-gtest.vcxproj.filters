@@ -73,9 +73,6 @@
     <ClCompile Include="..\arduino-stub\Arduino.cpp">
       <Filter>arduino-stub</Filter>
     </ClCompile>
-    <ClCompile Include="..\aux-heater\src\CMDSerialHandler.cpp">
-      <Filter>aux-heater</Filter>
-    </ClCompile>
     <ClCompile Include="..\aux-heater\src\GSMSerialHandler.cpp">
       <Filter>aux-heater</Filter>
     </ClCompile>
@@ -144,9 +141,6 @@
     <ClInclude Include="..\aux-heater\src\BatteryMonitor.h">
       <Filter>aux-heater</Filter>
     </ClInclude>
-    <ClInclude Include="..\aux-heater\src\CMDSerialHandler.h">
-      <Filter>aux-heater</Filter>
-    </ClInclude>
     <ClInclude Include="..\aux-heater\src\GSMSerialHandler.h">
       <Filter>aux-heater</Filter>
     </ClInclude>
@@ -189,11 +183,11 @@
     <ClInclude Include="..\aux-heater-test\src\mock\BaseSerialHandlerMock.h">
       <Filter>aux-heater-test\mock</Filter>
     </ClInclude>
+    <ClInclude Include="..\arduino-stub\EEprom.h">
+      <Filter>arduino-stub</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="..\aux-heater\aux-heater.ino">
-      <Filter>aux-heater</Filter>
-    </None>
   </ItemGroup>
 </Project>

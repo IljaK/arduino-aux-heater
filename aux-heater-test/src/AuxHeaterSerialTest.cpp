@@ -11,15 +11,6 @@ bool handleHeaterComplete(Stream *stream) {
 
 	actionCompleted = true;
 
-	if (stream->available() > 0) {
-		char response[32];
-		uint8_t bytes[8];
-		uint8_t bytesAmount = stream->readBytes(bytes, 8);
-
-		printBytes(response, 32, bytes, bytesAmount);
-
-		outPrintf("AUX: %s", response);
-	}
 	return true;
 }
 
