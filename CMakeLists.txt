@@ -1,9 +1,16 @@
-cmake_minimum_required(VERSION 3.12.0)
+cmake_minimum_required(VERSION 3.10.0)
 project(aux-heater-test VERSION 0.1.0)
 
 include(ExternalProject)
+
 #set(CMAKE_VERBOSE_MAKEFILE on)
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+if (WIN32)
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+endif (WIN32)
+
+if (UNIX)
+    find_package(Threads)
+endif (UNIX)
 
 # Download and install GoogleTest
 ExternalProject_Add(
@@ -17,8 +24,15 @@ ExternalProject_Get_Property(googletest source_dir binary_dir)
 add_library(gtestd STATIC IMPORTED)
 add_library(gtest_maind STATIC IMPORTED)
 
-set_property(TARGET gtestd PROPERTY IMPORTED_LOCATION ${binary_dir}/lib/Debug/gtestd.lib)
-set_property(TARGET gtest_maind PROPERTY IMPORTED_LOCATION ${binary_dir}/lib/Debug/gtest_maind.lib)
+if (WIN32)
+    set_property(TARGET gtestd PROPERTY IMPORTED_LOCATION ${binary_dir}/lib/Debug/gtestd.lib)
+    set_property(TARGET gtest_maind PROPERTY IMPORTED_LOCATION ${binary_dir}/lib/Debug/gtest_maind.lib)
+endif (WIN32)
+
+if (UNIX)
+    set_property(TARGET gtestd PROPERTY IMPORTED_LOCATION ${binary_dir}/lib/libgtest.a)
+    set_property(TARGET gtest_maind PROPERTY IMPORTED_LOCATION ${binary_dir}/lib/libgtest_main.a)
+endif (UNIX)
 
 add_dependencies(gtestd googletest)
 add_dependencies(gtest_maind googletest)
@@ -38,6 +52,10 @@ file(GLOB_RECURSE aux-heater-test-src
 
 add_executable(aux-heater-test ${aux-heater-test-src})
 target_compile_definitions(aux-heater-test PUBLIC ARDUINO_TEST)
+if (UNIX)
+    target_compile_definitions(aux-heater-test PUBLIC _LINUX_)
+    target_link_libraries(aux-heater-test ${CMAKE_THREAD_LIBS_INIT})
+endif (UNIX)
 
 #target_include_directories(${PROJECT_NAME} PUBLIC ${INTERNAL_INCLUDES})
 #target_include_directories(${PROJECT_NAME} PUBLIC arduino-stub)

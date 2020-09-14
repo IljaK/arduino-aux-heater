@@ -15,12 +15,11 @@
             "MIMode": "gdb",
             "windows": {
                 "program": "${workspaceFolder}/build/Debug/aux-heater-test.exe",
-                "environment": [
-                ],
+                "environment": []
             },
             "linux": {
                 "environment": [],
-                "program": "${workspaceFolder}/aux-heater-test/build/test_app",
+                "program": "${workspaceFolder}/build/aux-heater-test",
             }
         }
     ]
