@@ -14,8 +14,8 @@
             "externalConsole": false,
             "MIMode": "gdb",
             "windows": {
-                "program": "${workspaceFolder}/build/Debug/aux-heater-test.exe",
-                "environment": []
+                "environment": [],
+                "program": "${workspaceFolder}/build/Debug/aux-heater-test.exe"
             },
             "linux": {
                 "environment": [],

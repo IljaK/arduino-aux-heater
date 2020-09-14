@@ -19,7 +19,7 @@
         {
             "name": "Linux",
             "includePath": [
-                "/usr/lib",
+                "${workspaceFolder}/build/googletest-prefix/src/googletest/googletest/include/**",
                 "${workspaceFolder}/aux-heater/src/**",
                 "${workspaceFolder}/arduino-stub/**",
                 "${workspaceFolder}/aux-heater-test/src/**"
