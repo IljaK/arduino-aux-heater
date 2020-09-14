@@ -69,3 +69,10 @@ TEST(Util, UpdateTimeTest)
 	updateTime();
 	EXPECT_EQ(systemTime, 2);
 }
+
+TEST(Util, ReverseByteTest)
+{
+    EXPECT_EQ(reverseByte(0b00001111), 0b11110000);
+
+    EXPECT_EQ(reverseByte(0b01010101), 0b10101010);
+}

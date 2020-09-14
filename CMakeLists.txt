@@ -3,7 +3,6 @@ project(aux-heater-test VERSION 0.1.0)
 
 include(ExternalProject)
 
-#set(CMAKE_VERBOSE_MAKEFILE on)
 if (WIN32)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
 endif (WIN32)
@@ -45,10 +44,11 @@ include_directories(aux-heater/src/serial)
 include_directories(aux-heater-test/src)
 include_directories(aux-heater-test/src/mock)
 
+# Add recursive .h and .cpp files to build
 file(GLOB_RECURSE aux-heater-test-src 
-"arduino-stub/*.h" "arduino-stub/*.cpp"
-"aux-heater/src/*.h" "aux-heater/src/*.cpp"
-"aux-heater-test/src/*.h" "aux-heater-test/src/*.cpp")
+    "arduino-stub/*.h" "arduino-stub/*.cpp"
+    "aux-heater/src/*.h" "aux-heater/src/*.cpp"
+    "aux-heater-test/src/*.h" "aux-heater-test/src/*.cpp")
 
 add_executable(aux-heater-test ${aux-heater-test-src})
 target_compile_definitions(aux-heater-test PUBLIC ARDUINO_TEST)
@@ -57,10 +57,11 @@ if (UNIX)
     target_link_libraries(aux-heater-test ${CMAKE_THREAD_LIBS_INIT})
 endif (UNIX)
 
-#target_include_directories(${PROJECT_NAME} PUBLIC ${INTERNAL_INCLUDES})
-#target_include_directories(${PROJECT_NAME} PUBLIC arduino-stub)
-#target_include_directories(${PROJECT_NAME} PUBLIC aux-heater/src)
-#target_include_directories(${PROJECT_NAME} PUBLIC aux-heater-test/src)
+# Disable string safe functions warning
+if (WIN32)
+    target_compile_definitions(aux-heater-test PUBLIC _CRT_SECURE_NO_DEPRECATE)
+    target_compile_definitions(aux-heater-test PUBLIC _CRT_NONSTDC_NO_DEPRECATE)
+endif (WIN32)
 
 target_link_libraries(aux-heater-test gtestd gtest_maind)
 

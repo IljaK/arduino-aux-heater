@@ -6,10 +6,10 @@ Stream *outStream = NULL;
 
 uint8_t reverseByte(uint8_t x)
 {
-	x = (((x & 0xaaaaaaaa) >> 1) | ((x & 0x55555555) << 1));
-	x = (((x & 0xcccccccc) >> 2) | ((x & 0x33333333) << 2));
 	x = (((x & 0xf0f0f0f0) >> 4) | ((x & 0x0f0f0f0f) << 4));
-	return((x >> 8) | (x << 8));
+	x = (((x & 0xcccccccc) >> 2) | ((x & 0x33333333) << 2));
+	x = (((x & 0xaaaaaaaa) >> 1) | ((x & 0x55555555) << 1));
+	return x;
 }
 
 uint8_t getBitFromByte(uint8_t targetByte, uint8_t index)
