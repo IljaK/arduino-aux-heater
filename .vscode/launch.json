@@ -10,14 +10,16 @@
             "request": "launch",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/aux-heater-test",
-            "environment": [],
+            "cwd": "${workspaceFolder}",
             "externalConsole": false,
             "MIMode": "gdb",
             "windows": {
-                "program": "${workspaceFolder}/aux-heater-test/Debug/aux-heater-test-google.exe",
+                "program": "${workspaceFolder}/build/Debug/aux-heater-test.exe",
+                "environment": [
+                ],
             },
             "linux": {
+                "environment": [],
                 "program": "${workspaceFolder}/aux-heater-test/build/test_app",
             }
         }

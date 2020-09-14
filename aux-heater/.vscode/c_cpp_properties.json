@@ -18,7 +18,9 @@
                 "${config:arduino.path}/hardware/tools/avr/lib/gcc/avr/4.*.*/include/",
                 "${config:arduino.path}/hardware/tools/avr/lib/gcc/avr/4.*.*/include-fixed/",
                 "${config:arduino.path}/hardware/arduino/avr/**",
-                "${config:arduino.path}/tools/**"
+                "${config:arduino.path}/tools/**",
+                "C:\\Users\\Ilja\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\avr\\1.8.2\\**",
+                "C:\\Users\\Ilja\\AppData\\Local\\Arduino15\\packages\\arduino\\tools\\**"
             ],
             "intelliSenseMode": "msvc-x64",
             "defines": [
@@ -31,6 +33,7 @@
             "cStandard": "c11",
             "cppStandard": "c++17",
             "forcedInclude": [
+                "C:\\Users\\Ilja\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\avr\\1.8.2\\cores\\arduino\\Arduino.h"
             ]
         },
         {

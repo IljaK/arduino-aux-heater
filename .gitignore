@@ -9,3 +9,4 @@ aux-heater-test/build/
 mvsc-gtest/.vs/
 mvsc-gtest/Debug/
 mvsc-gtest/packages/
+build/

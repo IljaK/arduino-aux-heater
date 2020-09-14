@@ -1,0 +1,51 @@
+cmake_minimum_required(VERSION 3.12.0)
+project(aux-heater-test VERSION 0.1.0)
+
+include(ExternalProject)
+#set(CMAKE_VERBOSE_MAKEFILE on)
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+
+# Download and install GoogleTest
+ExternalProject_Add(
+    googletest
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    INSTALL_COMMAND ""
+    UPDATE_COMMAND ""
+)
+ExternalProject_Get_Property(googletest source_dir binary_dir)
+
+add_library(gtestd STATIC IMPORTED)
+add_library(gtest_maind STATIC IMPORTED)
+
+set_property(TARGET gtestd PROPERTY IMPORTED_LOCATION ${binary_dir}/lib/Debug/gtestd.lib)
+set_property(TARGET gtest_maind PROPERTY IMPORTED_LOCATION ${binary_dir}/lib/Debug/gtest_maind.lib)
+
+add_dependencies(gtestd googletest)
+add_dependencies(gtest_maind googletest)
+
+include_directories(${source_dir}/googletest/include)
+include_directories(arduino-stub)
+include_directories(aux-heater/src)
+include_directories(aux-heater/src/common)
+include_directories(aux-heater/src/serial)
+include_directories(aux-heater-test/src)
+include_directories(aux-heater-test/src/mock)
+
+file(GLOB_RECURSE aux-heater-test-src 
+"arduino-stub/*.h" "arduino-stub/*.cpp"
+"aux-heater/src/*.h" "aux-heater/src/*.cpp"
+"aux-heater-test/src/*.h" "aux-heater-test/src/*.cpp")
+
+add_executable(aux-heater-test ${aux-heater-test-src})
+target_compile_definitions(aux-heater-test PUBLIC ARDUINO_TEST)
+
+#target_include_directories(${PROJECT_NAME} PUBLIC ${INTERNAL_INCLUDES})
+#target_include_directories(${PROJECT_NAME} PUBLIC arduino-stub)
+#target_include_directories(${PROJECT_NAME} PUBLIC aux-heater/src)
+#target_include_directories(${PROJECT_NAME} PUBLIC aux-heater-test/src)
+
+target_link_libraries(aux-heater-test gtestd gtest_maind)
+
+set(CPACK_PROJECT_NAME ${PROJECT_NAME})
+set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
+include(CPack)
