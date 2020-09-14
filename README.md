@@ -10,8 +10,8 @@ To work with project it is necissary to have:
 2) Visual Studio Code https://code.visualstudio.com/
   * C/C++ extension https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools
   * Arduino extension https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.vscode-arduino
-  * CMake tools https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools
-  * Google Test adapter https://marketplace.visualstudio.com/items?itemName=DavidSchuldenfrei.gtest-adapter
+  * CMake tools extension https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools
+  * Google Test adapter extension https://marketplace.visualstudio.com/items?itemName=DavidSchuldenfrei.gtest-adapter
 
 Building Test project:
 In Visual Studio Code command promt (F1) launch:
