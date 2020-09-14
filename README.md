@@ -26,5 +26,5 @@ On windows it is possible to work in Visual Studio. For that it is necissary to 
   * VisualMicro extension https://www.visualmicro.com/
 
 # Launching project in Visual Studio:
-Build project with cmake using CMakeLists.txt
-Inside "build" folder locate Visual Studio project.
+* Build project with cmake using CMakeLists.txt
+* Inside "build" folder locate Visual Studio project.
