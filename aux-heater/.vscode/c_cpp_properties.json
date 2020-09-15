@@ -17,8 +17,9 @@
                 "${config:arduino.path}/hardware/tools/avr/avr/include/util/",
                 "${config:arduino.path}/hardware/tools/avr/lib/gcc/avr/4.*.*/include/",
                 "${config:arduino.path}/hardware/tools/avr/lib/gcc/avr/4.*.*/include-fixed/",
-                "${config:arduino.path}/hardware/arduino/avr/**",
-                "${config:arduino.path}/tools/**"
+                "${config:arduino.path}/tools/**",
+                "%LocalAppData%/Arduino15/packages/arduino/tools/**",
+                "%LocalAppData%/Arduino15/packages/arduino/hardware/avr/1.8.2/**"
             ],
             "intelliSenseMode": "msvc-x64",
             "defines": [
@@ -31,6 +32,7 @@
             "cStandard": "c11",
             "cppStandard": "c++17",
             "forcedInclude": [
+                "%LocalAppData%/Arduino15/packages/arduino/hardware/avr/1.8.2/cores/arduino/Arduino.h"
             ]
         },
         {
@@ -50,7 +52,6 @@
                 "${config:arduino.path}/hardware/tools/avr/avr/include/util/",
                 "${config:arduino.path}/hardware/tools/avr/lib/gcc/avr/4.*.*/include/",
                 "${config:arduino.path}/hardware/tools/avr/lib/gcc/avr/4.*.*/include-fixed/",
-                "${config:arduino.path}/hardware/arduino/avr/**",
                 "${config:arduino.path}/tools/**"
             ],
             "defines": [
