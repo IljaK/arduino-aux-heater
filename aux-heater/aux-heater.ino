@@ -123,23 +123,23 @@ bool handleLevelMessage(Stream *stream) {
 	switch (batteryMonitor.CurrentState())
 	{
 	case VoltageLevelState::CRITICAL_LEVEL:
-		stream->write(F("Critical battery level! "));
+		stream->print(F("Critical battery level! "));
 		result = true;
 		break;
 	case VoltageLevelState::DEAD_LEVEL:
-		stream->write(F("Battery died! "));
+		stream->print(F("Battery died! "));
 		result = true;
 		break;
 	case VoltageLevelState::LOW_LEVEL:
-		stream->write(F("Low battery level! "));
+		stream->print(F("Low battery level! "));
 		result = true;
 		break;
 	case VoltageLevelState::OVERFLOW_LEVEL:
-		stream->write(F("Overflow battery charge! "));
+		stream->print(F("Overflow battery charge! "));
 		result = true;
 		break;
 	default:
-		stream->write(F("Battery level: "));
+		stream->print(F("Battery level: "));
 		result = true;
 		break;
 	}

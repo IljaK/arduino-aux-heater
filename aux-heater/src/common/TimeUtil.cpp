@@ -73,12 +73,15 @@ void updateTime()
 {
 	if (prevMicrosSeconds == 0) return;
 
-	unsigned long microsTS = micros();
-	unsigned long seconds = (microsTS - prevMicrosSeconds) / 1000000ul;
+	uint32_t microsTS = micros();
+	uint32_t seconds = (microsTS - prevMicrosSeconds) / 1000000ul;
 	if (seconds > 0) {
-        for (unsigned long i = 0; i < seconds; i++) {
-            system_tick();
-        }
+
+        set_system_time(time(NULL) + (time_t )seconds);
+
+        //for (unsigned long i = 0; i < seconds; i++) {
+        //    system_tick();
+        //}
 		prevMicrosSeconds += (seconds * 1000000ul);
 	}
 }

@@ -40,7 +40,7 @@ constexpr uint8_t ESC_ASCII_SYMBOL = 27u; // ESC
 //constexpr char GSM_SIGNAL_CMD[] = "+CSQ"; // Signal quality test, value range is 0-31 , 31 is the best
 constexpr char GSM_SIM_PIN_CMD[] = "+CPIN"; // Read sim pin code state
 constexpr char GSM_REG_CMD[] = "+CREG"; // set 1 for sim registration
-constexpr char GSM_TIME_CMD[] = "+CCLK"; // set 1 for sim registration
+constexpr char GSM_TIME_CMD[] = "+CCLK"; // Time request
 constexpr char GSM_SWITCH_CMD[] = "+CFUN"; // Call state
 
 // AT+CPBS="SM" - set phonebook sim card
@@ -51,16 +51,13 @@ constexpr char GSM_FIND_USER_CMD[] = "+CPBF"; // Find phonebook entries
 //constexpr char GSM_EVENT_DATA_CMD[] = "+CIEV"; // Data event
 constexpr char GSM_TS_DATA_CMD[] = "+CMT"; // Data event
 
-constexpr char GSM_CALL_DIAL_CMD[] = "ATD"; // Call dial cmd
-constexpr char GSM_CALL_HANGUP_CMD[] = "ATH"; // Call hangup cmd 
-constexpr char GSM_CALL_ANSWER_CMD[] = "ATA"; // Call answer cmd 
+constexpr char GSM_CALL_DIAL_CMD[] = "D"; // ATD Call dial cmd
+constexpr char GSM_CALL_HANGUP_CMD[] = "H"; // ATH Call hangup cmd 
+constexpr char GSM_CALL_ANSWER_CMD[] = "A"; // ATA Call answer cmd 
 constexpr char GSM_CALL_STATE_CMD[] = "+CLCC"; // Call state
 constexpr char GSM_DTMF_CMD[] = "+DTMF"; // Call state
 
 constexpr char GSM_AUX_PHONE_POSTFIX[] = "aux-"; // Data event
-
-//constexpr char GSM_REG_CMD[] = "+CREG?"; // Check whether it has registered in the network
-//constexpr char GSM_SMS_TEXT_MODE[] = "AT+CMGF=1\r";
 
 constexpr char GSM_SIM_AUTH_SMS_READY[] = "SMS Ready";
 constexpr char GSM_SIM_AUTH_CALL_READY[] = "Call Ready";
@@ -179,8 +176,8 @@ private:
 	StringStackArray callHangupStack = StringStackArray(SMS_CALL_HANGUP_SIZE);
 
 	GSMReadyState readyState;
-	GSMSimPinState simPinState = GSMSimPinState::SIM_PIN_STATE_UNKNOWN;
 	GSMFlowState flowState = GSMFlowState::INITIALIZATION;
+	GSMSimPinState simPinState = GSMSimPinState::SIM_PIN_STATE_UNKNOWN;
 	GSMIncomingMessageState smsState = GSMIncomingMessageState::NONE;
 	GSMCallState callState = GSMCallState::DISCONNECT;
 
@@ -191,7 +188,7 @@ private:
 	StreamCallback messageCallback;
 
 	bool IsProperResponse(char *response, size_t size);
-	void LaunchFlowRequest();
+	void SendFlowCMD(char *data = NULL);
 
 	void HandleErrorResponse(char *response, size_t size);
 	void HandleDataResponse(char *response, size_t size);
@@ -208,7 +205,7 @@ private:
 	void StartCallDelayTimer();
 	void UpdateReadyState();
 
-    void WriteGsmSerial(bool initPrefix, char * cmd, bool isCheck = false, bool isSet = false, char *setValue = NULL, bool setInQuotations = false);
+    void WriteGsmSerial(char * cmd, bool isCheck = false, bool isSet = false, char *data = NULL, bool dataQuotations = false, bool semicolon = false);
 
 protected:
 	bool LoadSymbolFromBuffer(uint8_t symbol) override;

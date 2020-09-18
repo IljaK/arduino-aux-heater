@@ -316,9 +316,17 @@ size_t outWrite(const char *str) {
 size_t outWrite(const char *buffer, size_t size) {
 	return outWrite((const uint8_t *)buffer, size);
 }
-
 size_t outWrite(const __FlashStringHelper *str) {
     if (!outStream) return 0;
-    return outStream->write(str);
+    return outStream->print(str);
+}
+
+size_t outWriteASCII(uint8_t data, int radix) {
+    if (!outStream) return 0;
+    const size_t size = 16;
+    char outString[size];
+    outString[0] = 0;
+    itoa(data, outString, radix);
+    return outStream->write((const char *)outString);
 }
 

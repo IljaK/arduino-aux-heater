@@ -58,3 +58,5 @@ extern size_t outWrite(int n);
 extern size_t outWrite(const char *str);
 extern size_t outWrite(const uint8_t *buffer, size_t size);
 extern size_t outWrite(const char *buffer, size_t size);
+
+extern size_t outWriteASCII(uint8_t data, int radix = 10);

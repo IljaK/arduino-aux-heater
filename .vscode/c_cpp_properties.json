@@ -12,9 +12,9 @@
                 "ARDUINO_TEST"
             ],
             "cStandard": "c11",
-            "cppStandard": "c++17",
-            "intelliSenseMode": "msvc-x64",
-            "forcedInclude": []
+            "cppStandard": "c++11",
+            "intelliSenseMode": "gcc-x86",
+            "configurationProvider": "ms-vscode.cmake-tools"
         },
         {
             "name": "Linux",
@@ -30,10 +30,9 @@
             ],
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "c11",
-            "cppStandard": "c++17",
+            "cppStandard": "c++11",
             "intelliSenseMode": "gcc-x64",
-            "forcedInclude": [],
-            "configurationProvider": "ms-vscode.cmake-tools"
+            "forcedInclude": []
         }
     ],
     "version": 4

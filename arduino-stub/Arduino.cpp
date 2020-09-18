@@ -108,3 +108,8 @@ void set_zone(int32_t)
 {
 
 }
+
+void reti()
+{
+    
+}

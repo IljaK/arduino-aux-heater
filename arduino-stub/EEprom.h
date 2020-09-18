@@ -8,4 +8,5 @@ class __FlashStringHelper
 {
 
 };
+
 #define F(string_literal) (string_literal)

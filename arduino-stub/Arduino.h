@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <string>
 #include <ctime>
+#include "Interrupt.h"
 #include "EEprom.h"
 #include "Stream.h"
 
@@ -65,3 +66,5 @@ extern void set_system_time(time_t timestamp);
 extern time_t mk_gmtime(struct tm * timeptr);
 extern void system_tick(void);
 extern void set_zone(int32_t);
+
+extern void reti();
