@@ -59,11 +59,11 @@ int analogRead(uint8_t pin)
 }
 void analogReference(uint8_t mode)
 {
-
+	// TODO:
 }
 void analogWrite(uint8_t, int)
 {
-
+	// TODO:
 }
 
 int strcasecmp(const char *str1, const char *str2)
@@ -112,4 +112,10 @@ void set_zone(int32_t)
 void reti()
 {
     
+}
+
+char *itoa (int val, char *s, int radix)
+{
+	// TODO:
+	return 0;
 }

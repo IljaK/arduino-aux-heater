@@ -42,5 +42,6 @@
     },
     "gtest-adapter.debugConfig": "GTest",
     "gtest-adapter.supportLocation": true,
-    "cmake.sourceDirectory": "${workspaceFolder}/."
+    "cmake.sourceDirectory": "${workspaceFolder}/.",
+    "cmake.configureOnOpen": false
 }

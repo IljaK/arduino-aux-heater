@@ -40,6 +40,7 @@ public:
 	size_t write(uint8_t *buffer, size_t length) { return length; };
 	size_t write(char *str, size_t length) { return write((uint8_t *)str, length); };
 	size_t write(const char *str, size_t length) { return write((uint8_t *)str, length); };
+	size_t write(const char *str) { return write((uint8_t *)str, strlen(str)); };
 
 	int read();
 

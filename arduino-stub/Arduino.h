@@ -68,3 +68,5 @@ extern void system_tick(void);
 extern void set_zone(int32_t);
 
 extern void reti();
+
+extern char *itoa (int __val, char *__s, int __radix);
