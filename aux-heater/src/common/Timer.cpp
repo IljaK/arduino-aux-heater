@@ -1,5 +1,7 @@
 #include "Timer.h"
 
+TimerNode *Timer::pFirst = NULL;
+unsigned long Timer::frameTS = 0;
 
 ITimerCallback::~ITimerCallback()
 {
@@ -147,6 +149,3 @@ unsigned long Timer::Remain(TimerID timerId)
 	}
 	return 0;
 }
-
-TimerNode *Timer::pFirst = NULL;
-unsigned long Timer::frameTS = 0;

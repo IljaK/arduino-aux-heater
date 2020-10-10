@@ -13,7 +13,7 @@ void SerialTimerResponseHandler::Loop()
 {
 	BaseSerialHandler::Loop();
 	
-	if (registeredBytes < serial->available()) {
+	if (serial && registeredBytes < serial->available()) {
 		StartTimer();
 	}
 }
@@ -31,7 +31,7 @@ void SerialTimerResponseHandler::OnTimerComplete(TimerID timerId)
 void SerialTimerResponseHandler::StartTimer()
 {
 	StopTimer();
-	if (IsLimitReached()) return;
+	if (IsLimitReached() || !serial) return;
 	registeredBytes = serial->available();
 	messageTimer = Timer::Start(this, ResponseByteTimeOut());
 }

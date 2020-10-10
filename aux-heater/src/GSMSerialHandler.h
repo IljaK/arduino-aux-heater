@@ -8,15 +8,9 @@
 
 constexpr char SIM_PIN_CODE[] = "0000"; // Pin code for sim card
 
-constexpr char GSM_RESPONSE_SEPARATOR[] = "\r\n";
 constexpr char GSM_OK_RESPONSE[] = "OK";
 constexpr char GSM_ERROR_RESPONSE[] = "ERROR";
 constexpr char GSM_INIT_CMD[] = "AT";
-
-constexpr uint8_t CR_ASCII_SYMBOL = 13u; // CR
-constexpr uint8_t LF_ASCII_SYMBOL = 10u; // LF
-constexpr uint8_t CRTLZ_ASCII_SYMBOL = 26u; // ctrl+z
-constexpr uint8_t ESC_ASCII_SYMBOL = 27u; // ESC
 
 // Finalize responses:
 // OK
@@ -59,8 +53,6 @@ constexpr char GSM_DTMF_CMD[] = "+DTMF"; // Call state
 
 constexpr char GSM_AUX_PHONE_POSTFIX[] = "aux-"; // Data event
 
-constexpr char GSM_SIM_AUTH_SMS_READY[] = "SMS Ready";
-constexpr char GSM_SIM_AUTH_CALL_READY[] = "Call Ready";
 constexpr char GSM_SIM_STATE_READY[] = "READY"; // Ready sim card state
 constexpr char GSM_SIM_STATE_SIM_PIN[] = "SIM PIN"; // Pin code input sim card state
 
@@ -75,15 +67,14 @@ enum class GSMFlowState : uint8_t
 	INITIALIZATION,
 
 	SIM_PIN_STATE,
-
 	SIM_LOGIN,
-	WAIT_SIM_INIT,
 
-	TIME_REQUEST,
 	FIND_PRIMARY_PHONE,
 
 	READY,
 	LOCKED,
+
+	TIME_REQUEST,
 
 	// SMS sending states
 	SEND_SMS_BEGIN,
@@ -126,37 +117,6 @@ enum class GSMCallState : uint8_t
 	DISCONNECT
 };
 
-struct GSMReadyState{ 
-private:
-	uint8_t readyState = 0;
-	// 0 bit - sms ready
-	// 1 bit - call ready
-public:
-	bool SMSReady()
-	{
-		return getBitsValue(&readyState, 1u, 0u);
-	}
-	void SMSReady(bool value)
-	{
-		setBitsValue(&readyState, value, 1u, 0u);
-	}
-	bool CallReady()
-	{
-		return getBitsValue(&readyState, 1u, 1u);
-	}
-	void CallReady(bool value)
-	{
-		setBitsValue(&readyState, value, 1u, 1u);
-	}
-	bool Ready() {
-		return readyState == 0b0000011u;
-	}
-	void Ready(bool value) {
-		if (value) readyState = 0b0000011u;
-		else readyState = 0;
-	}
-};
-
 typedef void (*SMSCallback)(char *message, size_t size, time_t timeStamp);
 typedef bool (*DTMFCallback)(char code);
 
@@ -175,7 +135,6 @@ private:
 
 	StringStackArray callHangupStack = StringStackArray(SMS_CALL_HANGUP_SIZE);
 
-	GSMReadyState readyState;
 	GSMFlowState flowState = GSMFlowState::INITIALIZATION;
 	GSMSimPinState simPinState = GSMSimPinState::SIM_PIN_STATE_UNKNOWN;
 	GSMIncomingMessageState smsState = GSMIncomingMessageState::NONE;
@@ -203,7 +162,6 @@ private:
 	void AnswerCallCMD();
 	void StopCallTimer();
 	void StartCallDelayTimer();
-	void UpdateReadyState();
 
     void WriteGsmSerial(char * cmd, bool isCheck = false, bool isSet = false, char *data = NULL, bool dataQuotations = false, bool semicolon = false);
 
@@ -214,7 +172,7 @@ public:
 	~GSMSerialHandler();
 
 	void OnTimerComplete(TimerID timerId) override;
-	void OnResponseReceived(bool isTimeOut, bool isOverFlow = false);
+	void OnResponseReceived(bool isTimeOut, bool isOverFlow = false) override;
 	bool IsBusy() override;
 	void SendSMSMessage(StreamCallback messageCallback);
 	void NotifyByCallHangUp();

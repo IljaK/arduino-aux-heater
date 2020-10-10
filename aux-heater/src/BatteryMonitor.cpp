@@ -1,4 +1,5 @@
 #include "BatteryMonitor.h"
+#include "serial/DebugSerialHandler.h"
 
 
 BatteryMonitor::BatteryMonitor(float r1, float r2, void(*stateCallback)(VoltageLevelState)):VoltMeter(r1, r2)
@@ -17,10 +18,11 @@ VoltageLevelState BatteryMonitor::CurrentState()
 
 void BatteryMonitor::OnVoltageMeasured()
 {
-    if (isDebugListener()) {
-        outWrite(F("Voltage: "));
-        outWrite((double)Voltage(), 5, 3);
-    }
+    //if (DebugSerialHandler::IsDebugEnabled()) {
+    //    DebugSerialHandler::outWrite(F("Voltage: "));
+    //    DebugSerialHandler::outWrite((double)Voltage(), 5, 3);
+	//	DebugSerialHandler::outWriteEnd();
+    //}
 
 	VoltageLevelState nextState = GetNextState(currentState);
 	if (nextState == currentState) {
@@ -74,10 +76,10 @@ void BatteryMonitor::HandleAttempt(VoltageLevelState state)
 	}
 	matchedAttempts++;
 	if (matchedAttempts >= matchRequire) {
-        if (isDebugListener()) {
-            outWrite(F("Handle Battery LEVEL: "));
-            outWrite((uint8_t)state);
-	        outWrite("\r\n", 2);
+        if (DebugSerialHandler::IsDebugEnabled()) {
+            DebugSerialHandler::outWrite(F("Handle Battery LEVEL: "));
+            DebugSerialHandler::outWriteASCII((uint8_t)state);
+			DebugSerialHandler::outWriteEnd();
         }
 		currentState = state;
 		matchedAttempts = 0;

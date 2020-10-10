@@ -27,7 +27,7 @@ private:
 	uint8_t matchedAttempts = 0;
 	VoltageLevelState matchState = VoltageLevelState::NORMAL_LEVEL;
 
-	uint8_t valueLevel[6] = { 100, 110, 120, 125, 145, 155 };
+	uint8_t valueLevel[6] = { 105, 118, 120, 125, 145, 155 };
 
 	float GetStateVoltage(VoltageLevelState state);
 	void HandleAttempt(VoltageLevelState state);

@@ -15,15 +15,17 @@ SerialCharResponseHandler::~SerialCharResponseHandler()
 
 void SerialCharResponseHandler::Loop()
 {
-	int available = serial->available();
+	if (serial) {
+		int available = serial->available();
 
-	if (available > 0) {
-		uint8_t symbol = 0;
-		for (int i = 0; i < available; i++) {
+		if (available > 0) {
+			uint8_t symbol = 0;
+			for (int i = 0; i < available; i++) {
 
-			serial->readBytes(&symbol, 1);
+				serial->readBytes(&symbol, 1);
 
-			if (LoadSymbolFromBuffer(symbol)) return;
+				if (LoadSymbolFromBuffer(symbol)) return;
+			}
 		}
 	}
 

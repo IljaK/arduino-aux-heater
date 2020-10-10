@@ -1,16 +1,21 @@
 #pragma once
 #include <Arduino.h>
 
+constexpr uint8_t CR_ASCII_SYMBOL = 13u; // CR
+constexpr uint8_t LF_ASCII_SYMBOL = 10u; // LF
+constexpr uint8_t CRTLZ_ASCII_SYMBOL = 26u; // ctrl+z
+constexpr uint8_t ESC_ASCII_SYMBOL = 27u; // ESC
+
 constexpr uint8_t AUX_RX_PIN = 3u;
 constexpr uint8_t AUX_TX_PIN = 4u;
 
 constexpr uint8_t VOLTMETER_MEASURE_PIN = A4;
 constexpr uint8_t VOLTMETER_TRIGGER_PIN = 5u;
 
-constexpr uint8_t DEBUG_RX_PIN = 6u;
-constexpr uint8_t DEBUG_TX_PIN = 7u;
-constexpr uint8_t DEBUG_ON_PIN = 8u;
+constexpr uint8_t DEBUG_RX_PIN = 8u;
+constexpr uint8_t DEBUG_TX_PIN = 9u;
 
+constexpr char RESPONSE_SEPARATOR[] = "\r\n";
 
 constexpr uint32_t AUX_BAUD_RATE = 2400u;
 constexpr uint32_t SERIAL_BAUD_RATE = 57600u;
@@ -30,7 +35,7 @@ extern void setBitsValue(uint8_t *target, uint8_t value, uint8_t length, uint8_t
 extern uint16_t getBitsValue(uint16_t *target, uint8_t length, uint8_t start = 0);
 extern void setBitsValue(uint16_t* target, uint16_t value, uint8_t length, uint8_t start = 0);
 
-extern bool IsBytesAreEqual(uint8_t * byteArray1, int length1, uint8_t * byteArray2, int length2);
+extern bool IsByteArraysEqual(uint8_t * byteArray1, int length1, uint8_t * byteArray2, int length2);
 extern void CopyByteArray(uint8_t * source, uint8_t * destination, int size);
 
 extern size_t printBytes(char *stringBuff, size_t bufferLength, uint8_t *sendBytes, size_t byteLength);
@@ -45,18 +50,4 @@ extern void ShiftQuotations(char **subStrArray, size_t arraySize);
 //[[deprecated("Replaced by outWrite(), use separate for each argument")]]
 //extern void outPrintf(const char *format, ...);
 
-extern bool isDebugListener();
-
-extern size_t outWrite(const __FlashStringHelper *str);
-extern size_t outWrite(double value, signed char width, unsigned char prec);
-extern size_t outWrite(const char *str);
-extern size_t outWrite(uint8_t n);
-extern size_t outWrite(unsigned long n);
-extern size_t outWrite(long n);
-extern size_t outWrite(unsigned int n);
-extern size_t outWrite(int n);
-extern size_t outWrite(const char *str);
-extern size_t outWrite(const uint8_t *buffer, size_t size);
-extern size_t outWrite(const char *buffer, size_t size);
-
-extern size_t outWriteASCII(uint8_t data, int radix = 10);
+extern int remainRam ();

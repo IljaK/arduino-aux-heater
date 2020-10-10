@@ -5,10 +5,6 @@
 struct LedBlinkFrequency
 {
 private:
-	// Old
-	// First 3 bits will store tact Length + 1 bit led state
-	//uint16_t tactData = 0;
-
 	// tactInfo uint_8
 	// [x,xxx,xxxx]
 	// 1 bit led state  + 3 bits current bit index + 4 bits store length

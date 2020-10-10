@@ -82,7 +82,7 @@ void setBitsValue(uint16_t* target, uint16_t value, uint8_t length, uint8_t star
 }
 
 
-bool IsBytesAreEqual(uint8_t * byteArray1, int length1, uint8_t * byteArray2, int length2)
+bool IsByteArraysEqual(uint8_t * byteArray1, int length1, uint8_t * byteArray2, int length2)
 {
 	if (length1 != length2 || length1 == 0) return false;
 	for (int i = 0; i < length1; i++) {
@@ -97,63 +97,6 @@ void CopyByteArray(uint8_t * source, uint8_t * destination, int size)
 	for (int i = 0; i < size; i++) {
 		destination[i] = source[i];
 	}
-}
-
-size_t printBytes(char *stringBuff, size_t bufferLength, uint8_t *sendBytes, size_t byteLength)
-{
-	if (byteLength > 0 && bufferLength > 0)
-	{
-		stringBuff[0] = '\0';
-		char buffer[8];
-		buffer[0] = '\0';
-
-		int outPrinted = 1;
-
-		for (size_t i = 0; i < byteLength; i++) {
-			snprintf(buffer, 8, "%d", (int)sendBytes[i]);
-
-			size_t toPrint = strlen(buffer);
-			if (i > 0) toPrint++;
-
-			if (outPrinted + toPrint > bufferLength) return i;
-
-			outPrinted += toPrint;
-
-			if (i > 0) {
-				strncat(stringBuff, "-", bufferLength);
-			}
-			strncat(stringBuff, buffer, bufferLength);
-		}
-		return byteLength;
-	}
-	return 0;
-}
-
-size_t printLongs(char *stringBuff, size_t bufferLength, unsigned long *sendBytes, size_t byteLength)
-{
-	if (byteLength > 0 && bufferLength > 0)
-	{
-		stringBuff[0] = '\0';
-		char buffer[32];
-		buffer[0] = '\0';
-
-		int outPrinted = 1;
-
-		for (size_t i = 0; i < byteLength; i++) {
-			snprintf(buffer, 32, "%lu", sendBytes[i]);
-
-			size_t toPrint = strlen(buffer);
-			if (i > 0) toPrint++;
-
-			if (outPrinted + toPrint > bufferLength) return i;
-			outPrinted += toPrint;
-
-			if (i > 0) strncat(stringBuff, "-", bufferLength);
-			strncat(stringBuff, buffer, bufferLength);
-		}
-		return byteLength;
-	}
-	return 0;
 }
 
 size_t SplitString(char *source, uint8_t separator, char **subStrArray, size_t arraySize, bool skipEmpty)
@@ -245,6 +188,12 @@ char *ShiftQuotations(char *quatationString)
 	}
 	return quatationString;
 }
+
+int remainRam () {
+	extern int __heap_start, *__brkval;
+	int v;
+	return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+}
 /*
 void outPrintf(const char *format, ...)
 {
@@ -276,57 +225,6 @@ void outPrintf(const char *format, ...)
 
 	} while (remainLength > 0);
 
-	outWrite("\r\n", 2);
+	outEnd();
 }
 */
-
-bool isDebugListener() {
-    return (digitalRead(DEBUG_ON_PIN) == HIGH);
-}
-
-size_t outWrite(uint8_t data) {
-	if (!outStream) return 0;
-	return outStream->write(data);
-}
-size_t outWrite(double value, signed char width, unsigned char prec) {
-	if (!outStream) return 0;
-
-    const size_t size = 16;
-    char outString[size];
-    if (width > size) {
-        width = size - 1;
-    }
-	dtostrf(value, width, prec, outString);
-
-    return outWrite(outString);
-}
-size_t outWrite(unsigned long n) { return outWrite((uint8_t)n); }
-size_t outWrite(long n) { return outWrite((uint8_t)n); }
-size_t outWrite(unsigned int n) { return outWrite((uint8_t)n); }
-size_t outWrite(int n) { return outWrite((uint8_t)n); }
-
-size_t outWrite(const uint8_t *buffer, size_t size) {
-	if (!outStream) return 0;
-	return outStream->write((uint8_t *)buffer, size);
-}
-size_t outWrite(const char *str) {
-	if (str == NULL) return 0;
-	return outWrite((const uint8_t *)str, strlen(str));
-}
-size_t outWrite(const char *buffer, size_t size) {
-	return outWrite((const uint8_t *)buffer, size);
-}
-size_t outWrite(const __FlashStringHelper *str) {
-    if (!outStream) return 0;
-    return outStream->print(str);
-}
-
-size_t outWriteASCII(uint8_t data, int radix) {
-    if (!outStream) return 0;
-    const size_t size = 16;
-    char outString[size];
-    outString[0] = 0;
-    itoa(data, outString, radix);
-    return outStream->write((const char *)outString);
-}
-

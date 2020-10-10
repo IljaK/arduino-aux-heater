@@ -1,6 +1,6 @@
 {
-    "board": "arduino:avr:pro",
-    "configuration": "cpu=16MHzatmega328",
+    "board": "arduino:avr:nano",
+    "configuration": "cpu=atmega328old",
     "sketch": "aux-heater.ino",
     "port": "/dev/ttyUSB0",
     "programmer": "Arduino as ISP"
