@@ -213,7 +213,7 @@ void GSMSerialHandler::HandleDataResponse(char *response, size_t size)
 	}
 	else if (strncmp(response, GSM_DTMF_CMD, strlen(GSM_DTMF_CMD)) == 0) {
 		// +DTMF: 1
-		char *pCode = response + strlen(GSM_CALL_STATE_CMD) + 2;
+		char *pCode = response + strlen(GSM_DTMF_CMD) + 2;
 		char code = pCode[0];
 		if (dtmfCallback == NULL || dtmfCallback(code)) {
 			HangupCallCMD();

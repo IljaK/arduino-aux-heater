@@ -3,7 +3,6 @@
         {
             "name": "Win32",
             "includePath": [
-                "${config.arduino.additionalUrls}/libraries/ELECHOUSE_CC1101",
                 "${config.arduino.additionalUrls}/libraries/OneWire",
                 "${config.arduino.additionalUrls}/libraries/DallasTemperature",
                 "${config.arduino.additionalUrls}/libraries/AltSoftSerial/",
@@ -42,7 +41,6 @@
         {
             "name": "Linux",
             "includePath": [
-                "${config.arduino.additionalUrls}/libraries/ELECHOUSE_CC1101",
                 "${config.arduino.additionalUrls}/libraries/OneWire",
                 "${config.arduino.additionalUrls}/libraries/DallasTemperature",
                 "${config.arduino.additionalUrls}/libraries/AltSoftSerial/",
@@ -75,6 +73,48 @@
             "cppStandard": "c++11",
             "forcedInclude": [
                 "${config.arduino.additionalUrls}/hardware/arduino/avr/cores/arduino/Arduino.h"
+            ]
+        },
+        {
+            "name": "Mac",
+            "includePath": [
+                "/Users/iljakrusman/Library/Arduino15/packages/arduino/tools/**",
+                "/Users/iljakrusman/Library/Arduino15/packages/arduino/hardware/samd/1.8.9/**",
+                "/Users/iljakrusman/Documents/Arduino/libraries/MKRGSM/**",
+                "/Users/iljakrusman/Documents/Arduino/libraries/OneWire/**",
+                "/Users/iljakrusman/Documents/Arduino/libraries/DallasTemperature/**",
+                "/Users/iljakrusman/Documents/Arduino/libraries/AltSoftSerial/**",
+                "/Users/iljakrusman/Documents/Arduino/libraries/Adafruit_BME280_Library/**",
+                "${config:arduino.path}/tools/**",
+                "${config:arduino.path}/hardware/arduino/avr/**",
+                "${workspaceFolder}/**",
+                "${config:arduino.path}/hardware/arduino/avr/cores/arduino/",
+                "${config:arduino.path}/hardware/arduino/avr/libraries/EEPROM/",
+                "${config:arduino.path}/hardware/arduino/avr/libraries/SPI/",
+                "${config:arduino.path}/hardware/arduino/avr/libraries/SoftwareSerial/",
+                "${config:arduino.path}/hardware/arduino/avr/libraries/Wire/",
+                "${config:arduino.path}/hardware/tools/avr/avr/include/",
+                "${config:arduino.path}/hardware/tools/avr/avr/include/avr/",
+                "${config:arduino.path}/hardware/tools/avr/avr/include/compat/",
+                "${config:arduino.path}/hardware/tools/avr/avr/include/util/",
+                "${config:arduino.path}/hardware/tools/avr/lib/gcc/avr/*.*.*/include/",
+                "${config:arduino.path}/hardware/tools/avr/lib/gcc/avr/*.*.*/include-fixed/",
+                "/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/**",
+                "/Applications/Arduino.app/Contents/Java/tools/**"
+            ],
+            "intelliSenseMode": "clang-x86",
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE",
+                "USBCON",
+                "ARDUINO"
+            ],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c11",
+            "cppStandard": "c++11",
+            "forcedInclude": [
+                "/Users/iljakrusman/Library/Arduino15/packages/arduino/hardware/samd/1.8.9/cores/arduino/Arduino.h"
             ]
         }
     ],
