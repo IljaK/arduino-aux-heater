@@ -1,5 +1,4 @@
 /*
-/*
 
 	This library was originally copyright of Michael at elechouse.com but permision was
     granted by Wilson Shen on 2016-10-23 for me (Simon Monk) to uodate the code for Arduino 1.0+
@@ -31,17 +30,16 @@ On Oct 22, 2016 10:07 PM, "Simon Monk" <srmonk@gmail.com> wrote:
 	Simon Monk.
 	
 */
-#include <ELECHOUSE_CC1101.h>
-#include <Arduino.h>
+#include "ELECHOUSE_CC1101.h"
 
 /****************************************************************/
 #define 	WRITE_BURST     	0x40						//write burst
 #define 	READ_SINGLE     	0x80						//read single
 #define 	READ_BURST      	0xC0						//read burst
-#define 	BYTES_IN_RXFIFO     0x7F  						//byte number in RXfifo
+#define 	BYTES_IN_RXFIFO     0x7F  						//uint8_t number in RXfifo
 
 /****************************************************************/
-byte PaTabel[8] = {0x60 ,0x60 ,0x60 ,0x60 ,0x60 ,0x60 ,0x60 ,0x60};
+uint8_t PaTabel[8] = {0x60 ,0x60 ,0x60 ,0x60 ,0x60 ,0x60 ,0x60 ,0x60};
 
 /****************************************************************
 *FUNCTION NAME:SpiInit
@@ -70,11 +68,11 @@ void ELECHOUSE_CC1101::SpiInit(void)
 			   (1<<CPOL) | (1 << CPHA)		 3
 *OUTPUT       :none
 ****************************************************************/
-void ELECHOUSE_CC1101::SpiMode(byte config)
+void ELECHOUSE_CC1101::SpiMode(uint8_t config)
 {
-  byte tmp;
+  uint8_t tmp;
 
-  // enable SPI master with configuration byte specified
+  // enable SPI master with configuration uint8_t specified
   SPCR = 0;
   SPCR = (config & 0x7F) | (1<<SPE) | (1<<MSTR);
   tmp = SPSR;
@@ -87,7 +85,7 @@ void ELECHOUSE_CC1101::SpiMode(byte config)
 *INPUT        :value: data to send
 *OUTPUT       :data to receive
 ****************************************************************/
-byte ELECHOUSE_CC1101::SpiTransfer(byte value)
+uint8_t ELECHOUSE_CC1101::SpiTransfer(uint8_t value)
 {
   SPDR = value;
   while (!(SPSR & (1<<SPIF))) ;
@@ -149,7 +147,7 @@ void ELECHOUSE_CC1101::Init(void)
 *INPUT        :none
 *OUTPUT       :none
 ****************************************************************/
-void ELECHOUSE_CC1101::Init(byte f)
+void ELECHOUSE_CC1101::Init(uint8_t f)
 {
 	SpiInit();										//spi initialization
 	GDO_Set();										//GDO set
@@ -168,7 +166,7 @@ void ELECHOUSE_CC1101::Init(byte f)
 *INPUT        :addr: register address; value: register value
 *OUTPUT       :none
 ****************************************************************/
-void ELECHOUSE_CC1101::SpiWriteReg(byte addr, byte value)
+void ELECHOUSE_CC1101::SpiWriteReg(uint8_t addr, uint8_t value)
 {
 	digitalWrite(SS_PIN, LOW);
 	while(digitalRead(MISO_PIN));
@@ -183,9 +181,9 @@ void ELECHOUSE_CC1101::SpiWriteReg(byte addr, byte value)
 *INPUT        :addr: register address; buffer:register value array; num:number to write
 *OUTPUT       :none
 ****************************************************************/
-void ELECHOUSE_CC1101::SpiWriteBurstReg(byte addr, byte *buffer, byte num)
+void ELECHOUSE_CC1101::SpiWriteBurstReg(uint8_t addr, uint8_t *buffer, uint8_t num)
 {
-	byte i, temp;
+	uint8_t i, temp;
 
 	temp = addr | WRITE_BURST;
     digitalWrite(SS_PIN, LOW);
@@ -204,7 +202,7 @@ void ELECHOUSE_CC1101::SpiWriteBurstReg(byte addr, byte *buffer, byte num)
 *INPUT        :strobe: command; //refer define in CC1101.h//
 *OUTPUT       :none
 ****************************************************************/
-void ELECHOUSE_CC1101::SpiStrobe(byte strobe)
+void ELECHOUSE_CC1101::SpiStrobe(uint8_t strobe)
 {
 	digitalWrite(SS_PIN, LOW);
 	while(digitalRead(MISO_PIN));
@@ -218,9 +216,9 @@ void ELECHOUSE_CC1101::SpiStrobe(byte strobe)
 *INPUT        :addr: register address
 *OUTPUT       :register value
 ****************************************************************/
-byte ELECHOUSE_CC1101::SpiReadReg(byte addr) 
+uint8_t ELECHOUSE_CC1101::SpiReadReg(uint8_t addr) 
 {
-	byte temp, value;
+	uint8_t temp, value;
 
     temp = addr|READ_SINGLE;
 	digitalWrite(SS_PIN, LOW);
@@ -238,9 +236,9 @@ byte ELECHOUSE_CC1101::SpiReadReg(byte addr)
 *INPUT        :addr: register address; buffer:array to store register value; num: number to read
 *OUTPUT       :none
 ****************************************************************/
-void ELECHOUSE_CC1101::SpiReadBurstReg(byte addr, byte *buffer, byte num)
+void ELECHOUSE_CC1101::SpiReadBurstReg(uint8_t addr, uint8_t *buffer, uint8_t num)
 {
-	byte i,temp;
+	uint8_t i,temp;
 
 	temp = addr | READ_BURST;
 	digitalWrite(SS_PIN, LOW);
@@ -259,9 +257,9 @@ void ELECHOUSE_CC1101::SpiReadBurstReg(byte addr, byte *buffer, byte num)
 *INPUT        :addr: register address
 *OUTPUT       :status value
 ****************************************************************/
-byte ELECHOUSE_CC1101::SpiReadStatus(byte addr) 
+uint8_t ELECHOUSE_CC1101::SpiReadStatus(uint8_t addr) 
 {
-	byte value,temp;
+	uint8_t value,temp;
 
 	temp = addr | READ_BURST;
 	digitalWrite(SS_PIN, LOW);
@@ -279,7 +277,7 @@ byte ELECHOUSE_CC1101::SpiReadStatus(byte addr)
 *INPUT        :none
 *OUTPUT       :none
 ****************************************************************/
-void ELECHOUSE_CC1101::RegConfigSettings(byte f) 
+void ELECHOUSE_CC1101::RegConfigSettings(uint8_t f) 
 {
     SpiWriteReg(CC1101_FSCTRL1,  0x08);
     SpiWriteReg(CC1101_FSCTRL0,  0x00);
@@ -332,7 +330,7 @@ void ELECHOUSE_CC1101::RegConfigSettings(byte f)
     SpiWriteReg(CC1101_IOCFG0,   0x06);  	//asserts when sync word has been sent/received, and de-asserts at the end of the packet 
     SpiWriteReg(CC1101_PKTCTRL1, 0x04);		//two status bytes will be appended to the payload of the packet,including RSSI LQI and CRC OK
 											//No address check
-    SpiWriteReg(CC1101_PKTCTRL0, 0x05);		//whitening off;CRC Enable£»variable length packets, packet length configured by the first byte after sync word
+    SpiWriteReg(CC1101_PKTCTRL0, 0x05);		//whitening off;CRC Enableï¿½ï¿½variable length packets, packet length configured by the first uint8_t after sync word
     SpiWriteReg(CC1101_ADDR,     0x00);		//address used for packet filtration.
     SpiWriteReg(CC1101_PKTLEN,   0x3D); 	//61 bytes max length
 }
@@ -343,7 +341,7 @@ void ELECHOUSE_CC1101::RegConfigSettings(byte f)
 *INPUT        :txBuffer: data array to send; size: number of data to send, no more than 61
 *OUTPUT       :none
 ****************************************************************/
-void ELECHOUSE_CC1101::SendData(byte *txBuffer,byte size)
+void ELECHOUSE_CC1101::SendData(uint8_t *txBuffer,uint8_t size)
 {
 	SpiWriteReg(CC1101_TXFIFO,size);
 	SpiWriteBurstReg(CC1101_TXFIFO,txBuffer,size);			//write data to send
@@ -370,7 +368,7 @@ void ELECHOUSE_CC1101::SetReceive(void)
 *INPUT        :none
 *OUTPUT       :flag: 0 no data; 1 receive data 
 ****************************************************************/
-byte ELECHOUSE_CC1101::CheckReceiveFlag(void)
+uint8_t ELECHOUSE_CC1101::CheckReceiveFlag(void)
 {
 	if(digitalRead(GDO0))			//receive data
 	{
@@ -390,10 +388,10 @@ byte ELECHOUSE_CC1101::CheckReceiveFlag(void)
 *INPUT        :rxBuffer: buffer to store data
 *OUTPUT       :size of data received
 ****************************************************************/
-byte ELECHOUSE_CC1101::ReceiveData(byte *rxBuffer)
+uint8_t ELECHOUSE_CC1101::ReceiveData(uint8_t *rxBuffer)
 {
-	byte size;
-	byte status[2];
+	uint8_t size;
+	uint8_t status[2];
 
 	if(SpiReadStatus(CC1101_RXBYTES) & BYTES_IN_RXFIFO)
 	{

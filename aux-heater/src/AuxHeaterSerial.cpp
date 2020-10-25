@@ -35,6 +35,8 @@ void AuxHeaterSerial::HandleCMD(HeaterCmdState cmd, StreamCallback actionCallbac
 	case HeaterCmdState::STOP:
 		StopCMD();
 		break;
+	default:
+		break;
 	}
 }
 
@@ -182,6 +184,8 @@ bool AuxHeaterSerial::IsBusy() {
 		case HeaterCmdState::LAUNCH:
 		case HeaterCmdState::STOP:
 			return true;
+		default:
+			break;
 	}
 	return SerialTimerResponseHandler::IsBusy();
 }

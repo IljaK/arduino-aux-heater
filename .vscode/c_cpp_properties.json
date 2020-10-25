@@ -34,6 +34,26 @@
             "intelliSenseMode": "gcc-x64",
             "forcedInclude": [],
             "compileCommands": "${workspaceFolder}/build/compile_commands.json"
+        },
+        {
+            "name": "Mac",
+            "includePath": [
+                "${workspaceFolder}/build/googletest-prefix/src/googletest/googletest/include/**",
+                "${workspaceFolder}/aux-heater/src/**",
+                "${workspaceFolder}/arduino-stub/**",
+                "${workspaceFolder}/aux-heater-test/src/**"
+            ],
+            "defines": [
+                "_LINUX_",
+                "ARDUINO_TEST"
+            ],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c11",
+            "cppStandard": "c++11",
+            "intelliSenseMode": "clang-x64",
+            "forcedInclude": [],
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
+            "configurationProvider": "ms-vscode.cmake-tools"
         }
     ],
     "version": 4

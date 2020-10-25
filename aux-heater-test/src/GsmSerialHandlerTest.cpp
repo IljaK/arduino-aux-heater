@@ -35,12 +35,21 @@ TEST(GSMSerialHandlerTest, GSMInitializeTest)
 
 	// Sim input response
 	gsmHandler.ReadResponse((char *)"\r\nOK\r\n");
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::WAIT_SIM_INIT);
+	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::FIND_PRIMARY_PHONE);
 
 	gsmHandler.ReadResponse((char *)"\r\nSMS Ready\r\n");
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::WAIT_SIM_INIT);
+	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::FIND_PRIMARY_PHONE);
 
 	gsmHandler.ReadResponse((char *)"\r\nCall Ready\r\n");
+	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::FIND_PRIMARY_PHONE);
+
+	// Sim user list response
+	gsmHandler.ReadResponse((char *)"\r\n+CPBF: 1,\"+372111111\",145,\"1 aux-1\"\r\n");
+	gsmHandler.ReadResponse((char *)"\r\n+CPBF: 2,\"+372222222\",145,\"1 aux-2\"\r\n");
+	gsmHandler.ReadResponse((char *)"\r\nOK\r\n");
+	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
+
+	gsmHandler.ReadResponse((char *)"\r\n+CREG: 1,1\r\n");
 	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::TIME_REQUEST);
 
 	gsmHandler.ReadResponse((char *)"\r\n+CCLK: \"20/08/25,21:08:38+12\"\r\n");
@@ -48,13 +57,6 @@ TEST(GSMSerialHandlerTest, GSMInitializeTest)
 
 	// Service response OK
 	gsmHandler.ReadResponse((char *)"\r\nOK\r\n");
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::FIND_PRIMARY_PHONE);
-
-	// Sim user list response
-	gsmHandler.ReadResponse((char *)"\r\n+CPBF: 1,\"+372111111\",145,\"1 aux-1\"\r\n");
-	gsmHandler.ReadResponse((char *)"\r\n+CPBF: 2,\"+372222222\",145,\"1 aux-2\"\r\n");
-	gsmHandler.ReadResponse((char *)"\r\nOK\r\n");
-
 	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
 }
 

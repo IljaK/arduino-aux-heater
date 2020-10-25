@@ -33,6 +33,8 @@ void VoltMeter::OnTimerComplete(TimerID timerId)
 			OnVoltageMeasured();
 			digitalWrite(VOLTMETER_TRIGGER_PIN, LOW);
 			break;
+		default:
+			break;
 		}
 	}
 }

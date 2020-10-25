@@ -12,14 +12,20 @@
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "externalConsole": false,
-            "MIMode": "gdb",
             "windows": {
+                "MIMode": "gdb",
                 "environment": [],
                 "program": "${workspaceFolder}/build/Debug/aux-heater-test.exe"
             },
             "linux": {
+                "MIMode": "gdb",
                 "environment": [],
-                "program": "${workspaceFolder}/build/aux-heater-test",
+                "program": "${workspaceFolder}/build/aux-heater-test"
+            },
+            "osx": {
+                "MIMode": "lldb",
+                "environment": [],
+                "program": "${workspaceFolder}/build/aux-heater-test"
             }
         }
     ]

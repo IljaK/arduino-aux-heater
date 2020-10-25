@@ -190,9 +190,13 @@ char *ShiftQuotations(char *quatationString)
 }
 
 int remainRam () {
+#if ARDUINO_TEST
+	return 0;
+#else
 	extern int __heap_start, *__brkval;
 	int v;
 	return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+#endif
 }
 /*
 void outPrintf(const char *format, ...)
@@ -228,3 +232,51 @@ void outPrintf(const char *format, ...)
 	outEnd();
 }
 */
+
+size_t writeDouble(Stream *stream, double value, signed char width, unsigned char prec)
+{
+    const size_t size = 32;
+    char outString[size];
+    if (width > size) {
+        width = size - 1;
+    }
+	dtostrf(value, width, prec, outString);
+    
+    return stream->write(outString);
+}
+
+size_t writeASCII(Stream *stream, int data, int radix)
+{
+    const size_t size = 16;
+    char outString[size];
+    outString[0] = 0;
+    itoa(data, outString, radix);
+    return stream->write((const char *)outString);
+}
+
+size_t writeASCII(Stream *stream, unsigned int data, int radix)
+{
+    const size_t size = 8;
+    char outString[size];
+    outString[0] = 0;
+    utoa(data, outString, radix);
+    return stream->write((const char *)outString);
+}
+
+size_t writeASCII(Stream *stream, long data, int radix, bool force)
+{
+    const size_t size = 8;
+    char outString[size];
+    outString[0] = 0;
+    ltoa(data, outString, radix);
+    return stream->write((const char *)outString);
+}
+
+size_t writeASCII(Stream *stream, unsigned long data, int radix, bool force)
+{
+    const size_t size = 32;
+    char outString[size];
+    outString[0] = 0;
+    ultoa(data, outString, radix);
+    return stream->write((const char *)outString);
+}

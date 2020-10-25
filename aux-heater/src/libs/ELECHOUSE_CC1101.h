@@ -34,7 +34,7 @@ On Oct 22, 2016 10:07 PM, "Simon Monk" <srmonk@gmail.com> wrote:
 #ifndef ELECHOUSE_CC1101_h
 #define ELECHOUSE_CC1101_h
 
-#include "Arduino.h"
+#include <Arduino.h>
 
 // Init constants
 #define F_915       0x00
@@ -163,24 +163,24 @@ class ELECHOUSE_CC1101
 {
 	private:
 		void SpiInit(void);
-		void SpiMode(byte config);
-		byte SpiTransfer(byte value);
+		void SpiMode(uint8_t config);
+		uint8_t SpiTransfer(uint8_t value);
 		void GDO_Set (void);
 		void Reset (void);
-		void SpiWriteReg(byte addr, byte value);
-		void SpiWriteBurstReg(byte addr, byte *buffer, byte num);
-		void SpiStrobe(byte strobe);
-		byte SpiReadReg(byte addr);
-		void SpiReadBurstReg(byte addr, byte *buffer, byte num);
-		byte SpiReadStatus(byte addr);
-		void RegConfigSettings(byte f);
+		void SpiWriteReg(uint8_t addr, uint8_t value);
+		void SpiWriteBurstReg(uint8_t addr, uint8_t *buffer, uint8_t num);
+		void SpiStrobe(uint8_t strobe);
+		uint8_t SpiReadReg(uint8_t addr);
+		void SpiReadBurstReg(uint8_t addr, uint8_t *buffer, uint8_t num);
+		uint8_t SpiReadStatus(uint8_t addr);
+		void RegConfigSettings(uint8_t f);
 	public:
 		void Init(void);
-		void Init(byte f);
-		void SendData(byte *txBuffer, byte size);
+		void Init(uint8_t f);
+		void SendData(uint8_t *txBuffer, uint8_t size);
 		void SetReceive(void);
-		byte CheckReceiveFlag(void);
-		byte ReceiveData(byte *rxBuffer);
+		uint8_t CheckReceiveFlag(void);
+		uint8_t ReceiveData(uint8_t *rxBuffer);
 };
 
 extern ELECHOUSE_CC1101 ELECHOUSE_cc1101;

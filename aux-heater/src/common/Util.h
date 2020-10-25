@@ -47,6 +47,12 @@ extern size_t SplitString(char *source, uint8_t separator, char **subStrArray, s
 extern char *ShiftQuotations(char *quatationString);
 extern void ShiftQuotations(char **subStrArray, size_t arraySize);
 
+extern size_t writeDouble(Stream *stream, double value, signed char width, unsigned char prec);
+extern size_t writeASCII(Stream *stream, int data, int radix = 10);
+extern size_t writeASCII(Stream *stream, unsigned int data, int radix = 10);
+extern size_t writeASCII(Stream *stream, long data, int radix = 10);
+extern size_t writeASCII(Stream *stream, unsigned long data, int radix = 10);
+
 //[[deprecated("Replaced by outWrite(), use separate for each argument")]]
 //extern void outPrintf(const char *format, ...);
 

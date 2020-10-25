@@ -10,7 +10,7 @@
 #include <AltSoftSerial.h>
 #include <Adafruit_BME280.h>
 //#include <DallasTemperature.h>
-//#include <ELECHOUSE_CC1101.h>
+//#include "libs/ELECHOUSE_CC1101.h"
 #include "src/common/Timer.h"
 #include "src/common/Util.h"
 #include "src/AuxHeaterSerial.h"
@@ -26,7 +26,7 @@ GSMSerialHandler gsmSerialHandler(&handleSMSCommand, &handleDtmfCommand, NULL/*&
 
 //SoftwareSerial outSerial(DEBUG_RX_PIN, DEBUG_TX_PIN);
 AltSoftSerial outSerial;
-BluetoothSerialHandler btSerialHandler(&outSerial);
+BluetoothSerialHandler btSerialHandler(&outSerial, &handleStatsRequest);
 
 BatteryMonitor batteryMonitor(4700.0f, 2200.0f, &handleLevelChanged);
 //LedController ledController;
@@ -86,6 +86,34 @@ void loop() {
 	//	DebugSerialHandler::outWriteEnd();
 	//}
 
+}
+
+bool handleStatsRequest(Stream *stream) {
+    // response stats: STATS:in temp|out temp|humidity|pressure|voltage|ampers|calculated voltage
+
+    float temperature = bme280.readTemperature();
+    float humidity = bme280.readHumidity();
+    float pressure = bme280.readPressure() / 100.0f;
+
+    // TODO: read voltage
+    //outWrite(temperature, 5, 2); // out temp
+    stream->write("0.0");
+    stream->write('|');
+    writeDouble(stream, temperature, 5, 2); // in temp
+    stream->write('|');
+    writeDouble(stream, humidity, 5, 2); // humidity
+    stream->write('|');
+    writeDouble(stream, pressure, 6, 1); // pressure
+    stream->write('|');
+    stream->write("0.0"); // voltage
+    stream->write('|');
+    stream->write("0.0"); // ampers
+    stream->write('|');
+    stream->write("0.0"); // calculated voltage
+    stream->write('|');
+    writeASCII(stream, remainRam()); // remain memory
+
+	return true;
 }
 
 void handleLevelChanged(VoltageLevelState level) {
@@ -186,9 +214,7 @@ bool handleLevelMessage(Stream *stream) {
     }
 
 	if (result) {
-		char resultVoltage[16];
-		dtostrf(batteryMonitor.Voltage(), 4, 2, resultVoltage);
-		stream->write(resultVoltage);
+		writeDouble(stream, batteryMonitor.Voltage(), 4, 2);
 		stream->write("V");
 	}
 

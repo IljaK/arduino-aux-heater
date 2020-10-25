@@ -114,7 +114,7 @@
             "cStandard": "c11",
             "cppStandard": "c++11",
             "forcedInclude": [
-                "/Users/iljakrusman/Library/Arduino15/packages/arduino/hardware/samd/1.8.9/cores/arduino/Arduino.h"
+                "/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/cores/arduino/Arduino.h"
             ]
         }
     ],

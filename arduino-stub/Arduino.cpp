@@ -119,3 +119,19 @@ char *itoa (int val, char *s, int radix)
 	// TODO:
 	return 0;
 }
+char *utoa (long val, char *s, int radix)
+{
+	// TODO:
+	return 0;
+}
+
+char *ltoa (unsigned int val, char *s, int radix)
+{
+	// TODO:
+	return 0;
+}
+char *ultoa (unsigned long val, char *s, int radix)
+{
+	// TODO:
+	return 0;
+}

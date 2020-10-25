@@ -24,6 +24,14 @@
 #define INPUT_PULLUP 0x2
 #define LED_BUILTIN 13
 
+
+static uint8_t SPCR = 0;
+static uint8_t SPE = 0;
+static uint8_t MSTR = 0;
+static uint8_t SPSR = 0;
+static uint8_t SPDR = 0;
+static uint8_t SPIF = 0;
+
 // A6-A11 share with digital pins
 static const uint8_t A0 = 18;
 static const uint8_t A1 = 19;
@@ -69,4 +77,7 @@ extern void set_zone(int32_t);
 
 extern void reti();
 
-extern char *itoa (int __val, char *__s, int __radix);
+extern char *itoa (int val, char *s, int radix);
+extern char *utoa (long val, char *s, int radix);
+extern char *ltoa (unsigned int val, char *s, int radix);
+extern char *ultoa (unsigned long val, char *s, int radix);

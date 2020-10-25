@@ -24,14 +24,7 @@ size_t DebugSerialHandler::outWrite(double value, signed char width, unsigned ch
 {
 	if (!IsSendAllowed(force)) return 0;
 
-    const size_t size = 16;
-    char outString[size];
-    if (width > size) {
-        width = size - 1;
-    }
-	dtostrf(value, width, prec, outString);
-
-    return outWrite(outString);
+    return writeDouble(debugStream, value, width, prec);
 }
 size_t DebugSerialHandler::outWrite(unsigned long n, bool force) { return outWrite((uint8_t)n, force); }
 size_t DebugSerialHandler::outWrite(long n, bool force) { return outWrite((uint8_t)n, force); }
@@ -62,22 +55,14 @@ size_t DebugSerialHandler::outWriteASCII(int data, int radix, bool force)
 {
     if (!IsSendAllowed(force)) return 0;
 
-    const size_t size = 16;
-    char outString[size];
-    outString[0] = 0;
-    itoa(data, outString, radix);
-    return debugStream->write((const char *)outString);
+    return writeASCII(debugStream, data, radix);
 }
 
 size_t DebugSerialHandler::outWriteASCII(long data, int radix, bool force)
 {
     if (!IsSendAllowed(force)) return 0;
 
-    const size_t size = 16;
-    char outString[size];
-    outString[0] = 0;
-    utoa(data, outString, radix);
-    return debugStream->write((const char *)outString);
+    return writeASCII(debugStream, data, radix);
 }
 
 void DebugSerialHandler::outWriteEnd(bool force) {
@@ -89,7 +74,7 @@ void DebugSerialHandler::PrintBytes(uint8_t *byteArray, size_t length)
 	if (length > 0)
 	{
 		for (size_t i = 0; i < length; i++) {
-            outWriteASCII(byteArray[i]);
+            outWriteASCII((int)byteArray[i]);
 		}
 	}
 }
@@ -99,7 +84,7 @@ void DebugSerialHandler::PrintLongs(long *longArray, size_t length)
 	if (length > 0)
 	{
 		for (size_t i = 0; i < length; i++) {
-            outWriteASCII(longArray[i]);
+            outWriteASCII((long)longArray[i]);
 		}
 	}
 }

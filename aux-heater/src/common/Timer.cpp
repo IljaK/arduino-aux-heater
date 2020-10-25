@@ -44,7 +44,7 @@ void Timer::Loop()
 
 	TimerNode *pPrev = NULL;
 
-	for (TimerNode* pNode = pFirst; pNode; pNode ) {
+	for (TimerNode* pNode = pFirst; pNode; ) {
 		
 		if (pNode->remain <= delta) {
 			TimerNode *freeNode = pNode;
@@ -89,7 +89,7 @@ void Timer::Loop()
 }
 bool Timer::Stop(TimerID timerId)
 {
-	if (timerId == 0) false;
+	if (timerId == 0) return false;
 
 	TimerNode *pPrev = NULL;
 	for (TimerNode *pNode = pFirst; pNode; pNode = pNode->pNext) {
@@ -116,7 +116,7 @@ bool Timer::StopAll(ITimerCallback* pCaller)
 
 	TimerNode* pPrev = NULL;
 
-	for (TimerNode* pNode = pFirst; pNode; pNode) {
+	for (TimerNode* pNode = pFirst; pNode; ) {
 
 		if (pNode->pCaller <= pCaller) {
 			TimerNode* freeNode = pNode;

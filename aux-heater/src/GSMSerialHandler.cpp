@@ -35,6 +35,8 @@ void GSMSerialHandler::OnTimerComplete(TimerID timerId)
 		case GSMCallState::INCOMING:
 			AnswerCallCMD(); // Incoming answer call delay
 			break;
+		default:
+			break;
 		}
 	} else if (timerId == flowTimer) {
 		flowTimer = 0;
@@ -61,7 +63,7 @@ void GSMSerialHandler::OnResponseReceived(bool isTimeOut, bool isOverFlow)
         DebugSerialHandler::outWrite("->[");
         DebugSerialHandler::outWrite(buffer);
         DebugSerialHandler::outWrite("] [");
-        DebugSerialHandler::outWriteASCII(size);
+        DebugSerialHandler::outWriteASCII((int)size);
         DebugSerialHandler::outWrite("], type: [");
         DebugSerialHandler::outWriteASCII((uint8_t)flowState);
         DebugSerialHandler::outWrite("]\r\n");
@@ -305,10 +307,13 @@ void GSMSerialHandler::HandleOKResponse(char *response, size_t size)
 		//break;
 	case GSMFlowState::TIME_REQUEST:
 	case GSMFlowState::SEND_SMS_FLOW:
+	case GSMFlowState::SEND_SMS_BEGIN:
 	case GSMFlowState::CALL_HANGUP:
 	case GSMFlowState::CALL_ANSWER:
 		flowState = GSMFlowState::READY;
 		break;
+	default:
+		return;
 	}
 	StartFlowTimer(SERIAL_RESPONSE_TIMEOUT);
 }
@@ -366,6 +371,8 @@ void GSMSerialHandler::SendFlowCMD(char *data)
 		break;
 	case GSMFlowState::CALL_ANSWER:
         WriteGsmSerial((char*)GSM_CALL_ANSWER_CMD);
+		break;
+	default:
 		break;
 	}
 }

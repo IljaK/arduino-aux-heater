@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.10.0)
 project(aux-heater-test VERSION 0.1.0)
+set (CMAKE_CXX_STANDARD 11)
 
 include(ExternalProject)
 
@@ -7,9 +8,9 @@ if (WIN32)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
 endif (WIN32)
 
-if (UNIX)
+if (UNIX OR APPLE)
     find_package(Threads)
-endif (UNIX)
+endif ()
 
 # Download and install GoogleTest
 ExternalProject_Add(
@@ -28,10 +29,10 @@ if (WIN32)
     set_property(TARGET gtest_maind PROPERTY IMPORTED_LOCATION ${binary_dir}/lib/Debug/gtest_maind.lib)
 endif (WIN32)
 
-if (UNIX)
+if (UNIX OR APPLE)
     set_property(TARGET gtestd PROPERTY IMPORTED_LOCATION ${binary_dir}/lib/libgtest.a)
     set_property(TARGET gtest_maind PROPERTY IMPORTED_LOCATION ${binary_dir}/lib/libgtest_main.a)
-endif (UNIX)
+endif ()
 
 add_dependencies(gtestd googletest)
 add_dependencies(gtest_maind googletest)
@@ -39,6 +40,7 @@ add_dependencies(gtest_maind googletest)
 include_directories(${source_dir}/googletest/include)
 include_directories(arduino-stub)
 include_directories(aux-heater/src)
+include_directories(aux-heater/src/libs)
 include_directories(aux-heater/src/common)
 include_directories(aux-heater/src/serial)
 include_directories(aux-heater-test/src)
@@ -52,10 +54,10 @@ file(GLOB_RECURSE aux-heater-test-src
 
 add_executable(aux-heater-test ${aux-heater-test-src})
 target_compile_definitions(aux-heater-test PUBLIC ARDUINO_TEST)
-if (UNIX)
+if (UNIX OR APPLE)
     target_compile_definitions(aux-heater-test PUBLIC _LINUX_)
     target_link_libraries(aux-heater-test ${CMAKE_THREAD_LIBS_INIT})
-endif (UNIX)
+endif ()
 
 # Disable string safe functions warning
 if (WIN32)

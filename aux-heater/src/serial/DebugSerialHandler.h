@@ -29,6 +29,6 @@ public:
     static void PrintLongs(long *longArray, size_t length);
 
     static size_t outWriteASCII(int data, int radix = 10, bool force = false);
-    static size_t outWriteASCII(long data, int radix, bool force);
+    static size_t outWriteASCII(long data, int radix = 10, bool force = false);
     static void outWriteEnd(bool force = false);
 };
