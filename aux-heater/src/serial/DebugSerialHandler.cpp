@@ -20,17 +20,6 @@ size_t DebugSerialHandler::outWrite(uint8_t data, bool force)
 	return debugStream->write(data);
 }
 
-size_t DebugSerialHandler::outWrite(double value, signed char width, unsigned char prec, bool force)
-{
-	if (!IsSendAllowed(force)) return 0;
-
-    return writeDouble(debugStream, value, width, prec);
-}
-size_t DebugSerialHandler::outWrite(unsigned long n, bool force) { return outWrite((uint8_t)n, force); }
-size_t DebugSerialHandler::outWrite(long n, bool force) { return outWrite((uint8_t)n, force); }
-size_t DebugSerialHandler::outWrite(unsigned int n, bool force) { return outWrite((uint8_t)n, force); }
-size_t DebugSerialHandler::outWrite(int n, bool force) { return outWrite((uint8_t)n, force); }
-
 size_t DebugSerialHandler::outWrite(const uint8_t *buffer, size_t size, bool force)
 {
 	if (!IsSendAllowed(force)) return 0;
@@ -67,24 +56,4 @@ size_t DebugSerialHandler::outWriteASCII(long data, int radix, bool force)
 
 void DebugSerialHandler::outWriteEnd(bool force) {
 	outWrite(RESPONSE_SEPARATOR, force);
-}
-
-void DebugSerialHandler::PrintBytes(uint8_t *byteArray, size_t length)
-{
-	if (length > 0)
-	{
-		for (size_t i = 0; i < length; i++) {
-            outWriteASCII((int)byteArray[i]);
-		}
-	}
-}
-
-void DebugSerialHandler::PrintLongs(long *longArray, size_t length)
-{
-	if (length > 0)
-	{
-		for (size_t i = 0; i < length; i++) {
-            outWriteASCII((long)longArray[i]);
-		}
-	}
 }

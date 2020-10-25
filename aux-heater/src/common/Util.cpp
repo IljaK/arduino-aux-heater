@@ -263,7 +263,7 @@ size_t writeASCII(Stream *stream, unsigned int data, int radix)
     return stream->write((const char *)outString);
 }
 
-size_t writeASCII(Stream *stream, long data, int radix, bool force)
+size_t writeASCII(Stream *stream, long data, int radix)
 {
     const size_t size = 8;
     char outString[size];
@@ -272,7 +272,7 @@ size_t writeASCII(Stream *stream, long data, int radix, bool force)
     return stream->write((const char *)outString);
 }
 
-size_t writeASCII(Stream *stream, unsigned long data, int radix, bool force)
+size_t writeASCII(Stream *stream, unsigned long data, int radix)
 {
     const size_t size = 32;
     char outString[size];
