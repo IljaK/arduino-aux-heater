@@ -169,7 +169,9 @@ bool handleHeaterComplete(Stream *stream) {
         if (DebugSerialHandler::IsDebugEnabled()) {
 
             DebugSerialHandler::outWrite(F("AUX: "));
-			DebugSerialHandler::PrintBytes(bytes, bytesAmount);
+			for (uint8_t i = 0; i < bytesAmount; i++) {
+				DebugSerialHandler::outWriteASCII(bytes[i]);
+			}
 			DebugSerialHandler::outWriteEnd();
         }
 	}
