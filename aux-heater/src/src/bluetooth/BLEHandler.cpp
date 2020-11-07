@@ -98,6 +98,11 @@ void BLEHandler::Start()
     // Create the BLE Service
     BLEService* pService = pServer->createService(SERVICE_UUID);
 
+    //BLE2902 * descriptor = new BLE2902();
+    //descriptor->setIndications(true);
+    //descriptor->setNotifications(true);
+
+    /*
     // Create a BLE Characteristic
     uartCharacteristics = pService->createCharacteristic(
         UART_TX_CHARACTERISTICS,
@@ -106,25 +111,27 @@ void BLEHandler::Start()
         BLECharacteristic::PROPERTY_NOTIFY |
         BLECharacteristic::PROPERTY_INDICATE
     );
-    uartCharacteristics->addDescriptor(new BLE2902());
+    uartCharacteristics->addDescriptor(descriptor);
     uartCharacteristics->setCallbacks(this);
 
     batteryCharacteristics = pService->createCharacteristic(
         BATTERY_STATE_UUID,
         BLECharacteristic::PROPERTY_NOTIFY | BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_READ
     );
-    batteryCharacteristics->addDescriptor(new BLE2902());
+
+    batteryCharacteristics->addDescriptor(descriptor);
     batteryCharacteristics->setCallbacks(this);
+    */
 
     bme280Characteristics = pService->createCharacteristic(
         BME280_STATE_UUID,
-        BLECharacteristic::PROPERTY_READ   |
-        BLECharacteristic::PROPERTY_WRITE  |
+        BLECharacteristic::PROPERTY_READ  |
         BLECharacteristic::PROPERTY_NOTIFY |
         BLECharacteristic::PROPERTY_INDICATE
     );
-    bme280Characteristics->addDescriptor(new BLE2902());
+
     bme280Characteristics->setCallbacks(this);
+
 
     // Start the service
     pService->start();
@@ -153,18 +160,13 @@ void BLEHandler::SendStats()
     BatteryData batteryData;
     if (batteryDataCB != NULL) batteryDataCB(&batteryData);
 
-    Serial.print("temp: ");
-    Serial.print(bme280Data.temperature);
-    Serial.println();
-    Serial.print("size: ");
-    Serial.print(sizeof(bme280Data));
-    Serial.println();
-
     //batteryCharacteristics->setValue((uint8_t *)&batteryData, sizeof(batteryData));
     //batteryCharacteristics->notify();
 
+    //bme280Characteristics->getDescriptorByUUID()
+    //ble2902->setValue((uint8_t *)&bme280Data, sizeof(bme280Data));
     bme280Characteristics->setValue((uint8_t *)&bme280Data, sizeof(bme280Data));
-    bme280Characteristics->notify();
+    bme280Characteristics->notify(true);
     
         // TODO: read voltage
     //outWrite(temperature, 5, 2); // out temp
