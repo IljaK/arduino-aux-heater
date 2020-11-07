@@ -10,3 +10,6 @@ mvsc-gtest/.vs/
 mvsc-gtest/Debug/
 mvsc-gtest/packages/
 build/
+aux-heater/.DS_Store/
+aux-heater/.pio/
+aux-heater/test/
