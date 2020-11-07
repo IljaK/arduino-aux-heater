@@ -13,3 +13,4 @@ build/
 aux-heater/.DS_Store/
 aux-heater/.pio/
 aux-heater/test/
+*.DS_Store
