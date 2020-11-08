@@ -32,23 +32,29 @@ void BLEHandler::SendSerialMessage()
 
 void BLEHandler::onConnect(BLEServer* pServer, esp_ble_gatts_cb_param_t* param)
 {
-    if (connectedDevices == 0) {
+    if (pServer->getConnectedCount() == 1) {
         SendStats();
     }
-    connectedDevices++;
 
-    if (connectedDevices >= MAX_CONNECTED_DEVICES) {
-        StopAdvertise();
-    }
-    Serial.print("Device connected, total: ");
-    Serial.print(connectedDevices);
+    Serial.print("Device connected, id: ");
+    Serial.print(pServer->getConnId());
+    Serial.print(" total: ");
+    Serial.print(pServer->getConnectedCount());
     Serial.println();
+
+    if (pServer->getConnectedCount() == MAX_CONNECTED_DEVICES) {
+        StopAdvertise();
+    } else if (pServer->getConnectedCount() > MAX_CONNECTED_DEVICES) {
+        // TODO: Kick device
+    }
+
+    //pServer->getConnId()
+    //pServer->removePeerDevice(pServer->getConnId())
 }
 
 void BLEHandler::onDisconnect(BLEServer* pServer) {
     Serial.println("Device disconnected");
-    connectedDevices--;
-    if (connectedDevices == 0) {
+    if (pServer->getConnectedCount() == 0) {
         Advertise();
         Timer::Stop(statsTimer);
         statsTimer = 0;
@@ -75,15 +81,13 @@ void BLEHandler::onStatus(BLECharacteristic* pCharacteristic, Status s, uint32_t
 void BLEHandler::onWrite(BLECharacteristic* pCharacteristic) {
     std::string rxValue = pCharacteristic->getValue();
 
+    Serial.print("onWrite Value: ");
     if (rxValue.length() > 0) {
-        Serial.println("*********");
-        Serial.print("Received Value: ");
-        for (int i = 0; i < rxValue.length(); i++)
+        for (int i = 0; i < rxValue.length(); i++) {
             Serial.print(rxValue[i]);
-
-        Serial.println();
-        Serial.println("*********");
+        }
     }
+    Serial.println();
 }
 
 void BLEHandler::Start()
@@ -98,38 +102,34 @@ void BLEHandler::Start()
     // Create the BLE Service
     BLEService* pService = pServer->createService(SERVICE_UUID);
 
-    //BLE2902 * descriptor = new BLE2902();
-    //descriptor->setIndications(true);
-    //descriptor->setNotifications(true);
-
-    /*
-    // Create a BLE Characteristic
-    uartCharacteristics = pService->createCharacteristic(
+    // Create a UART Characteristic
+    uartRXCharacteristics = pService->createCharacteristic(
         UART_TX_CHARACTERISTICS,
-        BLECharacteristic::PROPERTY_READ   |
-        BLECharacteristic::PROPERTY_WRITE  |
-        BLECharacteristic::PROPERTY_NOTIFY |
-        BLECharacteristic::PROPERTY_INDICATE
+        BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_INDICATE
     );
-    uartCharacteristics->addDescriptor(descriptor);
-    uartCharacteristics->setCallbacks(this);
+    //uartRXCharacteristics->addDescriptor(descriptor);
+    uartRXCharacteristics->setCallbacks(this);
 
+    uartTXCharacteristics = pService->createCharacteristic(
+        UART_TX_CHARACTERISTICS,
+        BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_INDICATE
+    );
+    //uartCharacteristics->addDescriptor(descriptor);
+    uartTXCharacteristics->setCallbacks(this);
+
+    // Battery Characteristic
     batteryCharacteristics = pService->createCharacteristic(
         BATTERY_STATE_UUID,
-        BLECharacteristic::PROPERTY_NOTIFY | BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_READ
+        BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY
     );
-
-    batteryCharacteristics->addDescriptor(descriptor);
+    //batteryCharacteristics->addDescriptor(descriptor);
     batteryCharacteristics->setCallbacks(this);
-    */
 
+    // Bme 280 Characteristic
     bme280Characteristics = pService->createCharacteristic(
         BME280_STATE_UUID,
-        BLECharacteristic::PROPERTY_READ  |
-        BLECharacteristic::PROPERTY_NOTIFY |
-        BLECharacteristic::PROPERTY_INDICATE
+        BLECharacteristic::PROPERTY_READ  | BLECharacteristic::PROPERTY_NOTIFY
     );
-
     bme280Characteristics->setCallbacks(this);
 
 
@@ -160,13 +160,10 @@ void BLEHandler::SendStats()
     BatteryData batteryData;
     if (batteryDataCB != NULL) batteryDataCB(&batteryData);
 
-    //batteryCharacteristics->setValue((uint8_t *)&batteryData, sizeof(batteryData));
-    //batteryCharacteristics->notify();
-
-    //bme280Characteristics->getDescriptorByUUID()
-    //ble2902->setValue((uint8_t *)&bme280Data, sizeof(bme280Data));
     bme280Characteristics->setValue((uint8_t *)&bme280Data, sizeof(bme280Data));
     bme280Characteristics->notify(true);
+    batteryCharacteristics->setValue((uint8_t *)&batteryData, sizeof(batteryData));
+    batteryCharacteristics->notify(true);
     
         // TODO: read voltage
     //outWrite(temperature, 5, 2); // out temp

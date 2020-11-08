@@ -42,6 +42,10 @@ struct BatteryData {
 	float calcVoltage = 0;
 };
 
+struct DeviceSpecData {
+    uint32_t remainRam = 0;
+};
+
 typedef void (*BME1280DataCallback)(BME280Data *);
 typedef void (*BatteryDataCallback)(BatteryData *);
 typedef bool (*StreamCallback)(Stream *);
@@ -57,9 +61,6 @@ extern void setBitsValue(uint16_t* target, uint16_t value, uint8_t length, uint8
 
 extern bool IsByteArraysEqual(uint8_t * byteArray1, int length1, uint8_t * byteArray2, int length2);
 extern void CopyByteArray(uint8_t * source, uint8_t * destination, int size);
-
-extern size_t printBytes(char *stringBuff, size_t bufferLength, uint8_t *sendBytes, size_t byteLength);
-extern size_t printLongs(char *stringBuff, size_t bufferLength, unsigned long *sendBytes, size_t byteLength);
 
 extern size_t SplitString(char *source, char *separator, char **subStrArray, size_t arraySize, bool skipEmpty = false);
 extern size_t SplitString(char *source, uint8_t separator, char **subStrArray, size_t arraySize, bool skipEmpty);
