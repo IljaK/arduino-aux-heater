@@ -32,19 +32,21 @@ void BLEHandler::SendSerialMessage()
 
 void BLEHandler::onConnect(BLEServer* pServer, esp_ble_gatts_cb_param_t* param)
 {
-    if (pServer->getConnectedCount() == 1) {
+    int connectedCount = pServer->getConnectedCount() + 1;
+
+    if (connectedCount == 1) {
         SendStats();
     }
 
     Serial.print("Device connected, id: ");
     Serial.print(pServer->getConnId());
     Serial.print(" total: ");
-    Serial.print(pServer->getConnectedCount());
+    Serial.print(connectedCount);
     Serial.println();
 
-    if (pServer->getConnectedCount() == MAX_CONNECTED_DEVICES) {
+    if (connectedCount == MAX_CONNECTED_DEVICES) {
         StopAdvertise();
-    } else if (pServer->getConnectedCount() > MAX_CONNECTED_DEVICES) {
+    } else if (connectedCount > MAX_CONNECTED_DEVICES) {
         // TODO: Kick device
     }
 
@@ -64,12 +66,12 @@ void BLEHandler::onDisconnect(BLEServer* pServer) {
 // BLECharacteristicCallbacks
 void BLEHandler::onRead(BLECharacteristic* pCharacteristic)
 {
-    Serial.print("onRead chrst: ");
+    //Serial.print("onRead chrst: ");
     Serial.println(pCharacteristic->getUUID().toString().data());
 }
 void BLEHandler::onNotify(BLECharacteristic* pCharacteristic)
 {
-    Serial.print("onNotify chrst: ");
+    //Serial.print("onNotify chrst: ");
     Serial.println(pCharacteristic->getUUID().toString().data());
 }
 void BLEHandler::onStatus(BLECharacteristic* pCharacteristic, Status s, uint32_t code)
@@ -104,7 +106,7 @@ void BLEHandler::Start()
 
     // Create a UART Characteristic
     uartRXCharacteristics = pService->createCharacteristic(
-        UART_TX_CHARACTERISTICS,
+        UART_RX_CHARACTERISTICS,
         BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_INDICATE
     );
     //uartRXCharacteristics->addDescriptor(descriptor);

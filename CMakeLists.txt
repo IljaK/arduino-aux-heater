@@ -39,17 +39,17 @@ add_dependencies(gtest_maind googletest)
 
 include_directories(${source_dir}/googletest/include)
 include_directories(arduino-stub)
-include_directories(aux-heater/src)
-include_directories(aux-heater/src/libs)
-include_directories(aux-heater/src/common)
-include_directories(aux-heater/src/serial)
+include_directories(aux-heater/src/src)
+include_directories(aux-heater/src/src/libs)
+include_directories(aux-heater/src/src/common)
+include_directories(aux-heater/src/src/serial)
 include_directories(aux-heater-test/src)
 include_directories(aux-heater-test/src/mock)
 
 # Add recursive .h and .cpp files to build
 file(GLOB_RECURSE aux-heater-test-src 
     "arduino-stub/*.h" "arduino-stub/*.cpp"
-    "aux-heater/src/*.h" "aux-heater/src/*.cpp"
+    "aux-heater/src/src/*.h" "aux-heater/src/src/*.cpp"
     "aux-heater-test/src/*.h" "aux-heater-test/src/*.cpp")
 
 add_executable(aux-heater-test ${aux-heater-test-src})

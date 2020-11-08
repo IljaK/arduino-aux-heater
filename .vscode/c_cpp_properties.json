@@ -33,7 +33,8 @@
             "cppStandard": "c++11",
             "intelliSenseMode": "gcc-x64",
             "forcedInclude": [],
-            "compileCommands": "${workspaceFolder}/build/compile_commands.json"
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
+            "configurationProvider": "ms-vscode.cmake-tools"
         },
         {
             "name": "Mac",
