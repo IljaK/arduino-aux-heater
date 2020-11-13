@@ -7,6 +7,7 @@
 #include "../common/DebugHandler.h"
 #include "../common/Timer.h"
 #include "../common/Util.h"
+#include "../common/ByteStackArray.h"
 
 // See the following for generating UUIDs:
 // https://www.uuidgenerator.net/
@@ -21,10 +22,11 @@
 #define MEMORY_STATE_UUID "6E400006-B5A3-F393-E0A9-E50E24DCCA9E"
 
 
-#define MAX_BLE_MESSAGE_SIZE 20
+#define MAX_BLE_MESSAGE_SIZE 20u
+#define MAX_TX_STACK_SIZE 20u
 
-#define MAX_CONNECTED_DEVICES 3
-#define STATS_REFRESH_RATE 1000000
+#define MAX_CONNECTED_DEVICES 3u
+#define STATS_REFRESH_RATE 1000000u
 
 class BLEHandler : public BLEServerCallbacks, 
     public BLECharacteristicCallbacks, 
@@ -48,12 +50,12 @@ private:
 	BME1280DataCallback bme280DataCB = NULL;
     BatteryDataCallback batteryDataCB = NULL;
 
-    uint8_t serialRXLength = 0;
-    uint8_t serialTXBuffer[MAX_BLE_MESSAGE_SIZE];
+    //ByteStackArray serialTXBuffer((const uint8_t)20, (uint8_t)MAX_BLE_MESSAGE_SIZE);
+    ByteStackArray * serialTXBuffer = new ByteStackArray(MAX_TX_STACK_SIZE, MAX_BLE_MESSAGE_SIZE);
+    bool isTransferrig = false;
 
     BLECharacteristic * serialCharacteristic = NULL;
     TimerID statsTimer = 0;
-    TimerID testTimer = 0;
 
     BLECharacteristic* CreateCharacteristic(const char * uuid, uint32_t properties);
     void SendSerialMessage();

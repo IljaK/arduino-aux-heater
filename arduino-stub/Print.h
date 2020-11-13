@@ -7,7 +7,7 @@
 class Print
 {
 public:
-	Print();
+	Print() {};
 
 	// From Aduino HardwareSerial.h
 	inline size_t write(unsigned long n) { return write((uint8_t)n); }

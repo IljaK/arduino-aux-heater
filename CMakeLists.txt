@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.10.0)
 project(aux-heater-test VERSION 0.1.0)
 set (CMAKE_CXX_STANDARD 11)
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+
+find_package(Threads REQUIRED)
 
 include(ExternalProject)
 
@@ -47,10 +50,13 @@ include_directories(aux-heater-test/src)
 include_directories(aux-heater-test/src/mock)
 
 # Add recursive .h and .cpp files to build
-file(GLOB_RECURSE aux-heater-test-src 
+file(GLOB aux-heater-test-src 
     "arduino-stub/*.h" "arduino-stub/*.cpp"
     "aux-heater/src/src/*.h" "aux-heater/src/src/*.cpp"
-    "aux-heater-test/src/*.h" "aux-heater-test/src/*.cpp")
+    "aux-heater/src/src/common/*.h" "aux-heater/src/src/common/*.cpp"
+    "aux-heater/src/src/serial/*.h" "aux-heater/src/src/serial/*.cpp"
+    "aux-heater-test/src/*.h" "aux-heater-test/src/*.cpp"
+    "aux-heater-test/src/mock/*.h" "aux-heater-test/src/mock/*.cpp")
 
 add_executable(aux-heater-test ${aux-heater-test-src})
 target_compile_definitions(aux-heater-test PUBLIC ARDUINO_TEST)

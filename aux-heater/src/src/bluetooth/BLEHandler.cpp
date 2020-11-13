@@ -1,5 +1,6 @@
-#include "BLEHandler.h"
 #include <string.h>
+#include "BLEHandler.h"
+
 
 BLEHandler::BLEHandler(BME1280DataCallback bme280DataCB, BatteryDataCallback batteryDataCB)
 {
@@ -37,43 +38,36 @@ bool BLEHandler::onConfirmPIN(uint32_t pin)
 // Compatibility with serial->write
 size_t BLEHandler::write(uint8_t data)
 {
-    serialTXBuffer[serialRXLength] = data;
-    serialRXLength++;
-    if (serialRXLength >= MAX_BLE_MESSAGE_SIZE) {
+    size_t wrote = serialTXBuffer->Append(&data, 1);
+    if (serialTXBuffer->HasReadyPacked()) {
         SendSerialMessage();
     }
-    return 1;
+    return wrote;
 }
 size_t BLEHandler::write(const uint8_t *buffer, size_t size)
 {
     if (buffer == NULL) return 0;
     if (size == 0) return 0;
 
-    size_t sent = 0;
-
-    while (sent < size) {
-        size_t remain = size - sent;
-        size_t append = MAX_BLE_MESSAGE_SIZE - serialRXLength;
-        if (append < remain) append = remain;
-
-        mempcpy(serialTXBuffer + serialRXLength, buffer + sent, append);
-        sent += append;
-
-        if (serialRXLength == MAX_BLE_MESSAGE_SIZE) {
-            SendSerialMessage();
-        }
+    size_t wrote = serialTXBuffer->Append(buffer, size);
+    if (serialTXBuffer->HasReadyPacked()) {
+        SendSerialMessage();
     }
-
-    return size;
+    return wrote;
 }
 
 void BLEHandler::SendSerialMessage()
 {
-    if (serialCharacteristic == NULL) return;
-    serialCharacteristic->setValue(serialTXBuffer, serialRXLength);
-    serialCharacteristic->notify(false);
-    serialRXLength = 0;
-    // TODO
+    if (!isTransferrig) {
+        ByteArray * item = serialTXBuffer->UnshiftFirst();
+        Serial.printf("SendSerialMessage %d\r\n", item->length);
+
+        serialCharacteristic->setValue(item->array, item->length);
+        serialCharacteristic->notify(false);
+
+        free(item->array);
+        free(item);
+    }
 }
 
 void BLEHandler::onConnect(BLEServer* pServer, esp_ble_gatts_cb_param_t* param)
@@ -84,7 +78,7 @@ void BLEHandler::onConnect(BLEServer* pServer, esp_ble_gatts_cb_param_t* param)
         SendStats();
     }
 
-    Serial.print("Device connected, id: ");
+    Serial.print("Connected id: ");
     Serial.print(pServer->getConnId());
     Serial.print(" total: ");
     Serial.print(connectedCount);
@@ -132,13 +126,20 @@ void BLEHandler::onStatus(BLECharacteristic* pCharacteristic, Status s, uint32_t
 void BLEHandler::onWrite(BLECharacteristic* pCharacteristic) {
     std::string rxValue = pCharacteristic->getValue();
 
-    Serial.print("onWrite Value: ");
+    Serial.print("onWrite Value[");
+    Serial.print(rxValue.length());
+    Serial.print("]: ");
+    
     if (rxValue.length() > 0) {
         for (int i = 0; i < rxValue.length(); i++) {
             Serial.print(rxValue[i]);
         }
     }
     Serial.println();
+
+    if (rxValue == "send") {
+        printf("This messsage is over 20 characters\r\n");
+    }
 }
 
 void BLEHandler::onRead(BLEDescriptor* pDescriptor)
@@ -170,12 +171,12 @@ void BLEHandler::Start()
     // Create a UART Characteristic
     uartRXCharacteristics = CreateCharacteristic(
         UART_RX_CHARACTERISTICS,
-        BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_INDICATE
+        BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_NOTIFY | BLECharacteristic::PROPERTY_INDICATE
     );
 
     uartTXCharacteristics = CreateCharacteristic(
         UART_TX_CHARACTERISTICS,
-        BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_INDICATE
+        BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY | BLECharacteristic::PROPERTY_INDICATE
     );
 
     // Battery Characteristic
@@ -228,9 +229,6 @@ void BLEHandler::OnTimerComplete(TimerID timerId)
     if (timerId == statsTimer) {
         statsTimer = 0;
         if (pServer != NULL) SendStats();
-    } else if (timerId == testTimer) {
-        testTimer = 0;
-        printf("This messsage is over 20 characters\r\n");
     }
 }
 
@@ -257,7 +255,7 @@ void BLEHandler::SendStats()
 
 void BLEHandler::Loop()
 {
-    if (serialRXLength >= MAX_BLE_MESSAGE_SIZE) {
+    if (serialTXBuffer->Size() > 0) {
         SendSerialMessage();
     }
 }

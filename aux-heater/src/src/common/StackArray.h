@@ -7,10 +7,12 @@ class StackArray
 protected:
     T *arr = NULL;
     uint8_t maxSize = 0;
+    uint8_t size = 0;
     virtual bool IsElementEqual(T item1, T item2)
     {
         return item1 == item2;
     }
+
 public:
     StackArray (const uint8_t maxSize)
     {
@@ -23,19 +25,15 @@ public:
         free(arr);
         arr = NULL;
     }
-    bool Append(T item)
+    virtual bool Append(T item)
     {
-        for(uint8_t i = 0; i < maxSize; i++) {
-            if (arr[i] == NULL) {
-                arr[i] = item;
-                return true;
-            } else if (IsElementEqual(arr[i], item)) {
-                return false;
-            }
+        if (size < maxSize) {
+            arr[size] = item;
+            return true;
         }
         return false;
     }
-    T UnshiftFirst()
+    virtual T UnshiftFirst()
     {
         T first = arr[0];
         for(uint8_t i = 0; i < maxSize; i++) {
@@ -55,18 +53,14 @@ public:
     }
     uint8_t Size()
     {
-        if (arr == NULL) return 0;
-        for(uint8_t i = 0; i < maxSize; i++) {
-            if (arr[i] == NULL) return i;
-        }
-        return maxSize;
+        return size;
     }
     bool IsFull()
     {
         return (arr != NULL) && Size() == maxSize;
     }
 
-    bool Contains(T item)
+    virtual bool Contains(T item)
     {
         for(uint8_t i = 0; i < maxSize; i++) {
             if (arr[i] == NULL) return false;
