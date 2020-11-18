@@ -44,6 +44,12 @@ struct BatteryData {
 
 struct DeviceSpecData {
     uint32_t remainRam = 0;
+	// TODO: Active time
+};
+
+struct ByteArray {
+    uint8_t length;
+    uint8_t * array;
 };
 
 typedef void (*BME1280DataCallback)(BME280Data *);

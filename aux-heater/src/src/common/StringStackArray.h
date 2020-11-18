@@ -5,7 +5,7 @@ class StringStackArray: public StackArray<char *>
 public:
     StringStackArray(const uint8_t maxSize):StackArray(maxSize) {}
 
-    ~StringStackArray()
+    virtual ~StringStackArray()
     {
         for(uint8_t i = 0; i < maxSize; i++) {
             if (arr[i] == NULL) break;
@@ -31,7 +31,10 @@ public:
 
         char *pCopy = (char *)malloc(strlen(item) + 1);
         strcpy(pCopy, item);
-        Append(pCopy);
+        if (!Append(pCopy)) {
+            free(pCopy);
+            return NULL;
+        }
 
         return pCopy;
     }

@@ -20,7 +20,7 @@ public:
         this->maxSize = maxSize;
     }
 
-    ~StackArray()
+    virtual ~StackArray()
     {
         free(arr);
         arr = NULL;
@@ -29,21 +29,26 @@ public:
     {
         if (size < maxSize) {
             arr[size] = item;
+            size++;
             return true;
         }
         return false;
     }
     virtual T UnshiftFirst()
     {
+        if (size == 0) {
+            return NULL;
+        }
         T first = arr[0];
-        for(uint8_t i = 0; i < maxSize; i++) {
-            if (i == maxSize - 1) {
+        for(uint8_t i = 0; i < size; i++) {
+            if (i == size - 1) {
                 arr[i] = NULL;
                 break;
             }
             arr[i] = arr[i+1];
             if (arr[i] == NULL) break;
         }
+        size--;
         return first;
     }
     uint8_t MaxSize()
@@ -57,7 +62,7 @@ public:
     }
     bool IsFull()
     {
-        return (arr != NULL) && Size() == maxSize;
+        return size == maxSize;
     }
 
     virtual bool Contains(T item)

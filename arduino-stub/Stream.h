@@ -4,7 +4,7 @@
 #include <string.h>
 #include "Print.h"
 
-#define SERIAL_RX_BUFFER_SIZE 64
+#define SERIAL_RX_BUFFER_SIZE 128
 
 #if (SERIAL_TX_BUFFER_SIZE>256)
 typedef uint16_t tx_buffer_index_t;
