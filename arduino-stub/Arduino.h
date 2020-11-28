@@ -6,6 +6,7 @@
 #include "Interrupt.h"
 #include "EEprom.h"
 #include "Stream.h"
+#include "Mutex.h"
 
 #include <cstdlib>
 #include <climits>

@@ -26,32 +26,28 @@
 
 
 #define MAX_BLE_MESSAGE_SIZE 20u
-#define MAX_TX_STACK_SIZE 20u
-#define MAX_RX_STACK_SIZE 3u
 
 #define MAX_CONNECTED_DEVICES 3u
 #define STATS_REFRESH_RATE 1000000u
 
-#define PACKAGE_EXTRA_DATA_SIZE 1
-constexpr uint8_t MAX_BLE_PART_SIZE = MAX_BLE_MESSAGE_SIZE - PACKAGE_EXTRA_DATA_SIZE;
-
-
-struct BLEMessage {
-    uint8_t length;
-    uint8_t data[];
-};
-
-class BLEServerHandler : 
-    public Print,
-    private BLEServerCallbacks, 
-    private BLECharacteristicCallbacks, 
-    private BLESecurityCallbacks, 
-    private BLEDescriptorCallbacks
+class BLEServerHandler :
+    protected BLEServerCallbacks, 
+    protected BLECharacteristicCallbacks, 
+    protected BLESecurityCallbacks, 
+    protected BLEDescriptorCallbacks
 {
 private:
     BLEServer* pServer = NULL;
     BLEService* pService = NULL;
     BLESecurity *pSecurity = NULL;
+
+    BLECharacteristic* CreateCharacteristic(const char * uuid, uint32_t properties);
+
+    void Advertise();
+    void StopAdvertise();
+    //bool IsValidCheckSum(BLEMessage * message);
+
+protected:
 
     BLECharacteristic* uartRXCharacteristics;
     BLECharacteristic* uartTXCharacteristics;
@@ -59,17 +55,6 @@ private:
     BLECharacteristic* batteryCharacteristics;
     BLECharacteristic* bme280Characteristics;
     BLECharacteristic* deviceCharacteristics;
-
-    BLECharacteristic* CreateCharacteristic(const char * uuid, uint32_t properties);
-
-    // Serial TX
-    ByteStackArray * serialTXBuffer = new ByteStackArray(MAX_TX_STACK_SIZE, MAX_BLE_MESSAGE_SIZE);
-    bool isTransferrig = false;
-
-    // Serial RX
-    BinaryMessageStack * rxMessageStack = new BinaryMessageStack(MAX_RX_STACK_SIZE);
-
-    void SendSerialMessage();
 
     // BLE Server callbacks
 	void onConnect(BLEServer* pServer, esp_ble_gatts_cb_param_t *param) override;
@@ -92,23 +77,15 @@ private:
 	void onAuthenticationComplete(esp_ble_auth_cmpl_t) override;
 	bool onConfirmPIN(uint32_t pin) override;
 
-    void Advertise();
-    void StopAdvertise();
-    void ReadRxData(uint8_t * data);
-    //bool IsValidCheckSum(BLEMessage * message);
 public:
     BLEServerHandler();
     virtual ~BLEServerHandler();
 
-    void Start();
-    void Loop();
-    void SendSerial(uint8_t * data, uint8_t length);
+    virtual void Start();
 
     void SendData(BME280Data bme280Data);
     void SendData(BatteryData batteryData);
     void SendData(DeviceSpecData deviceData);
 
-    // Compatibility with serial->write
-    size_t write(uint8_t) override;
-    size_t write(const uint8_t *buffer, size_t size) override;    
+    int GetConnectedCount();
 };

@@ -172,7 +172,7 @@ public:
 	GSMSerialHandler(SMSCallback smsCallback, DTMFCallback dtmfCallback, Stream * serial);
 	~GSMSerialHandler();
 
-	void OnTimerComplete(TimerID timerId) override;
+	void OnTimerComplete(TimerID timerId, uint8_t data) override;
 	void OnResponseReceived(bool isTimeOut, bool isOverFlow = false) override;
 	bool IsBusy() override;
 	void SendSMSMessage(StreamCallback messageCallback);

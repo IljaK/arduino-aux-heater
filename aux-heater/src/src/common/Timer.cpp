@@ -2,17 +2,20 @@
 
 TimerNode *Timer::pFirst = NULL;
 unsigned long Timer::frameTS = 0;
+SemaphoreHandle_t Timer::xTimerSemaphore = xSemaphoreCreateRecursiveMutex();
 
 ITimerCallback::~ITimerCallback()
 {
 	Timer::StopAll(this);
 };
-void ITimerCallback::OnTimerComplete(TimerID timerId)
+void ITimerCallback::OnTimerComplete(TimerID timerId, uint8_t data)
 { 
 };
 
-TimerID Timer::Start(ITimerCallback *pCaller, unsigned long duration)
+TimerID Timer::Start(ITimerCallback *pCaller, unsigned long duration, uint8_t data)
 {
+	xSemaphoreTakeRecursive( xTimerSemaphore, portMAX_DELAY );
+
 	TimerNode *newNode = new TimerNode();
 	newNode->pCaller = pCaller;
 	newNode->remain = duration;
@@ -27,16 +30,22 @@ TimerID Timer::Start(ITimerCallback *pCaller, unsigned long duration)
 				newNode->pNext = pNode->pNext;
 				pNode->pNext = newNode;
 				newNode->id = pNode->id + 1u;
+				newNode->data = data;
 				break;
 			}
 		}
 	}
 
-	return newNode->id;
+	TimerID id = newNode->id;
+	
+    xSemaphoreGiveRecursive(xTimerSemaphore);
+	return id;
 }
 
 void Timer::Loop()
 {
+	xSemaphoreTakeRecursive( xTimerSemaphore, portMAX_DELAY );
+
 	unsigned long microsTS = micros();
 	unsigned long delta = microsTS - frameTS;
 	frameTS = microsTS;
@@ -57,7 +66,7 @@ void Timer::Loop()
 				pPrev->pNext = pNode;
 			}
 
-			freeNode->pCaller->OnTimerComplete(freeNode->id);
+			freeNode->pCaller->OnTimerComplete(freeNode->id, freeNode->data);
 
 			// pPrev node could be changed during callback
 			if (pNode != NULL) {
@@ -81,10 +90,14 @@ void Timer::Loop()
 		pPrev = pNode;
 		pNode = pNode->pNext;
 	}
+    xSemaphoreGiveRecursive(xTimerSemaphore);
 }
 bool Timer::Stop(TimerID timerId)
 {
 	if (timerId == 0) return false;
+
+	xSemaphoreTakeRecursive( xTimerSemaphore, portMAX_DELAY );
+	bool result = false;
 
 	TimerNode *pPrev = NULL;
 	for (TimerNode *pNode = pFirst; pNode; pNode = pNode->pNext) {
@@ -97,18 +110,20 @@ bool Timer::Stop(TimerID timerId)
 				pPrev->pNext = pNode->pNext;
 			}
 			delete(pNode);
-			return true;
+			result = true;
+			break;
 		}
 		pPrev = pNode;
 	}
-	return false;
+
+    xSemaphoreGiveRecursive(xTimerSemaphore);
+	return result;
 }
 
 
-bool Timer::StopAll(ITimerCallback* pCaller)
+void Timer::StopAll(ITimerCallback* pCaller)
 {
-	bool isDestroyed = false;
-
+	xSemaphoreTakeRecursive( xTimerSemaphore, portMAX_DELAY );
 	TimerNode* pPrev = NULL;
 
 	for (TimerNode* pNode = pFirst; pNode; ) {
@@ -131,16 +146,33 @@ bool Timer::StopAll(ITimerCallback* pCaller)
 		pPrev = pNode;
 		pNode = pNode->pNext;
 	}
-
-	return isDestroyed;
+    xSemaphoreGiveRecursive(xTimerSemaphore);
 }
 
 unsigned long Timer::Remain(TimerID timerId)
 {
+	xSemaphoreTakeRecursive( xTimerSemaphore, portMAX_DELAY );
+	unsigned long remain = 0;
 	for (TimerNode *pNode = pFirst; pNode; pNode = pNode->pNext) {
 		if (pNode->id == timerId) {
-			return pNode->remain;
+			remain = pNode->remain;
+			break;
 		}
 	}
-	return 0;
+    xSemaphoreGiveRecursive(xTimerSemaphore);
+	return remain;
+}
+
+bool Timer::Contains(ITimerCallback *pCaller, uint8_t data)
+{
+	xSemaphoreTakeRecursive( xTimerSemaphore, portMAX_DELAY );
+	bool result = false;
+	for (TimerNode *pNode = pFirst; pNode; pNode = pNode->pNext) {
+		if (pNode->pCaller == pCaller && pNode->data == data) {
+			result = true;
+			break;
+		}
+	}
+    xSemaphoreGiveRecursive(xTimerSemaphore);
+	return result;
 }

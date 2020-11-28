@@ -19,7 +19,7 @@ GSMSerialHandler::~GSMSerialHandler()
 	if (callDelayTimer != 0) Timer::Stop(callDelayTimer);
 	callDelayTimer = 0;
 }
-void GSMSerialHandler::OnTimerComplete(TimerID timerId)
+void GSMSerialHandler::OnTimerComplete(TimerID timerId, uint8_t data)
 {
 	if (callDelayTimer == timerId) {
 		callDelayTimer = 0;
@@ -41,7 +41,7 @@ void GSMSerialHandler::OnTimerComplete(TimerID timerId)
 		flowTimer = 0;
 		SendFlowCMD();
 	} else {
-		SerialCharResponseHandler::OnTimerComplete(timerId);
+		SerialCharResponseHandler::OnTimerComplete(timerId, data);
 	}
 }
 

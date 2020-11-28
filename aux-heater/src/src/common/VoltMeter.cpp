@@ -19,7 +19,7 @@ VoltMeter::~VoltMeter()
 	if (timer != 0) Timer::Stop(timer);
 }
 
-void VoltMeter::OnTimerComplete(TimerID timerId)
+void VoltMeter::OnTimerComplete(TimerID timerId, uint8_t data)
 {
 	if (timerId == timer) {
 		switch (measureState) {

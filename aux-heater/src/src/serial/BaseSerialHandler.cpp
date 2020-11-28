@@ -10,7 +10,7 @@ BaseSerialHandler::~BaseSerialHandler()
 	StopTimeoutTimer();
 }
 
-void BaseSerialHandler::OnTimerComplete(TimerID timerId)
+void BaseSerialHandler::OnTimerComplete(TimerID timerId, uint8_t data)
 {
 	if (responseTimeoutTimer == timerId) {
 		responseTimeoutTimer = 0;

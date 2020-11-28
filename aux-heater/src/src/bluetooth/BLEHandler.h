@@ -8,7 +8,7 @@
 #include "../common/Timer.h"
 #include "../common/Util.h"
 #include "../common/ByteStackArray.h"
-#include "BLEServerHandler.h"
+#include "BLESerialHandler.h"
 
 // See the following for generating UUIDs:
 // https://www.uuidgenerator.net/
@@ -22,30 +22,34 @@
 #define BATTERY_STATE_UUID "6E400005-B5A3-F393-E0A9-E50E24DCCA9E"
 #define MEMORY_STATE_UUID "6E400006-B5A3-F393-E0A9-E50E24DCCA9E"
 
-
-#define MAX_BLE_MESSAGE_SIZE 20u
-#define MAX_TX_STACK_SIZE 20u
-
-#define MAX_CONNECTED_DEVICES 3u
 #define STATS_REFRESH_RATE 1000000u
 
-class BLEHandler : public DebugHandler, public ITimerCallback
+class BLEHandler : public BLESerialHandler, public DebugHandler, public ITimerCallback
 {
 private:
 
-    BLEServerHandler bleServerHandler;
-
 	BME1280DataCallback bme280DataCB = NULL;
     BatteryDataCallback batteryDataCB = NULL;
+    BinaryMessageCallback rxCallback = NULL;
     TimerID statsTimer = 0;
+
+protected:
+
+    // BLE Server callbacks
+	void onConnect(BLEServer* pServer, esp_ble_gatts_cb_param_t *param) override;
+    void onDisconnect(BLEServer* pServer) override;
+
+public:
+    BLEHandler(BinaryMessageCallback rxCallback, BME1280DataCallback bme280DataCB, BatteryDataCallback batteryDataCB);
+    virtual ~BLEHandler();
+
+	void OnTimerComplete(TimerID timerId, uint8_t data);
+
+    void StopStatsTimer();
+    void StartStatsTimer();
+
     void SendStats();
 
-public:
-    BLEHandler(BME1280DataCallback bme280DataCB, BatteryDataCallback batteryDataCB);
-	void OnTimerComplete(TimerID timerId);
-
-public:
-
-    void Start();
-    void Loop();
+    void Start() override;
+    void Loop() override;
 };

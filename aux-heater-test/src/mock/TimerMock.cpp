@@ -12,11 +12,11 @@ TimerMock::~TimerMock()
 	}
 }
 
-void TimerMock::OnTimerComplete(TimerID timerId) {
+void TimerMock::OnTimerComplete(TimerID timerId, uint8_t data) {
 	if (timerId == this->timerId) {
 		this->timerId = 0;
 		if (resetOnComplete) {
-			this->timerId = Timer::Start(this, duration);
+			this->timerId = Timer::Start(this, duration, data);
 		}
 	}
 }

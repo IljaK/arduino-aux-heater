@@ -56,6 +56,7 @@ typedef void (*BME1280DataCallback)(BME280Data *);
 typedef void (*BatteryDataCallback)(BatteryData *);
 typedef bool (*StreamCallback)(Stream *);
 typedef void (*StringArrayCallback)(char **, size_t);
+typedef void (*StringCallback)(char *, size_t);
 
 extern uint8_t reverseByte(uint8_t x);
 extern uint8_t getBitFromByte(uint8_t targetByte, uint8_t index);

@@ -154,7 +154,7 @@ void AuxHeaterSerial::HandleResult()
 	if (cb != NULL) cb(serial);
 }
 
-void AuxHeaterSerial::OnTimerComplete(TimerID timerId)
+void AuxHeaterSerial::OnTimerComplete(TimerID timerId, uint8_t data)
 {
 	if (messageTimer == timerId) {
 		messageTimer = 0;
@@ -174,7 +174,7 @@ void AuxHeaterSerial::OnTimerComplete(TimerID timerId)
 			break;
 		}
 	} else {
-		SerialTimerResponseHandler::OnTimerComplete(timerId);
+		SerialTimerResponseHandler::OnTimerComplete(timerId, data);
 	}
 }
 

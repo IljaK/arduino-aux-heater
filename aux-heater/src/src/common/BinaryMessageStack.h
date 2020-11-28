@@ -11,6 +11,8 @@ struct BinaryMessage {
     }
 };
 
+typedef void (*BinaryMessageCallback)(BinaryMessage *);
+
 class BinaryMessageStack: public StackArray<BinaryMessage *>
 {
 private:

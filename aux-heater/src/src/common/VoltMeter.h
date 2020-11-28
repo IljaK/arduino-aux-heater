@@ -34,7 +34,7 @@ public:
 	VoltMeter(float r1, float r2);
 	~VoltMeter();
 
-	void OnTimerComplete(TimerID timerId) override;
+	void OnTimerComplete(TimerID timerId, uint8_t data) override;
 
 	float Voltage();
 	float PinVoltage();

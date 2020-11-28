@@ -19,7 +19,7 @@ public:
 	BluetoothSerialHandler(Stream * serial, BME1280DataCallback bme280DataCB, BatteryDataCallback batteryDataCB);
 	~BluetoothSerialHandler();
 
-	//void OnTimerComplete(TimerID timerId) override;
+	//void OnTimerComplete(TimerID timerId, uint8_t data) override;
 	void OnResponseReceived(bool isTimeOut, bool isOverFlow = false) override;
 	bool IsBusy() override;
 

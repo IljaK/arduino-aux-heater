@@ -18,13 +18,13 @@ void SerialTimerResponseHandler::Loop()
 	}
 }
 
-void SerialTimerResponseHandler::OnTimerComplete(TimerID timerId)
+void SerialTimerResponseHandler::OnTimerComplete(TimerID timerId, uint8_t data)
 {
 	if (messageTimer == timerId) {
 		messageTimer = 0;
 		ResponseDetectedInternal(false, false);
 	} else {
-		BaseSerialHandler::OnTimerComplete(timerId);
+		BaseSerialHandler::OnTimerComplete(timerId, data);
 	}
 }
 

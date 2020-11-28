@@ -24,7 +24,7 @@ GSMSerialHandler gsmSerialHandler(&handleSMSCommand, &handleDtmfCommand, NULL/*&
 
 //BluetoothSerialHandler btSerialHandler(&Serial, &getBME280Data, &getBatteryData);
 
-BLEHandler bleHandler(getBME280Data, getBatteryData);
+BLEHandler bleHandler(handleBLEMessage, getBME280Data, getBatteryData);
 
 BatteryMonitor batteryMonitor(4700.0f, 2200.0f, &handleLevelChanged);
 //LedController ledController;
@@ -93,7 +93,26 @@ void loop() {
 
 }
 
+void handleBLEMessage(BinaryMessage * message) {
+    handleSerialCommand((char *)message->data, (size_t)message->length);
+}
+
+void handleSerialCommand(char *command, size_t length) {
+    
+    if (strncasecmp(command, "stats on", length) == 0) {
+        bleHandler.SendStats();
+    } else if (strncasecmp(command, "stats off", length) == 0) {
+        bleHandler.StopStatsTimer();
+    } else if (strncasecmp(command, "test", length) == 0) {
+        char data[] = "this is super long message for testing transfer over BLE where is 20 chars limit per message";
+        //bleHandler.println(data);
+        bleHandler.write((uint8_t *)data, strlen(data));
+    }
+}
+
 void getBME280Data(BME280Data* data) {
+    // TODO: handle multithread/Mutex
+
     // response stats: STATS:in temp|out temp|humidity|pressure|voltage|ampers|calculated voltage
     if (data == NULL) return;
 
@@ -106,6 +125,8 @@ void getBME280Data(BME280Data* data) {
 }
 
 void getBatteryData(BatteryData* data) {
+    // TODO: handle multithread/Mutex
+    
     // response stats: STATS:in temp|out temp|humidity|pressure|voltage|ampers|calculated voltage
     if (data == NULL) return;
 

@@ -38,6 +38,6 @@ public:
 	unsigned long ResponseByteTimeOut() override;
 
 	void OnResponseReceived(bool IsTimeOut, bool isOverFlow) override;
-	void OnTimerComplete(TimerID timerId) override;
+	void OnTimerComplete(TimerID timerId, uint8_t data) override;
 };
 
