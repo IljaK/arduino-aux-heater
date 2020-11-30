@@ -60,7 +60,7 @@ void BLEServerHandler::Start()
     );
 
     deviceCharacteristics = CreateCharacteristic(
-        MEMORY_STATE_UUID,
+        DEVICE_STATE_UUID,
         BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY
     );
 
@@ -103,15 +103,18 @@ void BLEServerHandler::onConnect(BLEServer* pServer, esp_ble_gatts_cb_param_t* p
 void BLEServerHandler::onDisconnect(BLEServer* pServer)
 {
     Serial.println("onDisconnect");
+    if (GetConnectedCount() <= 1) {
+        Advertise();
+    }
 }
 
 // BLECharacteristicCallbacks
 void BLEServerHandler::onRead(BLECharacteristic* pCharacteristic)
 {
-    Serial.print("onRead chrst: ");
-    Serial.println(pCharacteristic->getUUID().toString().data());
-    Serial.print(" core: ");
-    Serial.println(xPortGetCoreID());
+    //Serial.print("onRead chrst: ");
+    //Serial.println(pCharacteristic->getUUID().toString().data());
+    //Serial.print(" core: ");
+    //Serial.println(xPortGetCoreID());
 }
 
 void BLEServerHandler::onNotify(BLECharacteristic* pCharacteristic)
@@ -120,26 +123,26 @@ void BLEServerHandler::onNotify(BLECharacteristic* pCharacteristic)
     //Serial.println(pCharacteristic->getUUID().toString().data());
 
     //if (pCharacteristic == uartTXCharacteristics) {
-    Serial.print("onNotify chrst: ");
-    Serial.println(pCharacteristic->getUUID().toString().data());
+    //Serial.print("onNotify chrst: ");
+    //Serial.println(pCharacteristic->getUUID().toString().data());
 
-    Serial.print(" core: ");
-    Serial.println(xPortGetCoreID());
+    //Serial.print(" core: ");
+    //Serial.println(xPortGetCoreID());
 }
 
 void BLEServerHandler::onStatus(BLECharacteristic* pCharacteristic, Status s, uint32_t code)
 {
 
-    Serial.print("onStatus chrst: ");
-    Serial.println(pCharacteristic->getUUID().toString().data());
+    //Serial.print("onStatus chrst: ");
+    //Serial.println(pCharacteristic->getUUID().toString().data());
 
-    Serial.print("status: ");
-    Serial.print(s);
-    Serial.print(" code: ");
-    Serial.print(code);
+    //Serial.print("status: ");
+    //Serial.print(s);
+    //Serial.print(" code: ");
+    //Serial.print(code);
 
-    Serial.print(" core: ");
-    Serial.println(xPortGetCoreID());
+    //Serial.print(" core: ");
+    //Serial.println(xPortGetCoreID());
 }
 
 void BLEServerHandler::onWrite(BLECharacteristic* pCharacteristic) {

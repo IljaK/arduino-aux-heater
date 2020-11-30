@@ -5,18 +5,13 @@ BLESerialHandler::BLESerialHandler() {
 }
 
 BLESerialHandler::~BLESerialHandler() {
-    
+    FlushRxData();
 }
 
 void BLESerialHandler::onDisconnect(BLEServer* pServer)
 {
-    // TODO: Semaphore + flush
-    BinaryMessage * msg = rxMessageStack->PeekLast();
-    if (msg != NULL && !msg->isFilled()) {
-        msg = rxMessageStack->UnshiftLast();
-        free(msg->data);
-        free(msg);
-    }
+    FlushRxData();
+
     BLEServerHandler::onDisconnect(pServer);
 }
 
@@ -61,6 +56,18 @@ void BLESerialHandler::onWrite(BLECharacteristic* pCharacteristic)
     }
 }
 
+void BLESerialHandler::FlushRxData()
+{
+    xSemaphoreTake( xRXSemaphore, portMAX_DELAY );
+    while (rxMessageStack->Size() > 0) {
+        BinaryMessage * msg = rxMessageStack->UnshiftFirst();
+        if (msg->data != NULL) {
+            free(msg->data);
+        }
+        free(msg);
+    }
+    xSemaphoreGive(xRXSemaphore);
+}
 
 void BLESerialHandler::ReadRxData(uint8_t * data)
 {
@@ -210,9 +217,7 @@ void BLESerialHandler::Loop()
     if (xSemaphoreGetMutexHolder(xTXSemaphore) == NULL) {
         // Task is not locked, then we can check && send
         xSemaphoreTakeRecursive( xTXSemaphore, portMAX_DELAY );
-        if (serialTXBuffer->HasFilledPacket()) {
-            SendSerialMessage();
-        }
+        SendSerialMessage();
         xSemaphoreGiveRecursive(xTXSemaphore);
     }
 }

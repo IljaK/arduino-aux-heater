@@ -1,6 +1,14 @@
 #include "VoltMeter.h"
 #include "Util.h"
 
+#ifdef ESP32
+#define MEASURE_BIT_SIZE 4096 // 12 bit size
+#else
+#define MEASURE_BIT_SIZE 1024 // 10 bit size
+#endif
+
+constexpr double MEASURMENTS_RANGE = MEASURE_BIT_SIZE - 1;
+
 VoltMeter::VoltMeter(float r1, float r2):ITimerCallback()
 {
 	this->r1 = r1;
@@ -52,11 +60,9 @@ void VoltMeter::StartMeasureTimer(VoltMeterState state, uint32_t delay)
 
 void VoltMeter::MeasureVoltage()
 {
-	long vcc = ReadVCC();
-	int analog_value = analogRead(VOLTMETER_MEASURE_PIN);
-	//outPrintf("VCC: %d", (int)(vcc));
-	//outPrintf("Analog Val: %d", analog_value);
-	pinValue = (float)(((double)analog_value * (double)vcc * (double)1.016f) / 1023000.0);
+	double vcc = ReadVCC() / 1000.0;
+	uint16_t analog_value = analogRead(VOLTMETER_MEASURE_PIN);
+	pinValue = (float)(((double)analog_value * vcc * 1.016) / MEASURMENTS_RANGE);
 }
 
 

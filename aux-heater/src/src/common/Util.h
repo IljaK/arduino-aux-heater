@@ -6,18 +6,29 @@ constexpr uint8_t LF_ASCII_SYMBOL = 10u; // LF
 constexpr uint8_t CRTLZ_ASCII_SYMBOL = 26u; // ctrl+z
 constexpr uint8_t ESC_ASCII_SYMBOL = 27u; // ESC
 
-constexpr uint8_t AUX_RX_PIN = 3u;
-constexpr uint8_t AUX_TX_PIN = 4u;
+#ifdef ESP32
+	constexpr uint8_t AUX_RX_PIN = 9u;
+	constexpr uint8_t AUX_TX_PIN = 10u;
+
+	constexpr uint8_t GSM_RX_PIN = 16u;
+	constexpr uint8_t GSM_TX_PIN = 17u;
+
+	constexpr uint8_t VOLTMETER_MEASURE_PIN = A4;
+	constexpr uint8_t VOLTMETER_TRIGGER_PIN = 5u;
+#else
+	constexpr uint8_t AUX_RX_PIN = 3u;
+	constexpr uint8_t AUX_TX_PIN = 4u;
+
+	constexpr uint8_t VOLTMETER_MEASURE_PIN = A4;
+	constexpr uint8_t VOLTMETER_TRIGGER_PIN = 5u;
+
+	constexpr uint8_t DEBUG_RX_PIN = 8u;
+	constexpr uint8_t DEBUG_TX_PIN = 9u;
+#endif
 
 #ifndef SERIAL_CHAR_BUFFER_SIZE
 #define SERIAL_CHAR_BUFFER_SIZE 128
 #endif
-
-constexpr uint8_t VOLTMETER_MEASURE_PIN = A4;
-constexpr uint8_t VOLTMETER_TRIGGER_PIN = 5u;
-
-constexpr uint8_t DEBUG_RX_PIN = 8u;
-constexpr uint8_t DEBUG_TX_PIN = 9u;
 
 constexpr char RESPONSE_SEPARATOR[] = "\r\n";
 
@@ -44,7 +55,7 @@ struct BatteryData {
 
 struct DeviceSpecData {
     uint32_t remainRam = 0;
-	// TODO: Active time
+    uint32_t activeTime = 0;
 };
 
 struct ByteArray {

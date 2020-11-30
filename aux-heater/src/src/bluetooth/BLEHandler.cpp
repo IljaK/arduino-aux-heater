@@ -41,6 +41,7 @@ void BLEHandler::SendStats()
 
     DeviceSpecData deviceData;
     deviceData.remainRam = remainRam();
+    deviceData.activeTime = time(NULL) - startTime;
 
     BLESerialHandler::SendData(deviceData);
 }
@@ -78,7 +79,7 @@ void BLEHandler::onDisconnect(BLEServer* pServer)
 {
     // May launch from different core!
     BLESerialHandler::onDisconnect(pServer);
-    if (GetConnectedCount() == 0) {
+    if (GetConnectedCount() <= 1) {
         StopStatsTimer();
     }
 }

@@ -30,6 +30,7 @@ private:
 
     void SendSerialMessage();
     void ReadRxData(uint8_t * data);
+    void FlushRxData();
 
 protected:
     void onDisconnect(BLEServer* pServer) override;

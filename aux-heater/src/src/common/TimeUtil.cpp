@@ -1,6 +1,7 @@
 #include "TimeUtil.h"
 
 unsigned long prevMicrosSeconds = 0;
+uint32_t startTime = 0;
 
 // localTime format: "20/08/25,21:08:38+12"
 void timeLocalStruct(char *localTime, tmZone *tmStruct) {

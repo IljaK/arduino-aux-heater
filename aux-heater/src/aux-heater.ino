@@ -19,8 +19,12 @@
 #include "src/bluetooth/BluetoothSerialHandler.h"
 #include "src/bluetooth/BLEHandler.h"
 
-AuxHeaterSerial auxSerialHandler(&Serial2);
-GSMSerialHandler gsmSerialHandler(&handleSMSCommand, &handleDtmfCommand, NULL/*&Serial*/);
+
+HardwareSerial auxSerial(1);
+AuxHeaterSerial auxSerialHandler(&auxSerial);
+
+HardwareSerial gsmSerial(2);
+GSMSerialHandler gsmSerialHandler(&handleSMSCommand, &handleDtmfCommand, &gsmSerial);
 
 //BluetoothSerialHandler btSerialHandler(&Serial, &getBME280Data, &getBatteryData);
 
@@ -40,8 +44,12 @@ void setup() {
     // USB Serial
     Serial.begin(SERIAL_BAUD_RATE);
     while(!Serial) {}
+
     // AUX heater serial
-    Serial2.begin(AUX_BAUD_RATE);
+    auxSerial.begin(AUX_BAUD_RATE, SERIAL_8N1, AUX_RX_PIN, AUX_TX_PIN);
+
+    // gsm serial
+    gsmSerial.begin(SERIAL_BAUD_RATE, SERIAL_8N1, GSM_RX_PIN, GSM_TX_PIN);
 
     //ledController.SetFrequency(100, 11, 0b00000001);
 
@@ -104,15 +112,21 @@ void handleSerialCommand(char *command, size_t length) {
     } else if (strncasecmp(command, "stats off", length) == 0) {
         bleHandler.StopStatsTimer();
     } else if (strncasecmp(command, "test", length) == 0) {
+        char data[] = "short msg";
+        //bleHandler.println(data);
+        bleHandler.write((uint8_t *)data, strlen(data));
+    } else if (strncasecmp(command, "test long", length) == 0) {
         char data[] = "this is super long message for testing transfer over BLE where is 20 chars limit per message";
         //bleHandler.println(data);
         bleHandler.write((uint8_t *)data, strlen(data));
+    } else if (strncasecmp(command, "aux off", length) == 0) {
+        auxSerialHandler.StopHeater(&handleHeaterComplete);
+    }else if (strncasecmp(command, "aux on", length) == 0) {
+        auxSerialHandler.LaunchHeater(&handleHeaterComplete);
     }
 }
 
 void getBME280Data(BME280Data* data) {
-    // TODO: handle multithread/Mutex
-
     // response stats: STATS:in temp|out temp|humidity|pressure|voltage|ampers|calculated voltage
     if (data == NULL) return;
 
@@ -120,21 +134,16 @@ void getBME280Data(BME280Data* data) {
     data->humidity = bme280.readHumidity();
     data->pressure = bme280.readPressure();
 
-    // TODO:
-
 }
 
 void getBatteryData(BatteryData* data) {
-    // TODO: handle multithread/Mutex
-    
     // response stats: STATS:in temp|out temp|humidity|pressure|voltage|ampers|calculated voltage
     if (data == NULL) return;
 
+    // TODO:
     data->voltage = batteryMonitor.Voltage();
     data->ampers = 0;
     data->calcVoltage = 0;
-
-    // TODO:
 
 }
 

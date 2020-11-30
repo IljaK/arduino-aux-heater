@@ -25,6 +25,7 @@ struct tmZone: public tm
 };
 
 extern unsigned long prevMicrosSeconds;
+extern uint32_t startTime;
 
 extern void timeLocalStruct(char *localTime, tmZone *tmStruct);
 extern void timeUTCStruct(char *utcTime, tmZone *tmStruct);
