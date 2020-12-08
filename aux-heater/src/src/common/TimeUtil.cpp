@@ -67,7 +67,7 @@ void setSystemTime(tmZone * tmStruct)
 	prevMicrosSeconds = micros();
 	tmStruct->tm_isdst = 0;
 
-#ifdef ESP32
+#if defined(ESP32)
 	timeval tmVal;
 	tmVal.tv_usec = 0;
 	tmVal.tv_sec = mktime(tmStruct);
@@ -76,6 +76,10 @@ void setSystemTime(tmZone * tmStruct)
 	tZone.tz_minuteswest = tmStruct->ZoneInMinutes();
 
 	settimeofday(&tmVal, &tZone);
+#elif defined(ARDUINO_ARCH_SAMD)
+
+    // TODO:
+
 #else
     set_zone(tmStruct->ZoneInSeconds());
 	set_system_time(mktime(tmStruct));
@@ -86,7 +90,7 @@ void setSystemTime(tmZone * tmStruct)
 void updateTime()
 {
 	if (prevMicrosSeconds == 0) return;
-#ifndef ESP32
+#if !defined(ESP32) && !defined(ARDUINO_ARCH_SAMD)
 	uint32_t microsTS = micros();
 	uint32_t seconds = (microsTS - prevMicrosSeconds) / 1000000ul;
 	if (seconds > 0) {
@@ -102,9 +106,9 @@ void updateTime()
 }
 time_t getTimeSeconds(tm *tmStruct)
 {
-	#if ESP32
+#if defined(ESP32) || defined(ARDUINO_ARCH_SAMD)
 	return mktime(tmStruct);
-	#else
+#else
 	return mk_gmtime(tmStruct);
-	#endif
+#endif
 }

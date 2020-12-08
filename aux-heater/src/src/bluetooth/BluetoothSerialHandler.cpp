@@ -45,17 +45,17 @@ void BluetoothSerialHandler::SendStats()
     //outWrite(temperature, 5, 2); // out temp
     serial->write("0.0");
     serial->write('|');
-    writeDouble(serial, bme280Data.temperature, 5, 2); // in temp
+    serial->write(bme280Data.temperature); // in temp
     serial->write('|');
-    writeDouble(serial, bme280Data.humidity, 5, 2); // humidity
+    serial->write(bme280Data.humidity); // humidity
     serial->write('|');
-    writeDouble(serial, bme280Data.pressure, 6, 1); // pressure
+    serial->write(bme280Data.pressure); // pressure
     serial->write('|');
-    writeDouble(serial, batteryData.voltage, 5, 2); // voltage
+    serial->write(batteryData.voltage); // voltage
     serial->write('|');
-    writeDouble(serial, batteryData.ampers, 5, 2); // ampers
+    serial->write(batteryData.ampers); // ampers
     serial->write('|');
-    writeDouble(serial, batteryData.calcVoltage, 5, 2); // calculated voltage
+    serial->write(batteryData.calcVoltage); // calculated voltage
     serial->write('|');
     writeASCII(serial, remainRam()); // remain memory
     outWriteEnd();

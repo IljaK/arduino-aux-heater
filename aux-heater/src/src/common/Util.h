@@ -6,7 +6,7 @@ constexpr uint8_t LF_ASCII_SYMBOL = 10u; // LF
 constexpr uint8_t CRTLZ_ASCII_SYMBOL = 26u; // ctrl+z
 constexpr uint8_t ESC_ASCII_SYMBOL = 27u; // ESC
 
-#ifdef ESP32
+#if ESP32
 	constexpr uint8_t AUX_RX_PIN = 9u;
 	constexpr uint8_t AUX_TX_PIN = 10u;
 
@@ -86,7 +86,6 @@ extern size_t SplitString(char *source, uint8_t separator, char **subStrArray, s
 extern char *ShiftQuotations(char *quatationString);
 extern void ShiftQuotations(char **subStrArray, size_t arraySize);
 
-extern size_t writeDouble(Print *stream, double value, signed char width, unsigned char prec);
 extern size_t writeASCII(Print *stream, int data, int radix = 10);
 extern size_t writeASCII(Print *stream, unsigned int data, int radix = 10);
 extern size_t writeASCII(Print *stream, long data, int radix = 10);

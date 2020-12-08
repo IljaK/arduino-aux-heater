@@ -1,3 +1,4 @@
+#if ESP32
 #pragma once
 #include <Arduino.h>
 #include <BLEDevice.h>
@@ -44,3 +45,4 @@ public:
     void Start() override;
     void Loop() override;
 };
+#endif

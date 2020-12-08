@@ -2,7 +2,10 @@
 
 TimerNode *Timer::pFirst = NULL;
 unsigned long Timer::frameTS = 0;
+
+#if ESP32
 SemaphoreHandle_t Timer::xTimerSemaphore = xSemaphoreCreateRecursiveMutex();
+#endif
 
 ITimerCallback::~ITimerCallback()
 {
@@ -14,7 +17,9 @@ void ITimerCallback::OnTimerComplete(TimerID timerId, uint8_t data)
 
 TimerID Timer::Start(ITimerCallback *pCaller, unsigned long duration, uint8_t data)
 {
+#if ESP32
 	xSemaphoreTakeRecursive( xTimerSemaphore, portMAX_DELAY );
+#endif
 
 	TimerNode *newNode = new TimerNode();
 	newNode->pCaller = pCaller;
@@ -38,13 +43,17 @@ TimerID Timer::Start(ITimerCallback *pCaller, unsigned long duration, uint8_t da
 
 	TimerID id = newNode->id;
 	
+#if ESP32
     xSemaphoreGiveRecursive(xTimerSemaphore);
+#endif
 	return id;
 }
 
 void Timer::Loop()
 {
+#if ESP32
 	xSemaphoreTakeRecursive( xTimerSemaphore, portMAX_DELAY );
+#endif
 
 	unsigned long microsTS = micros();
 	unsigned long delta = microsTS - frameTS;
@@ -90,13 +99,17 @@ void Timer::Loop()
 		pPrev = pNode;
 		pNode = pNode->pNext;
 	}
+#if ESP32
     xSemaphoreGiveRecursive(xTimerSemaphore);
+#endif
 }
 bool Timer::Stop(TimerID timerId)
 {
 	if (timerId == 0) return false;
 
+#if ESP32
 	xSemaphoreTakeRecursive( xTimerSemaphore, portMAX_DELAY );
+#endif
 	bool result = false;
 
 	TimerNode *pPrev = NULL;
@@ -116,14 +129,18 @@ bool Timer::Stop(TimerID timerId)
 		pPrev = pNode;
 	}
 
+#if ESP32
     xSemaphoreGiveRecursive(xTimerSemaphore);
+#endif
 	return result;
 }
 
 
 void Timer::StopAll(ITimerCallback* pCaller)
 {
+#if ESP32
 	xSemaphoreTakeRecursive( xTimerSemaphore, portMAX_DELAY );
+#endif
 	TimerNode* pPrev = NULL;
 
 	for (TimerNode* pNode = pFirst; pNode; ) {
@@ -146,12 +163,17 @@ void Timer::StopAll(ITimerCallback* pCaller)
 		pPrev = pNode;
 		pNode = pNode->pNext;
 	}
+#if ESP32
     xSemaphoreGiveRecursive(xTimerSemaphore);
+#endif
 }
 
 unsigned long Timer::Remain(TimerID timerId)
 {
+#if ESP32
 	xSemaphoreTakeRecursive( xTimerSemaphore, portMAX_DELAY );
+#endif
+
 	unsigned long remain = 0;
 	for (TimerNode *pNode = pFirst; pNode; pNode = pNode->pNext) {
 		if (pNode->id == timerId) {
@@ -159,13 +181,18 @@ unsigned long Timer::Remain(TimerID timerId)
 			break;
 		}
 	}
+
+#if ESP32
     xSemaphoreGiveRecursive(xTimerSemaphore);
+#endif
 	return remain;
 }
 
 bool Timer::Contains(ITimerCallback *pCaller, uint8_t data)
 {
+#if ESP32
 	xSemaphoreTakeRecursive( xTimerSemaphore, portMAX_DELAY );
+#endif
 	bool result = false;
 	for (TimerNode *pNode = pFirst; pNode; pNode = pNode->pNext) {
 		if (pNode->pCaller == pCaller && pNode->data == data) {
@@ -173,6 +200,9 @@ bool Timer::Contains(ITimerCallback *pCaller, uint8_t data)
 			break;
 		}
 	}
+
+#if ESP32
     xSemaphoreGiveRecursive(xTimerSemaphore);
+#endif
 	return result;
 }

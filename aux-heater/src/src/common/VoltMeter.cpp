@@ -1,7 +1,7 @@
 #include "VoltMeter.h"
 #include "Util.h"
 
-#ifdef ESP32
+#if ESP32
 #define MEASURE_BIT_SIZE 4096 // 12 bit size
 #else
 #define MEASURE_BIT_SIZE 1024 // 10 bit size
@@ -81,9 +81,9 @@ float VoltMeter::Voltage()
 }
 
 long VoltMeter::ReadVCC() {
-#ifdef ARDUINO_TEST 
+#if ARDUINO_TEST 
 	return 5000;
-#elif ESP32
+#elif ESP32 || ARDUINO_ARCH_SAMD
 	return 3300;
 #else
 	long result; // Read 1.1V reference against AVcc 

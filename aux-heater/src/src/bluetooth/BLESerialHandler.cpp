@@ -1,3 +1,4 @@
+#if ESP32
 #include "BLESerialHandler.h"
 
 BLESerialHandler::BLESerialHandler() {
@@ -221,3 +222,4 @@ void BLESerialHandler::Loop()
         xSemaphoreGiveRecursive(xTXSemaphore);
     }
 }
+#endif

@@ -16,21 +16,32 @@
 #include "src/GSMSerialHandler.h"
 #include "src/BatteryMonitor.h"
 #include "src/common/DebugHandler.h"
-#include "src/bluetooth/BluetoothSerialHandler.h"
+#include <strings.h>
 #include "src/bluetooth/BLEHandler.h"
+#include "src/bluetooth/BluetoothSerialHandler.h"
+#include "src/common/BinaryMessageStack.h"
+
+void handleLevelChanged(VoltageLevelState level);
+void handleSMSCommand(char* command, size_t size, time_t smsDispatchUTCts);
+bool handleDtmfCommand(char code);
+bool handleLevelMessage(Stream* stream);
+
+#if ESP32
+    void handleBLEMessage(BinaryMessage * message);
+
+    HardwareSerial auxSerial(1);
+    HardwareSerial gsmSerial(2);
+    AuxHeaterSerial auxSerialHandler(&auxSerial);
+    GSMSerialHandler gsmSerialHandler(&handleSMSCommand, &handleDtmfCommand, &gsmSerial);
+    BLEHandler bleHandler(handleBLEMessage, getBME280Data, getBatteryData);
+#else
+    //BluetoothSerialHandler btSerialHandler(&Serial, &getBME280Data, &getBatteryData);
+    AuxHeaterSerial auxSerialHandler(&Serial1);
+    GSMSerialHandler gsmSerialHandler(handleSMSCommand, handleDtmfCommand, &Serial2);
+#endif
 
 
-HardwareSerial auxSerial(1);
-AuxHeaterSerial auxSerialHandler(&auxSerial);
-
-HardwareSerial gsmSerial(2);
-GSMSerialHandler gsmSerialHandler(&handleSMSCommand, &handleDtmfCommand, &gsmSerial);
-
-//BluetoothSerialHandler btSerialHandler(&Serial, &getBME280Data, &getBatteryData);
-
-BLEHandler bleHandler(handleBLEMessage, getBME280Data, getBatteryData);
-
-BatteryMonitor batteryMonitor(4700.0f, 2200.0f, &handleLevelChanged);
+BatteryMonitor batteryMonitor(4700.0f, 2200.0f, handleLevelChanged);
 //LedController ledController;
 
 Adafruit_BME280 bme280;
@@ -40,16 +51,18 @@ constexpr uint8_t CC1101_BUFFER_SIZE = 12;
 byte RX_buffer[CC1101_BUFFER_SIZE];
 
 void setup() {
-
     // USB Serial
     Serial.begin(SERIAL_BAUD_RATE);
     while(!Serial) {}
 
+#if ESP32
     // AUX heater serial
     auxSerial.begin(AUX_BAUD_RATE, SERIAL_8N1, AUX_RX_PIN, AUX_TX_PIN);
-
     // gsm serial
     gsmSerial.begin(SERIAL_BAUD_RATE, SERIAL_8N1, GSM_RX_PIN, GSM_TX_PIN);
+#else
+    SerialGSM.begin(SERIAL_BAUD_RATE, SERIAL_8N1);
+#endif
 
     //ledController.SetFrequency(100, 11, 0b00000001);
 
@@ -74,7 +87,9 @@ void setup() {
     //ELECHOUSE_cc1101.Init(F_433);
     //ELECHOUSE_cc1101.SetReceive();
 
+#if ESP32
     bleHandler.Start();
+#endif
 
     DebugHandler::outWrite(F("Setup done!\r\n"), true);
 }
@@ -85,7 +100,10 @@ void loop() {
 
     Timer::Loop();
 
+#if ESP32
     bleHandler.Loop();
+#endif
+
     auxSerialHandler.Loop();
     gsmSerialHandler.Loop();
     //ledController.Loop();
@@ -101,10 +119,7 @@ void loop() {
 
 }
 
-void handleBLEMessage(BinaryMessage * message) {
-    handleSerialCommand((char *)message->data, (size_t)message->length);
-}
-
+#if ESP32
 void handleSerialCommand(char *command, size_t length) {
     
     if (strncasecmp(command, "stats on", length) == 0) {
@@ -121,10 +136,14 @@ void handleSerialCommand(char *command, size_t length) {
         bleHandler.write((uint8_t *)data, strlen(data));
     } else if (strncasecmp(command, "aux off", length) == 0) {
         auxSerialHandler.StopHeater(&handleHeaterComplete);
-    }else if (strncasecmp(command, "aux on", length) == 0) {
+    } else if (strncasecmp(command, "aux on", length) == 0) {
         auxSerialHandler.LaunchHeater(&handleHeaterComplete);
     }
 }
+void handleBLEMessage(BinaryMessage * message) {
+    handleSerialCommand((char *)message->data, (size_t)message->length);
+}
+#endif
 
 void getBME280Data(BME280Data* data) {
     // response stats: STATS:in temp|out temp|humidity|pressure|voltage|ampers|calculated voltage
@@ -163,6 +182,25 @@ void handleLevelChanged(VoltageLevelState level) {
     }
 }
 
+bool handleHeaterComplete(Stream* stream) {
+
+    if (stream->available() > 0) {
+        uint8_t bytes[8];
+        uint8_t bytesAmount = stream->readBytes(bytes, 8);
+
+        if (DebugHandler::IsDebugEnabled()) {
+
+            DebugHandler::outWrite(F("AUX: "));
+            for (uint8_t i = 0; i < bytesAmount; i++) {
+                DebugHandler::outWriteASCII(bytes[i]);
+            }
+            DebugHandler::outWriteEnd();
+        }
+    }
+    gsmSerialHandler.NotifyByCallHangUp();
+    return true;
+}
+
 void handleSMSCommand(char* command, size_t size, time_t smsDispatchUTCts) {
 
     time_t now = time(NULL);
@@ -193,25 +231,6 @@ bool handleDtmfCommand(char code) {
     }
 
     return false;
-}
-
-bool handleHeaterComplete(Stream* stream) {
-
-    if (stream->available() > 0) {
-        uint8_t bytes[8];
-        uint8_t bytesAmount = stream->readBytes(bytes, 8);
-
-        if (DebugHandler::IsDebugEnabled()) {
-
-            DebugHandler::outWrite(F("AUX: "));
-            for (uint8_t i = 0; i < bytesAmount; i++) {
-                DebugHandler::outWriteASCII(bytes[i]);
-            }
-            DebugHandler::outWriteEnd();
-        }
-    }
-    gsmSerialHandler.NotifyByCallHangUp();
-    return true;
 }
 
 
@@ -251,8 +270,7 @@ bool handleLevelMessage(Stream* stream) {
     }
 
     if (result) {
-        writeDouble(stream, batteryMonitor.Voltage(), 4, 2);
-        stream->write("V");
+        stream->write(batteryMonitor.Voltage());
     }
 
     return result;

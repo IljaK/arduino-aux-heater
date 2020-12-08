@@ -1,3 +1,4 @@
+#if ESP32
 #include <string.h>
 #include "BLEServerHandler.h"
 
@@ -247,3 +248,4 @@ bool BLEServerHandler::IsValidCheckSum(BLEMessage * message)
     return calculatedSum == message->checkSum;
 }
 */
+#endif

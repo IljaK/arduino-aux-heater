@@ -1,7 +1,7 @@
 #pragma once
 #include <Arduino.h>
 
-#ifdef ESP32
+#if ESP32
 typedef uint16_t TimerID;
 #else
 typedef uint8_t TimerID;
@@ -26,7 +26,9 @@ struct TimerNode
 class Timer
 {
 private:
+#if ESP32
 	static SemaphoreHandle_t xTimerSemaphore;
+#endif
 	static TimerNode *pFirst;
 protected:
 	static unsigned long frameTS;

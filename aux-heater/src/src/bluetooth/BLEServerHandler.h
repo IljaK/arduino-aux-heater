@@ -1,3 +1,4 @@
+#if ESP32
 #pragma once
 #include <Arduino.h>
 #include <BLEDevice.h>
@@ -86,3 +87,4 @@ public:
 
     int GetConnectedCount();
 };
+#endif

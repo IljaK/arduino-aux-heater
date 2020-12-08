@@ -1,3 +1,4 @@
+#if ESP32
 #pragma once
 #include <Arduino.h>
 #include "BLEServerHandler.h"
@@ -56,3 +57,4 @@ public:
     size_t write(uint8_t) override;
     size_t write(const uint8_t *buffer, size_t size) override;
 };
+#endif

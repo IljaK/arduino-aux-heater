@@ -1,6 +1,6 @@
+#if ESP32
 #include <string.h>
 #include "BLEHandler.h"
-
 
 BLEHandler::BLEHandler(BinaryMessageCallback rxCallback, BME1280DataCallback bme280DataCB, BatteryDataCallback batteryDataCB)
 {
@@ -98,3 +98,4 @@ void BLEHandler::StopStatsTimer()
         statsTimer = 0;
     }
 }
+#endif
