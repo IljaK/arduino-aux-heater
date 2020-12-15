@@ -1,7 +1,7 @@
 #pragma once
 #include <Arduino.h>
 #include "../common/Util.h"
-#include "../common/TimeUtil.h"
+#include "../common/TimeManager.h"
 #include "../serial/SerialCharResponseHandler.h"
 #include "../common/DebugHandler.h"
 

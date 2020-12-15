@@ -13,7 +13,6 @@
 #include "src/common/Timer.h"
 #include "src/common/Util.h"
 #include "src/AuxHeaterSerial.h"
-#include "src/GSMSerialHandler.h"
 #include "src/BatteryMonitor.h"
 #include "src/common/DebugHandler.h"
 #include <strings.h>
@@ -27,6 +26,7 @@ bool handleDtmfCommand(char code);
 bool handleLevelMessage(Stream* stream);
 
 #if ESP32
+    #include "src/gsm/SimomGSMHandler.h"
     void handleBLEMessage(BinaryMessage * message);
 
     HardwareSerial auxSerial(1);
@@ -34,10 +34,15 @@ bool handleLevelMessage(Stream* stream);
     AuxHeaterSerial auxSerialHandler(&auxSerial);
     GSMSerialHandler gsmSerialHandler(&handleSMSCommand, &handleDtmfCommand, &gsmSerial);
     BLEHandler bleHandler(handleBLEMessage, getBME280Data, getBatteryData);
+#elif MKRGSM1400
+    #include "src/gsm/UbloxGSMHandler.h"
+    AuxHeaterSerial auxSerialHandler(&Serial1);
+    UbloxGSMHandler gsmSerialHandler(handleSMSCommand, handleDtmfCommand, &SerialGSM);
 #else
+    #include "src/gsm/SimcomGSMHandler.h"
     //BluetoothSerialHandler btSerialHandler(&Serial, &getBME280Data, &getBatteryData);
     AuxHeaterSerial auxSerialHandler(&Serial1);
-    GSMSerialHandler gsmSerialHandler(handleSMSCommand, handleDtmfCommand, &Serial2);
+    SimcomGSMHandler gsmSerialHandler(handleSMSCommand, handleDtmfCommand, &Serial2);
 #endif
 
 
@@ -46,9 +51,6 @@ BatteryMonitor batteryMonitor(4700.0f, 2200.0f, handleLevelChanged);
 
 Adafruit_BME280 bme280;
 //DallasTemperature tempSensor;
-
-constexpr uint8_t CC1101_BUFFER_SIZE = 12;
-byte RX_buffer[CC1101_BUFFER_SIZE];
 
 void setup() {
     // USB Serial
@@ -60,7 +62,16 @@ void setup() {
     auxSerial.begin(AUX_BAUD_RATE, SERIAL_8N1, AUX_RX_PIN, AUX_TX_PIN);
     // gsm serial
     gsmSerial.begin(SERIAL_BAUD_RATE, SERIAL_8N1, GSM_RX_PIN, GSM_TX_PIN);
-#else
+
+    bleHandler.Start();
+#elif MKRGSM1400
+    pinMode(GSM_RESETN, OUTPUT);
+    digitalWrite(GSM_RESETN, LOW);
+    pinMode(GSM_RTS, OUTPUT);
+    pinMode(GSM_CTS, INPUT);
+    digitalWrite(GSM_RTS, LOW);
+
+    DebugHandler::SetPrint(&Serial);
     SerialGSM.begin(SERIAL_BAUD_RATE, SERIAL_8N1);
 #endif
 
@@ -87,17 +98,11 @@ void setup() {
     //ELECHOUSE_cc1101.Init(F_433);
     //ELECHOUSE_cc1101.SetReceive();
 
-#if ESP32
-    bleHandler.Start();
-#endif
-
-    DebugHandler::outWrite(F("Setup done!\r\n"), true);
+    gsmSerialHandler.Start();
+    DebugHandler::outWrite(F("Setup done!\r\n"));
 }
 
 void loop() {
-
-    updateTime();
-
     Timer::Loop();
 
 #if ESP32
@@ -117,6 +122,8 @@ void loop() {
     //	DebugHandler::outWriteEnd();
     //}
 
+    // Must be latest task loop
+    TimeManager::LateLoop();
 }
 
 #if ESP32

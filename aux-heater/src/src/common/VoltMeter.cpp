@@ -1,7 +1,7 @@
 #include "VoltMeter.h"
 #include "Util.h"
 
-#if ESP32
+#if ESP32 || ARDUINO_ARCH_SAMD
 #define MEASURE_BIT_SIZE 4096 // 12 bit size
 #else
 #define MEASURE_BIT_SIZE 1024 // 10 bit size

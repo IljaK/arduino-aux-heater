@@ -1,7 +1,13 @@
 #include "DebugHandler.h"
 
-bool DebugHandler::isDebugEnabled = false;
+bool DebugHandler::isDebugEnabled = true;
 Print *DebugHandler::debugPrint = NULL;
+
+
+void DebugHandler::SetPrint(Print *debugPrint)
+{
+    DebugHandler::debugPrint = debugPrint;
+}   
 
 bool DebugHandler::IsDebugEnabled()
 { 
@@ -13,26 +19,26 @@ bool DebugHandler::IsSendAllowed(bool force)
     return debugPrint != NULL && (force || isDebugEnabled);
 }
 
-size_t DebugHandler::outWrite(uint8_t data, bool force)
+size_t DebugHandler::outWrite(uint32_t data, bool force)
 {
 	if (!IsSendAllowed(force)) return 0;
     
-	return debugPrint->write(data);
+	return debugPrint->print(data);
 }
 
 size_t DebugHandler::outWrite(const uint8_t *buffer, size_t size, bool force)
 {
 	if (!IsSendAllowed(force)) return 0;
-	return debugPrint->write((uint8_t *)buffer, size);
+	return debugPrint->write(buffer, size);
 }
 size_t DebugHandler::outWrite(const char *str, bool force)
 {
 	if (str == NULL) return 0;
-	return outWrite((const uint8_t *)str, strlen(str));
+	return outWrite((const uint8_t *)str, strlen(str), force);
 }
 size_t DebugHandler::outWrite(const char *buffer, size_t size, bool force)
 {
-	return outWrite((const uint8_t *)buffer, size);
+	return outWrite((const uint8_t *)buffer, size, force);
 }
 size_t DebugHandler::outWrite(const __FlashStringHelper *str, bool force)
 {

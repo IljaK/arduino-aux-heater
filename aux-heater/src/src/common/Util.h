@@ -36,6 +36,7 @@ constexpr uint32_t AUX_BAUD_RATE = 2400u;
 constexpr uint32_t SERIAL_BAUD_RATE = 115200u;
 
 constexpr uint32_t SERIAL_RESPONSE_TIMEOUT = 1000000u;
+constexpr uint32_t GSM_CMD_DELAY = 500000u;
 
 //constexpr uint32_t baudRates[] = { 1200, 2400, 4800, 9600, 14400, 19200, 28800, 57600, 115200 };
 

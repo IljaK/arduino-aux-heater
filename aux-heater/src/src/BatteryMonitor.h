@@ -1,7 +1,7 @@
 #pragma once
 #include "common/VoltMeter.h"
 #include "common/Util.h"
-#include "common/TimeUtil.h"
+#include "common/TimeManager.h"
 #include "common/DebugHandler.h"
 #include <Arduino.h>
 

@@ -41,7 +41,7 @@ void BLEHandler::SendStats()
 
     DeviceSpecData deviceData;
     deviceData.remainRam = remainRam();
-    deviceData.activeTime = time(NULL) - startTime;
+    deviceData.activeTime = time(NULL) - launchTime;
 
     BLESerialHandler::SendData(deviceData);
 }

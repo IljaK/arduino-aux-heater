@@ -1,11 +1,11 @@
 #pragma once
 #include <Arduino.h>
-#include "common/Util.h"
-#include "common/TimeUtil.h"
-#include "serial/SerialCharResponseHandler.h"
-#include "serial/SerialTimerResponseHandler.h"
-#include "common/StringStackArray.h"
-#include "common/DebugHandler.h"
+#include "../common/Util.h"
+#include "../common/TimeManager.h"
+#include "../serial/SerialCharResponseHandler.h"
+#include "../serial/SerialTimerResponseHandler.h"
+#include "../common/StringStackArray.h"
+#include "../common/DebugHandler.h"
 
 constexpr char SIM_PIN_CODE[] = "0000"; // Pin code for sim card
 
@@ -27,9 +27,15 @@ constexpr char GSM_INIT_CMD[] = "AT";
 // AT+CNMI=2,2,0,0,0
 // AT+CLCC=1 // Call status report
 // AT+DDET=1 // DTFM signal detection
-// AT+CLIP=0
 
 // AT+CSMINS - Sim card insert status
+
+// U-blox special commands
+// AT+CLIP=1 // Enable caller number display
+// +CLIP: "+372000000",145,,,,0
+// AT+CLCC // get pending call info
+// AT+CTZU - automatic time zone update
+// AT+UCALLSTAT=1 // Enable call state events
 
 //constexpr char GSM_SIM_ICCID[] = "+QCCID"; // Get sim ccid
 //constexpr char GSM_SIGNAL_CMD[] = "+CSQ"; // Signal quality test, value range is 0-31 , 31 is the best
@@ -63,31 +69,7 @@ constexpr uint32_t CALL_ANSWER_DELAY = 500000U; // 0.5 seconds
 constexpr uint8_t SMS_CALL_HANGUP_SIZE = 2;
 constexpr uint32_t GSM_CALL_DELAY = 1000000U;
 
-enum class GSMFlowState : uint8_t
-{
-	INITIALIZATION,
-
-	SIM_PIN_STATE,
-	SIM_LOGIN,
-
-	FIND_PRIMARY_PHONE,
-
-	READY,
-	LOCKED,
-
-	TIME_REQUEST,
-
-	// SMS sending states
-	SEND_SMS_BEGIN,
-	SEND_SMS_FLOW,
-
-	// Call action cmd
-	CALL_DIAL,
-	CALL_HANGUP,
-	CALL_ANSWER
-};
-
-enum class GSMSimPinState:uint8_t
+enum GSMSimPinState:uint8_t
 {
 	SIM_PIN_STATE_UNKNOWN,
 	SIM_PIN_STATE_READY,
@@ -95,14 +77,18 @@ enum class GSMSimPinState:uint8_t
 	SIM_PIN_STATE_ERROR
 };
 
-enum class GSMIncomingMessageState : uint8_t
+enum GSMSMSState : uint8_t
 {
 	NONE,
-	AUTH_INCOMING_MSG,
-	NOT_AUTH_INCOMING_MSG
+
+	RECEIVE_AUTH,
+	RECEIVE_NOT_AUTH,
+
+    SEND_BEGIN,
+    SEND_FLOW
 };
 
-enum class GSMCallState : uint8_t
+enum GSMCallState : uint8_t
 {
 	ACTIVE,
 	HELD,
@@ -128,35 +114,26 @@ private:
 	TimerID callTimer = 0;
 	TimerID callDelayTimer = 0;
 
-	char primaryPhone[18] = "";
-	uint8_t lowestIndex = 255;
-
 	char smsSender[18];
 	time_t smsDispatchUTCts = 0;
 
+    char *reqCmd = NULL;
 	StringStackArray callHangupStack = StringStackArray(SMS_CALL_HANGUP_SIZE);
 
-	GSMFlowState flowState = GSMFlowState::INITIALIZATION;
 	GSMSimPinState simPinState = GSMSimPinState::SIM_PIN_STATE_UNKNOWN;
-	GSMIncomingMessageState smsState = GSMIncomingMessageState::NONE;
+	GSMSMSState smsState = GSMSMSState::NONE;
 	GSMCallState callState = GSMCallState::DISCONNECT;
 
-	uint8_t cRegState = 0;
+	int cRegState = 0;
 
 	SMSCallback smsCallback;
 	DTMFCallback dtmfCallback;
 	StreamCallback messageCallback;
 
 	bool IsProperResponse(char *response, size_t size);
-	void SendFlowCMD(char *data = NULL);
-
-	void HandleErrorResponse(char *response, size_t size);
-	void HandleDataResponse(char *response, size_t size);
-	void HandleOKResponse(char *response, size_t size);
 
 	void FinalizeSendMessage();
 
-	void StartFlowTimer(unsigned long duration);
 	void HangupCallCMD();
 
 	void CallCMD();
@@ -164,26 +141,40 @@ private:
 	void StopCallTimer();
 	void StartCallDelayTimer();
 
+protected:
+
     void WriteGsmSerial(char * cmd, bool isCheck = false, bool isSet = false, char *data = NULL, bool dataQuotations = false, bool semicolon = false);
 
-protected:
 	bool LoadSymbolFromBuffer(uint8_t symbol) override;
+	virtual void HandleErrorResponse(char * reqCmd, char *response, size_t size);
+	virtual void HandleDataResponse(char * reqCmd, char *response, size_t size);
+	virtual void HandleOKResponse(char * reqCmd, char *response, size_t size);
+	virtual bool IsAuthorized(char *number, char *entryName) = 0;
+    virtual void OnNetworkStateUpdated() = 0;
+    virtual void OnFlowTimer() = 0;
+    virtual void OnCMDRequest(char * reqCmd);
+
+	void StartFlowTimer(unsigned long duration);
+
 public:
 	GSMSerialHandler(SMSCallback smsCallback, DTMFCallback dtmfCallback, Stream * serial);
-	~GSMSerialHandler();
+	virtual ~GSMSerialHandler();
 
 	void OnTimerComplete(TimerID timerId, uint8_t data) override;
 	void OnResponseReceived(bool isTimeOut, bool isOverFlow = false) override;
 	bool IsBusy() override;
-	void SendSMSMessage(StreamCallback messageCallback);
+	void SendSMSMessage(StreamCallback messageCallback, char * phone);
 	void NotifyByCallHangUp();
+
+    virtual void Start() = 0;
 
 	bool IsNetworkConnected();
 	bool IsRoaming();
-	bool IsAuthorized(char *entryName);
 
-	GSMFlowState FlowState();
 	GSMCallState CallState();
-	GSMIncomingMessageState SMSState();
+	GSMSMSState SMSState();
+    GSMSimPinState SimPinState();
+
+    char *PendingRequest();
 };
 
