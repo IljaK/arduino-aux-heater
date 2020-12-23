@@ -4,7 +4,7 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/build/googletest-prefix/src/googletest/googletest/include/**",
-                "${workspaceFolder}/aux-heater/src/**",
+                "${workspaceFolder}/aux-heater/src/src/**",
                 "${workspaceFolder}/arduino-stub/**",
                 "${workspaceFolder}/aux-heater-test/src/**"
             ],
@@ -20,7 +20,7 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/build/googletest-prefix/src/googletest/googletest/include/**",
-                "${workspaceFolder}/aux-heater/src/**",
+                "${workspaceFolder}/aux-heater/src/src/**",
                 "${workspaceFolder}/arduino-stub/**",
                 "${workspaceFolder}/aux-heater-test/src/**"
             ],
@@ -40,12 +40,12 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceFolder}/build/googletest-prefix/src/googletest/googletest/include/**",
-                "${workspaceFolder}/aux-heater/src/**",
+                "${workspaceFolder}/aux-heater/src/src/**",
                 "${workspaceFolder}/arduino-stub/**",
                 "${workspaceFolder}/aux-heater-test/src/**"
             ],
             "defines": [
-                "_LINUX_",
+                "_MAC_",
                 "ARDUINO_TEST"
             ],
             "compilerPath": "/usr/bin/clang",

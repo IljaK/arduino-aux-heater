@@ -1,5 +1,6 @@
 #pragma once
 #include "GSMSerialHandler.h"
+#include "PhonebookReader.h"
 
 enum class UbloxFlowState : uint8_t
 {
@@ -26,6 +27,7 @@ enum class UbloxFlowState : uint8_t
 
 
 constexpr char GSM_UCALLSTAT[] = "+UCALLSTAT"; // Enable call status events
+constexpr char GSM_CLCC[] = "+CLCC"; // Call state info
 
 class UbloxGSMHandler : public GSMSerialHandler
 {
@@ -36,6 +38,7 @@ public:
     void Start() override;
 private:
     UbloxFlowState flowState = UbloxFlowState::INITIALIZATION;
+    PhonebookReader phoneBookReader;
 
 protected:
     void HandleErrorResponse(char * reqCmd, char *response, size_t size) override;

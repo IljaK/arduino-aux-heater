@@ -7,7 +7,7 @@
 
 
 
-TEST(SerialCharResponseHandler, SeparatorParsingTest)
+TEST(SerialCharResponseHandlerTest, SeparatorParsingTest)
 {
 	timeOffset = 0;
 	TimerMock::Reset();
@@ -52,7 +52,7 @@ TEST(SerialCharResponseHandler, SeparatorParsingTest)
 }
 
 
-TEST(SerialCharResponseHandler, BufferOverflowTest)
+TEST(SerialCharResponseHandlerTest, BufferOverflowTest)
 {
 	timeOffset = 0;
 	TimerMock::Reset();

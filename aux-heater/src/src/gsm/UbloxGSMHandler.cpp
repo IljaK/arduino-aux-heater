@@ -42,6 +42,8 @@ void UbloxGSMHandler::OnNetworkStateUpdated()
             }
             StartFlowTimer(GSM_CMD_DELAY);
             break;
+        default:
+            break;
     }
 }
 
@@ -93,6 +95,8 @@ void UbloxGSMHandler::HandleOKResponse(char * reqCmd, char *response, size_t siz
 	case UbloxFlowState::GET_PHONE_BOOK_ENTRIES:
 		flowState = UbloxFlowState::READ_PHONE_BOOK;
 		break;
+    default:
+        break;
 	}
 	StartFlowTimer(GSM_CMD_DELAY);
 }
@@ -118,6 +122,26 @@ void UbloxGSMHandler::HandleErrorResponse(char * reqCmd, char *response, size_t 
 
 void UbloxGSMHandler::HandleDataResponse(char * reqCmd, char *response, size_t size)
 {
+    if (strncmp(response, GSM_FIND_USER_CMD, strlen(GSM_FIND_USER_CMD)) == 0) {
+	    // +CPBF: 1,\"+372111111\",145,\"1 aux-1"
+		char *cpbf = response + strlen(GSM_FIND_USER_CMD) + 1;
+		char *cpbfArgs[4];
+		SplitString(cpbf, ',', cpbfArgs, 4, false);
+		// remove quotations
+		ShiftQuotations(cpbfArgs, 4);
+
+		char *userName = cpbfArgs[3];
+        char *phone = cpbfArgs[1];
+
+        phoneBookReader.HandleEntriy(phone, userName);
+
+        return;
+	} else if (strncmp(response, GSM_UCALLSTAT, strlen(GSM_UCALLSTAT)) == 0) {
+        //if (flowState == UbloxFlowState::READY) {
+            WriteGsmSerial(GSM_CLCC, false, false);
+        //}
+        return;
+    }
     GSMSerialHandler::HandleDataResponse(reqCmd, response, size);
 }
 
@@ -139,27 +163,30 @@ void UbloxGSMHandler::OnFlowTimer()
         WriteGsmSerial(NULL);
 		break;
 	case UbloxFlowState::ENABLE_CREG_EVENT:
-        WriteGsmSerial((char *)GSM_REG_CMD, false, true, "1");
+        WriteGsmSerial(GSM_REG_CMD, false, true, (char *)"1");
 		break;
 	case UbloxFlowState::ENABLE_UCALLSTAT_EVENT:
-        WriteGsmSerial((char *)GSM_UCALLSTAT, false, true, "1");
+        WriteGsmSerial(GSM_UCALLSTAT, false, true, (char *)"1");
 		break;
 	case UbloxFlowState::SIM_PIN_STATE:
-        WriteGsmSerial((char*)GSM_SIM_PIN_CMD, true);
+        WriteGsmSerial(GSM_SIM_PIN_CMD, true);
 		break;
 
 	case UbloxFlowState::SIM_LOGIN:
-        WriteGsmSerial((char*)GSM_SIM_PIN_CMD, false, true, (char*)SIM_PIN_CODE, true);
+        WriteGsmSerial(GSM_SIM_PIN_CMD, false, true, (char*)SIM_PIN_CODE, true);
 		break;
 	case UbloxFlowState::CHECK_REG_NETWORK:
-        WriteGsmSerial((char *)GSM_REG_CMD, true);
+        WriteGsmSerial(GSM_REG_CMD, true);
 		break;
     case UbloxFlowState::SYNC_TIME:
 	case UbloxFlowState::TIME_REQUEST:
-        WriteGsmSerial((char *)GSM_TIME_CMD, true);
+        WriteGsmSerial(GSM_TIME_CMD, true);
 		break;
 	case UbloxFlowState::READ_PHONE_BOOK:
         // TODO:
 		break;
+
+    default:
+        break;
     }
 }

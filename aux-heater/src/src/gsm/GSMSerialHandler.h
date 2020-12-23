@@ -104,6 +104,13 @@ enum GSMCallState : uint8_t
 	DISCONNECT
 };
 
+enum CallTimerState:uint8_t
+{
+    DIAL,
+    HANGUP,
+    ANSWER
+};
+
 typedef void (*SMSCallback)(char *message, size_t size, time_t timeStamp);
 typedef bool (*DTMFCallback)(char code);
 
@@ -112,7 +119,7 @@ class GSMSerialHandler : public SerialCharResponseHandler
 private:
 	TimerID flowTimer = 0;
 	TimerID callTimer = 0;
-	TimerID callDelayTimer = 0;
+	//TimerID callDelayTimer = 0;
 
 	char smsSender[18];
 	time_t smsDispatchUTCts = 0;
@@ -139,11 +146,10 @@ private:
 	void CallCMD();
 	void AnswerCallCMD();
 	void StopCallTimer();
-	void StartCallDelayTimer();
 
 protected:
 
-    void WriteGsmSerial(char * cmd, bool isCheck = false, bool isSet = false, char *data = NULL, bool dataQuotations = false, bool semicolon = false);
+    void WriteGsmSerial(const char * cmd, bool isCheck = false, bool isSet = false, char *data = NULL, bool dataQuotations = false, bool semicolon = false);
 
 	bool LoadSymbolFromBuffer(uint8_t symbol) override;
 	virtual void HandleErrorResponse(char * reqCmd, char *response, size_t size);

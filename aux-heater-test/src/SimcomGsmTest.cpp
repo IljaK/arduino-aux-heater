@@ -1,12 +1,9 @@
 #include <gtest/gtest.h>
-#include "mock/SerialCharResponseHandlerMock.h"
-#include "mock/BaseSerialHandlerMock.h"
-#include "mock/GSMSerialHandlerTestMock.h"
+#include "gsm/SimcomGSMHandler.h"
+#include "mock/SimcomGSMTestMock.h"
 #include <Arduino.h>
 #include "mock/SerialStream.h"
-#include <BaseSerialHandler.h>
 #include "mock/TimerMock.h"
-#include <StackArray.h>
 
 bool messageInputCallBack(Stream *stream)
 {
@@ -14,65 +11,64 @@ bool messageInputCallBack(Stream *stream)
 	return true;
 }
 
-TEST(GSMSerialHandlerTest, GSMInitializeTest)
+TEST(SimcomGsmTest, GSMInitializeTest)
 {
 	timeOffset = 0;
 	TimerMock::Reset();
 	
 	SerialStream serial;
-	GSMSerialHandlerTestMock gsmHandler(&serial);
+	SimcomGSMTestMock gsmHandler(&serial);
 
 	Timer::Loop();
 	gsmHandler.Loop();
 
 	// AT Response
 	gsmHandler.ReadResponse((char *)"\r\nOK\r\n");
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::SIM_PIN_STATE);
+	EXPECT_EQ(gsmHandler.FlowState(), SimcomFlowState::SIM_PIN_STATE);
 
 	// Sim state response
 	gsmHandler.ReadResponse((char *)"\r\n+CPIN: SIM PIN\r\n\r\nOK\r\n");
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::SIM_LOGIN);
+	EXPECT_EQ(gsmHandler.FlowState(), SimcomFlowState::SIM_LOGIN);
 
 	// Sim input response
 	gsmHandler.ReadResponse((char *)"\r\nOK\r\n");
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::FIND_PRIMARY_PHONE);
+	EXPECT_EQ(gsmHandler.FlowState(), SimcomFlowState::REG_NETWORK);
 
 	gsmHandler.ReadResponse((char *)"\r\nSMS Ready\r\n");
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::FIND_PRIMARY_PHONE);
+	EXPECT_EQ(gsmHandler.FlowState(), SimcomFlowState::REG_NETWORK);
 
 	gsmHandler.ReadResponse((char *)"\r\nCall Ready\r\n");
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::FIND_PRIMARY_PHONE);
+	EXPECT_EQ(gsmHandler.FlowState(), SimcomFlowState::REG_NETWORK);
+
+	gsmHandler.ReadResponse((char *)"\r\n+CREG: 1,1\r\n");
+	EXPECT_EQ(gsmHandler.FlowState(), SimcomFlowState::FIND_PRIMARY_PHONE);
 
 	// Sim user list response
 	gsmHandler.ReadResponse((char *)"\r\n+CPBF: 1,\"+372111111\",145,\"1 aux-1\"\r\n");
 	gsmHandler.ReadResponse((char *)"\r\n+CPBF: 2,\"+372222222\",145,\"1 aux-2\"\r\n");
 	gsmHandler.ReadResponse((char *)"\r\nOK\r\n");
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
-
-	gsmHandler.ReadResponse((char *)"\r\n+CREG: 1,1\r\n");
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::TIME_REQUEST);
+	EXPECT_EQ(gsmHandler.FlowState(), SimcomFlowState::TIME_REQUEST);
 
 	gsmHandler.ReadResponse((char *)"\r\n+CCLK: \"20/08/25,21:08:38+12\"\r\n");
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::TIME_REQUEST);
+	EXPECT_EQ(gsmHandler.FlowState(), SimcomFlowState::TIME_REQUEST);
 
 	// Service response OK
 	gsmHandler.ReadResponse((char *)"\r\nOK\r\n");
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
+	EXPECT_EQ(gsmHandler.FlowState(), SimcomFlowState::READY);
 }
 
-TEST(GSMSerialHandlerTest, LongSMSTest)
+TEST(SimcomGsmTest, LongSMSTest)
 {
 	timeOffset = 0;
 	TimerMock::Reset();
 	
 	SerialStream serial;
-	GSMSerialHandlerTestMock gsmHandler(&serial);
+	SimcomGSMTestMock gsmHandler(&serial);
 
 	gsmHandler.BeginInitialization();
 	gsmHandler.FinalizeInitialization();
 
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
-
+	EXPECT_EQ(gsmHandler.FlowState(), SimcomFlowState::READY);
 
 	// Send SMS logic test
 	gsmHandler.SendSMSMessage(&messageInputCallBack);
@@ -81,33 +77,33 @@ TEST(GSMSerialHandlerTest, LongSMSTest)
 	gsmHandler.ReadResponse(smsTextResponse);
 
 	gsmHandler.ReadResponse((char *)"\r\nOK\r\n");
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
+	EXPECT_EQ(gsmHandler.FlowState(), SimcomFlowState::READY);
 
 	// Incoming SMS logic test + save sender number
 	gsmHandler.ReadResponse((char *)"\r\n+CMT: \"+372111111\",\"ilja aux-1\",\"20/08/27,00:25:23+12\"\r\n");
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
+	EXPECT_EQ(gsmHandler.FlowState(), SimcomFlowState::READY);
 
 	// Long sms
 	gsmHandler.ReadResponse((char *)"Test super long sms: kgkdkgre[wpegj'oewg'poergprelfjwelo fjwoej");
-	EXPECT_EQ(gsmHandler.SMSState(), GSMIncomingMessageState::AUTH_INCOMING_MSG);
+	EXPECT_EQ(gsmHandler.SMSState(), GSMSMSState::RECEIVE_AUTH);
 
 	gsmHandler.ReadResponse((char *)"fewlqg;wglweg\r\n");
-	EXPECT_EQ(gsmHandler.SMSState(), GSMIncomingMessageState::NONE);
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
+	EXPECT_EQ(gsmHandler.SMSState(), GSMSMSState::NONE);
+	EXPECT_EQ(gsmHandler.FlowState(), SimcomFlowState::READY);
 }
 
-TEST(GSMSerialHandlerTest, CallHangupTest)
+TEST(SimcomGsmTest, CallHangupTest)
 {
 	timeOffset = 0;
 	TimerMock::Reset();
 	
 	SerialStream serial;
-	GSMSerialHandlerTestMock gsmHandler(&serial);
+	SimcomGSMTestMock gsmHandler(&serial);
 
 	gsmHandler.BeginInitialization();
 	gsmHandler.FinalizeInitialization();
 
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
+	EXPECT_EQ(gsmHandler.FlowState(), SimcomFlowState::READY);
 
 
 	// Send SMS logic test
@@ -117,7 +113,7 @@ TEST(GSMSerialHandlerTest, CallHangupTest)
 	gsmHandler.ReadResponse(smsTextResponse);
 
 	gsmHandler.ReadResponse((char *)"\r\nOK\r\n");
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
+	EXPECT_EQ(gsmHandler.FlowState(), SimcomFlowState::READY);
 
 	// Call initialized
 	gsmHandler.ReadResponse((char *)"\r\n+CLCC: 1,0,2,0,0,\"+3721111111\",145,\"241 aux-1\"\r\n");
@@ -130,30 +126,30 @@ TEST(GSMSerialHandlerTest, CallHangupTest)
 	Timer::Loop();
 	gsmHandler.Loop();
 
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::CALL_HANGUP);
+	EXPECT_EQ(gsmHandler.FlowState(), SimcomFlowState::READY);
 	gsmHandler.ReadResponse((char *)"\r\nOK\r\n");
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
+	EXPECT_EQ(gsmHandler.FlowState(), SimcomFlowState::READY);
 
 	// Call ended
 	gsmHandler.ReadResponse((char *)"\r\n+CLCC: 1,0,6,0,0,\"+3721111111\",145,\"241 aux-1\"\r\n");
 	EXPECT_EQ(gsmHandler.CallState(), GSMCallState::DISCONNECT);
 
 	gsmHandler.ReadResponse((char *)"\r\nOK\r\n");
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
+	EXPECT_EQ(gsmHandler.FlowState(), SimcomFlowState::READY);
 }
 
-TEST(GSMSerialHandlerTest, SMSCallHangupTest)
+TEST(SimcomGsmTest, SMSCallHangupTest)
 {
 	timeOffset = 0;
 	TimerMock::Reset();
 	
 	SerialStream serial;
-	GSMSerialHandlerTestMock gsmHandler(&serial);
+	SimcomGSMTestMock gsmHandler(&serial);
 
 	gsmHandler.BeginInitialization();
 	gsmHandler.FinalizeInitialization();
 
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
+	EXPECT_EQ(gsmHandler.FlowState(), SimcomFlowState::READY);
 
 
 	// Send SMS logic test
@@ -163,17 +159,17 @@ TEST(GSMSerialHandlerTest, SMSCallHangupTest)
 	gsmHandler.ReadResponse(smsTextResponse);
 
 	gsmHandler.ReadResponse((char *)"\r\nOK\r\n");
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
+	EXPECT_EQ(gsmHandler.FlowState(), SimcomFlowState::READY);
 
 	// Incoming SMS logic test + save sender number
 	gsmHandler.ReadResponse((char *)"\r\n+CMT: \"+372111111\",\"ilja aux-1\",\"20/08/27,00:25:23+12\"\r\n");
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
-	EXPECT_EQ(gsmHandler.SMSState(), GSMIncomingMessageState::AUTH_INCOMING_MSG);
+	EXPECT_EQ(gsmHandler.FlowState(), SimcomFlowState::READY);
+	EXPECT_EQ(gsmHandler.SMSState(), GSMSMSState::RECEIVE_AUTH);
 
 	// SMS with command
 	gsmHandler.ReadResponse((char *)"On\r\n");
-	EXPECT_EQ(gsmHandler.SMSState(), GSMIncomingMessageState::NONE);
-	EXPECT_EQ(gsmHandler.FlowState(), GSMFlowState::READY);
+	EXPECT_EQ(gsmHandler.SMSState(), GSMSMSState::NONE);
+	EXPECT_EQ(gsmHandler.FlowState(), SimcomFlowState::READY);
 
 	gsmHandler.NotifyByCallHangUp();
 	gsmHandler.Loop();

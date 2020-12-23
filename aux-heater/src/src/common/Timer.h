@@ -39,4 +39,5 @@ public:
 	static bool Contains(ITimerCallback *pCaller, uint8_t data);
 	static unsigned long Remain(TimerID timerId);
 	static void StopAll(ITimerCallback* pCaller);
+    static uint8_t GetData(TimerID timerId);
 };

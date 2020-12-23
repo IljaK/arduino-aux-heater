@@ -46,6 +46,7 @@ include_directories(aux-heater/src/src)
 include_directories(aux-heater/src/src/libs)
 include_directories(aux-heater/src/src/common)
 include_directories(aux-heater/src/src/serial)
+include_directories(aux-heater/src/src/gsm)
 include_directories(aux-heater-test/src)
 include_directories(aux-heater-test/src/mock)
 
@@ -55,6 +56,7 @@ file(GLOB aux-heater-test-src
     "aux-heater/src/src/*.h" "aux-heater/src/src/*.cpp"
     "aux-heater/src/src/common/*.h" "aux-heater/src/src/common/*.cpp"
     "aux-heater/src/src/serial/*.h" "aux-heater/src/src/serial/*.cpp"
+    "aux-heater/src/src/gsm/*.h" "aux-heater/src/src/gsm/*.cpp"
     "aux-heater-test/src/*.h" "aux-heater-test/src/*.cpp"
     "aux-heater-test/src/mock/*.h" "aux-heater-test/src/mock/*.cpp")
 

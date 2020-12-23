@@ -13,22 +13,20 @@ GSMSerialHandler::~GSMSerialHandler()
 	if (flowTimer != 0) Timer::Stop(flowTimer);
 	flowTimer = 0;
 	StopCallTimer();
-	if (callDelayTimer != 0) Timer::Stop(callDelayTimer);
-	callDelayTimer = 0;
 }
 void GSMSerialHandler::OnTimerComplete(TimerID timerId, uint8_t data)
 {
-	if (callDelayTimer == timerId) {
-		callDelayTimer = 0;
-		CallCMD();
-	} else if (callTimer == timerId) {
+	if (callTimer == timerId) {
 		callTimer = 0;
-		switch (callState)
+		switch (data)
 		{
-		case GSMCallState::ALERTING:
+        case CallTimerState::DIAL:
+            CallCMD();
+            break;
+		case CallTimerState::HANGUP:
 			HangupCallCMD(); // Hangup during call delay
 			break;
-		case GSMCallState::INCOMING:
+		case CallTimerState::ANSWER:
 			AnswerCallCMD(); // Incoming answer call delay
 			break;
 		default:
@@ -62,9 +60,9 @@ void GSMSerialHandler::OnResponseReceived(bool isTimeOut, bool isOverFlow)
         }
         DebugHandler::outWrite("->[");
         DebugHandler::outWrite(buffer, size);
-        DebugHandler::outWrite("] [");
+        DebugHandler::outWrite("] ");
         DebugHandler::outWriteASCII((int)size, 10);
-        DebugHandler::outWrite("]\r\n");
+        DebugHandler::outWriteEnd();
    // }
 
     char *cmd = reqCmd;
@@ -80,14 +78,13 @@ void GSMSerialHandler::OnResponseReceived(bool isTimeOut, bool isOverFlow)
 		case GSMSMSState::RECEIVE_AUTH:
 			if (!isOverFlow) { // IF Message is very long, wait till end
 				smsState = GSMSMSState::NONE;
-				StartCallDelayTimer();
+                callTimer = Timer::Start(this, CALL_ANSWER_DELAY, CallTimerState::DIAL);
 				if (smsCallback) smsCallback(buffer, size, smsDispatchUTCts);
 			}
 			return;
 		case GSMSMSState::RECEIVE_NOT_AUTH:
 			if (!isOverFlow) { // IF Message is very long, wait till end
 				smsState = GSMSMSState::NONE;
-				StartCallDelayTimer();
 				// Skip command
 			}
 			return;
@@ -95,6 +92,8 @@ void GSMSerialHandler::OnResponseReceived(bool isTimeOut, bool isOverFlow)
             smsState = GSMSMSState::SEND_FLOW;
             FinalizeSendMessage();
             return;
+        default:
+            break;
 	}
 
 	if (strcmp(buffer, GSM_OK_RESPONSE) == 0) {
@@ -176,7 +175,7 @@ void GSMSerialHandler::HandleDataResponse(char * reqCmd, char *response, size_t 
 				break;
 			case GSMCallState::ALERTING:
 				StopCallTimer();
-				callTimer = Timer::Start(this, CALL_HANGUP_DELAY);
+				callTimer = Timer::Start(this, CALL_HANGUP_DELAY, CallTimerState::HANGUP);
 				break;
 
 			case GSMCallState::INCOMING: /* Incoming (MT call)  */
@@ -184,7 +183,7 @@ void GSMSerialHandler::HandleDataResponse(char * reqCmd, char *response, size_t 
 				if (IsAuthorized(clccArgs[5], clccArgs[7])) {
 					// Wait 0.5 sec then pick up call
 					StopCallTimer();
-					callTimer = Timer::Start(this, CALL_ANSWER_DELAY);
+					callTimer = Timer::Start(this, CALL_ANSWER_DELAY, CallTimerState::ANSWER);
 				} else {
 					HangupCallCMD();
 				}
@@ -196,7 +195,7 @@ void GSMSerialHandler::HandleDataResponse(char * reqCmd, char *response, size_t 
 			case GSMCallState::DISCONNECT:
 				/* Disconnect */
 				StopCallTimer();
-				StartCallDelayTimer();
+                callTimer = Timer::Start(this, CALL_ANSWER_DELAY, CallTimerState::DIAL);
 				break;
 			case GSMCallState::ACTIVE:
 			{
@@ -336,35 +335,35 @@ void GSMSerialHandler::SendFlowCMD(char *data)
 		break;
 
 	case GSMFlowState::TIME_REQUEST:
-        WriteGsmSerial((char *)GSM_TIME_CMD, true);
+        WriteGsmSerial(GSM_TIME_CMD, true);
 		break;
 
 	case GSMFlowState::REG_NETWORK:
-        WriteGsmSerial((char*)GSM_FIND_USER_CMD, false, true, data, true);
+        WriteGsmSerial(GSM_FIND_USER_CMD, false, true, data, true);
 		break;
 
 	case GSMFlowState::FIND_PRIMARY_PHONE:
-        WriteGsmSerial((char*)GSM_REG_CMD, false, true, (char*)GSM_AUX_PHONE_POSTFIX, true);
+        WriteGsmSerial(GSM_REG_CMD, false, true, (char*)GSM_AUX_PHONE_POSTFIX, true);
 		break;
 
 	case GSMFlowState::SIM_PIN_STATE:
-        WriteGsmSerial((char*)GSM_SIM_PIN_CMD, true);
+        WriteGsmSerial(GSM_SIM_PIN_CMD, true);
 		break;
 
 	case GSMFlowState::SIM_LOGIN:
-        WriteGsmSerial((char*)GSM_SIM_PIN_CMD, false, true, (char*)SIM_PIN_CODE, true);
+        WriteGsmSerial(GSM_SIM_PIN_CMD, false, true, (char*)SIM_PIN_CODE, true);
 		break;
 	case GSMFlowState::SEND_SMS_BEGIN:
-        WriteGsmSerial((char*)GSM_SMS_SEND_CMD, false, true, primaryPhone, true);
+        WriteGsmSerial(GSM_SMS_SEND_CMD, false, true, primaryPhone, true);
 		break;
 	case GSMFlowState::CALL_DIAL:
-        WriteGsmSerial((char*)GSM_CALL_DIAL_CMD, false, true, data, false, true);
+        WriteGsmSerial(GSM_CALL_DIAL_CMD, false, true, data, false, true);
         break;
 	case GSMFlowState::CALL_HANGUP:
-        WriteGsmSerial((char*)GSM_CALL_HANGUP_CMD);
+        WriteGsmSerial(GSM_CALL_HANGUP_CMD);
 		break;
 	case GSMFlowState::CALL_ANSWER:
-        WriteGsmSerial((char*)GSM_CALL_ANSWER_CMD);
+        WriteGsmSerial(GSM_CALL_ANSWER_CMD);
 		break;
 	default:
 		break;
@@ -372,17 +371,17 @@ void GSMSerialHandler::SendFlowCMD(char *data)
 }
 */
 
-void GSMSerialHandler::WriteGsmSerial(char * cmd, bool isCheck, bool isSet, char *data, bool dataQuotations, bool semicolon)
+void GSMSerialHandler::WriteGsmSerial(const char * cmd, bool isCheck, bool isSet, char *data, bool dataQuotations, bool semicolon)
 {
-    reqCmd = cmd;
+    reqCmd = (char *)cmd;
 
 	if (serial) {
-        OnCMDRequest(cmd);
+        OnCMDRequest(reqCmd);
 
-		serial->write(GSM_INIT_CMD, strlen(GSM_INIT_CMD));
+		serial->write(GSM_INIT_CMD);
 		
 		if (cmd != NULL) {
-			serial->write(cmd, strlen(cmd));
+			serial->write(cmd);
 		}
 		if (isCheck) {
 			serial->write('?');
@@ -394,7 +393,7 @@ void GSMSerialHandler::WriteGsmSerial(char * cmd, bool isCheck, bool isSet, char
 			if (dataQuotations) {
 				serial->write('\"');
 			}
-			serial->write(data, strlen(data));
+			serial->write(data);
 			if (dataQuotations) {
 				serial->write('\"');
 			}
@@ -428,8 +427,7 @@ bool GSMSerialHandler::IsBusy()
 		reqCmd != NULL || 
 		smsState != GSMSMSState::NONE || 
 		callState != GSMCallState::DISCONNECT ||
-		callTimer != 0 ||
-		callDelayTimer != 0;
+		callTimer != 0;
 }
 
 void GSMSerialHandler::SendSMSMessage(StreamCallback messageCallback, char * phone)
@@ -440,7 +438,7 @@ void GSMSerialHandler::SendSMSMessage(StreamCallback messageCallback, char * pho
 	if (IsBusy() || phone == NULL) return;
 
 	this->messageCallback = messageCallback;
-    WriteGsmSerial((char*)GSM_SMS_SEND_CMD, false, true, phone, true);
+    WriteGsmSerial(GSM_SMS_SEND_CMD, false, true, phone, true);
 
 	// Wait "> " response
 }
@@ -455,7 +453,7 @@ void GSMSerialHandler::CallCMD()
 
 	//flowState = GSMFlowState::CALL_DIAL;
 	//SendFlowCMD(phone);
-    WriteGsmSerial((char*)GSM_CALL_DIAL_CMD, false, true, phone, false, true);
+    WriteGsmSerial(GSM_CALL_DIAL_CMD, false, true, phone, false, true);
 
 	free(phone);
 	phone = NULL;
@@ -472,12 +470,12 @@ void GSMSerialHandler::NotifyByCallHangUp()
 void GSMSerialHandler::HangupCallCMD()
 {
 	StopCallTimer();
-    WriteGsmSerial((char*)GSM_CALL_HANGUP_CMD);
+    WriteGsmSerial(GSM_CALL_HANGUP_CMD);
 }
 void GSMSerialHandler::AnswerCallCMD()
 {
 	StopCallTimer();
-    WriteGsmSerial((char*)GSM_CALL_ANSWER_CMD);
+    WriteGsmSerial(GSM_CALL_ANSWER_CMD);
 }
 
 void GSMSerialHandler::StopCallTimer()
@@ -544,15 +542,6 @@ GSMSMSState GSMSerialHandler::SMSState()
 GSMSimPinState GSMSerialHandler::SimPinState()
 {
     return simPinState;
-}
-
-void GSMSerialHandler::StartCallDelayTimer()
-{
-	if (callDelayTimer != 0) {
-		Timer::Stop(callDelayTimer);
-		callDelayTimer = 0;
-	}
-	callDelayTimer = Timer::Start(this, GSM_CALL_DELAY);
 }
 
 char *GSMSerialHandler::PendingRequest()

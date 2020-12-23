@@ -5,7 +5,7 @@
 #include "mock/SerialStream.h"
 #include "mock/TimerMock.h"
 
-TEST(SerialTimeResponseHandler, BufferOverflowTest)
+TEST(SerialTimeResponseHandlerTest, BufferOverflowTest)
 {
 	timeOffset = 0;
 	TimerMock::Reset();
@@ -45,7 +45,7 @@ TEST(SerialTimeResponseHandler, BufferOverflowTest)
 	//Assert::Fail(message);
 }
 
-TEST(SerialTimeResponseHandler, ResponseTimerTest)
+TEST(SerialTimeResponseHandlerTest, ResponseTimerTest)
 {
 	char data1[] = "1"; // length = 8
 

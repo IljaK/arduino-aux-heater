@@ -63,19 +63,15 @@ private:
         
         return AppendToItem(InsertNewItem(Size()), data, length);
     }
+protected:
+    void FreeItem(ByteArray * item) override {
+        free(item->array);
+        free(item);
+    }
 
 public:
     ByteStackArray(const uint8_t maxSize, uint8_t maxItemLength):StackArray(maxSize) {
         this->maxItemLength = maxItemLength;
-    }
-
-    virtual ~ByteStackArray()
-    {
-        for(uint8_t i = 0; i < maxSize; i++) {
-            if (arr[i] == NULL) break;
-            free(arr[i]->array);
-            arr[i]->array = NULL;
-        }
     }
 
     bool IsElementEqual(ByteArray * item1, ByteArray * item2) override {

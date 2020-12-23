@@ -13,6 +13,11 @@ protected:
         return item1 == item2;
     }
 
+    virtual void FreeItem(T item)
+    {
+
+    }
+
 public:
     StackArray (const uint8_t maxSize)
     {
@@ -22,9 +27,15 @@ public:
 
     virtual ~StackArray()
     {
+        for(uint8_t i = 0; i < size; i++) {
+            FreeItem(arr[i]);
+            arr[i] = NULL;
+        }
+        size = 0;
         free(arr);
         arr = NULL;
     }
+
     virtual bool Append(T item)
     {
         if (size < maxSize) {
@@ -72,6 +83,19 @@ public:
             if (IsElementEqual(item, arr[i])) return true;
         }
         return false;
+    }
+
+    T Peek() {
+        if (size > 0) {
+            return arr[0];
+        }
+        return NULL;
+    }
+    T PeekLast() {
+        if (size > 0) {
+            return arr[size - 1];
+        }
+        return NULL;
     }
 
 };

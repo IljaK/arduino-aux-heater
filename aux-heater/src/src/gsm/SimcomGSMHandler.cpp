@@ -10,6 +10,17 @@ SimcomGSMHandler::~SimcomGSMHandler()
 {
 
 }
+void SimcomGSMHandler::Start()
+{
+
+}
+
+void SimcomGSMHandler::OnNetworkStateUpdated()
+{
+    if (IsNetworkConnected() && flowState == SimcomFlowState::REG_NETWORK) {
+        HandleOKResponse(NULL, NULL, 0);
+    } 
+}
 
 void SimcomGSMHandler::SendSMSMessage(StreamCallback messageCallback)
 {
@@ -56,7 +67,8 @@ void SimcomGSMHandler::HandleOKResponse(char * reqCmd, char *response, size_t si
             DebugHandler::outWrite(primaryPhone);
 			DebugHandler::outWriteEnd();
         }
-		//break;
+		flowState = SimcomFlowState::TIME_REQUEST;
+		break;
 	case SimcomFlowState::TIME_REQUEST:
 		flowState = SimcomFlowState::READY;
 		break;

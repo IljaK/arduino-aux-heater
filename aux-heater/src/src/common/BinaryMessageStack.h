@@ -15,8 +15,11 @@ typedef void (*BinaryMessageCallback)(BinaryMessage *);
 
 class BinaryMessageStack: public StackArray<BinaryMessage *>
 {
-private:
-
+protected:
+    void FreeItem(BinaryMessage * item) override {
+        free(item->data);
+        free(item);
+    }
 public:
     BinaryMessageStack(const uint8_t maxSize):StackArray(maxSize) {}
 
@@ -27,19 +30,6 @@ public:
             free(arr[i]);
             arr[i] = NULL;
         }
-    }
-
-    BinaryMessage * Peek() {
-        if (size > 0) {
-            return arr[0];
-        }
-        return NULL;
-    }
-    BinaryMessage * PeekLast() {
-        if (size > 0) {
-            return arr[size - 1];
-        }
-        return NULL;
     }
 
     BinaryMessage * UnshiftLast() {

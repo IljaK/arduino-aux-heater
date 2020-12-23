@@ -1,7 +1,5 @@
 #include <gtest/gtest.h>
 #include <Util.h>
-#include <TimeUtil.h>
-
 
 TEST(Util, SplitArgumentsTest)
 {
@@ -52,24 +50,6 @@ TEST(Util, Bit16ValueTest)
 	EXPECT_EQ(inVal, outVal);
 
 	EXPECT_EQ(input, expect);
-}
-
-TEST(Util, UpdateTimeTest)
-{
-	timeOffset = 1;
-	systemTime = 0;
-	prevMicrosSeconds = 1;
-	time_t zeroTime = 0;
-	set_system_time(zeroTime);
-
-	updateTime();
-	EXPECT_EQ(systemTime, 0);
-
-	timeOffset += 2000000ul;
-	updateTime();
-
-	// TODO: Avoid real system time usage
-	// EXPECT_EQ(systemTime, 2);
 }
 
 TEST(Util, ReverseByteTest)

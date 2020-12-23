@@ -2,17 +2,12 @@
 
 class StringStackArray: public StackArray<char *>
 {
+protected:
+    void FreeItem(char * item) override {
+        free(item);
+    }
 public:
     StringStackArray(const uint8_t maxSize):StackArray(maxSize) {}
-
-    virtual ~StringStackArray()
-    {
-        for(uint8_t i = 0; i < maxSize; i++) {
-            if (arr[i] == NULL) break;
-            free(arr[i]);
-            arr[i] = NULL;
-        }
-    }
 
     bool IsElementEqual(char * item1, char * item2) override
     {

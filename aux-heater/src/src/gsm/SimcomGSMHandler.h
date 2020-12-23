@@ -1,3 +1,4 @@
+#pragma once
 #include "GSMSerialHandler.h"
 
 enum class SimcomFlowState : uint8_t
@@ -23,7 +24,7 @@ public:
     virtual ~SimcomGSMHandler();
 	void SendSMSMessage(StreamCallback messageCallback);
     void Start() override;
-private:
+protected:
 	char primaryPhone[18] = "";
 	uint8_t lowestIndex = 255;
     SimcomFlowState flowState = SimcomFlowState::INITIALIZATION;
