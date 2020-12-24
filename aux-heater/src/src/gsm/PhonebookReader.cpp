@@ -6,12 +6,11 @@ PhonebookReader::PhonebookReader()
 
 }
 
-void PhonebookReader::HandleSimEntries(uint8_t min, uint8_t max)
+void PhonebookReader::Clear()
 {
-    minSimIndex = min;
-    maxSimIndex = max;
     entryArray.Clear();
 }
+
 void PhonebookReader::HandleEntriy(char * phone, char * name)
 {
     char *auxChar = strstr(name, GSM_AUX_PHONE_POSTFIX);
@@ -22,18 +21,15 @@ void PhonebookReader::HandleEntriy(char * phone, char * name)
     entryArray.Append(phone, atoi(auxChar));
 }
 
-uint8_t PhonebookReader::GetMinSimIndex()
-{ 
-    return minSimIndex; 
-}
-uint8_t PhonebookReader::GetMaxSimIndex() 
-{ 
-    return maxSimIndex; 
-}
-
 char *PhonebookReader::GetPrimaryPhone()
 {
     PhoneUserEntry * item = entryArray.Peek();
     if (item == NULL) return NULL;
     return item->phone;
+}
+
+
+bool PhonebookReader::HasNumber(char * phone)
+{
+    return entryArray.Contains(phone);
 }

@@ -17,6 +17,8 @@ enum class SimcomFlowState : uint8_t
 	TIME_REQUEST,
 };
 
+constexpr char SIMCOM_DTMF_CMD[] = "+DTMF"; // Call state
+
 class SimcomGSMHandler : public GSMSerialHandler
 {
 public:

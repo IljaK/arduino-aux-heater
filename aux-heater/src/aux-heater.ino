@@ -122,6 +122,12 @@ void loop() {
     //	DebugHandler::outWriteEnd();
     //}
 
+    if (Serial.available() > 0) {
+        while (Serial.available() > 0) {
+            SerialGSM.write(Serial.read());
+        }
+    }
+
     // Must be latest task loop
     TimeManager::LateLoop();
 }
@@ -180,7 +186,7 @@ void handleLevelChanged(VoltageLevelState level) {
     case VoltageLevelState::DEAD_LEVEL:
     case VoltageLevelState::LOW_LEVEL:
     case VoltageLevelState::OVERFLOW_LEVEL:
-        gsmSerialHandler.SendSMSMessage(&handleLevelMessage);
+        //gsmSerialHandler.SendSMSMessage(&handleLevelMessage);
         break;
     case VoltageLevelState::NORMAL_LEVEL:
     case VoltageLevelState::CHARGE_LEVEL:
@@ -227,6 +233,9 @@ void handleSMSCommand(char* command, size_t size, time_t smsDispatchUTCts) {
 }
 
 bool handleDtmfCommand(char code) {
+
+    DebugHandler::outWrite("handleDtmfCommand: ");
+    DebugHandler::outWrite(code);
 
     if (code == '1') {
         auxSerialHandler.LaunchHeater(NULL);

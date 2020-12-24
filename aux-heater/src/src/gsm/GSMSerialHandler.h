@@ -56,7 +56,6 @@ constexpr char GSM_CALL_DIAL_CMD[] = "D"; // ATD Call dial cmd
 constexpr char GSM_CALL_HANGUP_CMD[] = "H"; // ATH Call hangup cmd 
 constexpr char GSM_CALL_ANSWER_CMD[] = "A"; // ATA Call answer cmd 
 constexpr char GSM_CALL_STATE_CMD[] = "+CLCC"; // Call state
-constexpr char GSM_DTMF_CMD[] = "+DTMF"; // Call state
 
 constexpr char GSM_AUX_PHONE_POSTFIX[] = "aux-"; // Data event
 
@@ -91,7 +90,7 @@ enum GSMSMSState : uint8_t
 enum GSMCallState : uint8_t
 {
 	ACTIVE,
-	HELD,
+	HOLD,
 
 	// Outgoing
 	DIALING,
@@ -101,10 +100,11 @@ enum GSMCallState : uint8_t
 	INCOMING,
 	WAITING,
 
-	DISCONNECT
+	DISCONNECT,
+    CONNECTED,
 };
 
-enum CallTimerState:uint8_t
+enum CallCMDType:uint8_t
 {
     DIAL,
     HANGUP,
@@ -143,7 +143,7 @@ private:
 
 	void HangupCallCMD();
 
-	void CallCMD();
+	void DialCMD();
 	void AnswerCallCMD();
 	void StopCallTimer();
 
@@ -161,6 +161,9 @@ protected:
     virtual void OnCMDRequest(char * reqCmd);
 
 	void StartFlowTimer(unsigned long duration);
+    void UpdateCallState(bool isIncoming, uint8_t callStateIndex, char * phone, char * callerName);
+    void HandleCallCMD(CallCMDType type);
+    void HandleDtfm(char code);
 
 public:
 	GSMSerialHandler(SMSCallback smsCallback, DTMFCallback dtmfCallback, Stream * serial);

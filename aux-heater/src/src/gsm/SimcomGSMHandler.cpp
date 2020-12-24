@@ -164,6 +164,10 @@ void SimcomGSMHandler::HandleDataResponse(char * reqCmd, char *response, size_t 
 			lowestIndex = index;
 			strcpy(primaryPhone, cpbfArgs[1]);
 		}
+	} else if (strncmp(response, SIMCOM_DTMF_CMD, strlen(SIMCOM_DTMF_CMD)) == 0) {
+		// +DTMF: 1
+		char *pCode = response + strlen(SIMCOM_DTMF_CMD) + 2;
+		HandleDtfm(pCode[0]);
 	} else {
         GSMSerialHandler::HandleDataResponse(reqCmd, response, size);
     }

@@ -18,26 +18,30 @@ void GSMSerialHandler::OnTimerComplete(TimerID timerId, uint8_t data)
 {
 	if (callTimer == timerId) {
 		callTimer = 0;
-		switch (data)
-		{
-        case CallTimerState::DIAL:
-            CallCMD();
-            break;
-		case CallTimerState::HANGUP:
-			HangupCallCMD(); // Hangup during call delay
-			break;
-		case CallTimerState::ANSWER:
-			AnswerCallCMD(); // Incoming answer call delay
-			break;
-		default:
-			break;
-		}
+		HandleCallCMD((CallCMDType)data);
 	} else if (timerId == flowTimer) {
 		flowTimer = 0;
 		OnFlowTimer();
 	} else {
 		SerialCharResponseHandler::OnTimerComplete(timerId, data);
 	}
+}
+
+
+void GSMSerialHandler::HandleCallCMD(CallCMDType type)
+{
+    switch (type)
+    {
+    case CallCMDType::DIAL:
+        DialCMD();
+        break;
+    case CallCMDType::HANGUP:
+        HangupCallCMD(); // Hangup during call delay
+        break;
+    case CallCMDType::ANSWER:
+        AnswerCallCMD(); // Incoming answer call delay
+        break;
+    }
 }
 
 void GSMSerialHandler::StartFlowTimer(unsigned long duration)
@@ -78,7 +82,7 @@ void GSMSerialHandler::OnResponseReceived(bool isTimeOut, bool isOverFlow)
 		case GSMSMSState::RECEIVE_AUTH:
 			if (!isOverFlow) { // IF Message is very long, wait till end
 				smsState = GSMSMSState::NONE;
-                callTimer = Timer::Start(this, CALL_ANSWER_DELAY, CallTimerState::DIAL);
+                callTimer = Timer::Start(this, CALL_ANSWER_DELAY, CallCMDType::DIAL);
 				if (smsCallback) smsCallback(buffer, size, smsDispatchUTCts);
 			}
 			return;
@@ -154,67 +158,19 @@ void GSMSerialHandler::HandleDataResponse(char * reqCmd, char *response, size_t 
 
 		char *clccContent = response + strlen(GSM_CALL_STATE_CMD) + 2;
 		char *clccArgs[8];
-		SplitString(clccContent, ',', clccArgs, 8, false);
+		size_t len = SplitString(clccContent, ',', clccArgs, 8, false);
+		// remove quotations
+		ShiftQuotations(clccArgs, len);
 
-		uint8_t callType = atoi(clccArgs[1]);
+        bool isIncoming = atoi(clccArgs[1]) == 1;
 		uint8_t callStateIndex = atoi(clccArgs[2]);
 		callState = (GSMCallState)callStateIndex;
 
-		// callType
-		// 0 - Incoming
-		// 1 - outgoing
+        // callType
+        // 0 - Outgoing
+        // 1 - Incoming
 
-		// Outgoing: 2->3->0->6
-		// 0 = accepted ongoing call
-		// Incoming:
-		// 4->0->6
-
-		switch (callState)
-		{
-			case GSMCallState::DIALING: /* Dialing (MO call)  */
-				break;
-			case GSMCallState::ALERTING:
-				StopCallTimer();
-				callTimer = Timer::Start(this, CALL_HANGUP_DELAY, CallTimerState::HANGUP);
-				break;
-
-			case GSMCallState::INCOMING: /* Incoming (MT call)  */
-			{
-				if (IsAuthorized(clccArgs[5], clccArgs[7])) {
-					// Wait 0.5 sec then pick up call
-					StopCallTimer();
-					callTimer = Timer::Start(this, CALL_ANSWER_DELAY, CallTimerState::ANSWER);
-				} else {
-					HangupCallCMD();
-				}
-				break;
-			}
-			case GSMCallState::WAITING:
-				StopCallTimer();
-				break;
-			case GSMCallState::DISCONNECT:
-				/* Disconnect */
-				StopCallTimer();
-                callTimer = Timer::Start(this, CALL_ANSWER_DELAY, CallTimerState::DIAL);
-				break;
-			case GSMCallState::ACTIVE:
-			{
-				if (callType == 0) {
-					HangupCallCMD();
-				}
-				break;
-			}
-			default:
-				break;
-		}
-	}
-	else if (strncmp(response, GSM_DTMF_CMD, strlen(GSM_DTMF_CMD)) == 0) {
-		// +DTMF: 1
-		char *pCode = response + strlen(GSM_DTMF_CMD) + 2;
-		char code = pCode[0];
-		if (dtmfCallback == NULL || dtmfCallback(code)) {
-			HangupCallCMD();
-		}
+        UpdateCallState(isIncoming, callStateIndex, clccArgs[5], clccArgs[7]);
 	}
 	else if (strncmp(response, GSM_TIME_CMD, strlen(GSM_TIME_CMD)) == 0) {
 	    // +CCLK: "20/08/25,21:08:38+12"
@@ -238,6 +194,65 @@ void GSMSerialHandler::HandleDataResponse(char * reqCmd, char *response, size_t 
 	}
 }
 
+
+void GSMSerialHandler::HandleDtfm(char code)
+{
+    if (dtmfCallback == NULL || dtmfCallback(code)) {
+        HangupCallCMD();
+    }
+}
+
+
+void GSMSerialHandler::UpdateCallState(bool isIncoming, uint8_t callStateIndex, char * phone, char * callerName)
+{
+    DebugHandler::outWrite("UpdateCallState ");
+    DebugHandler::outWrite(callStateIndex);
+    DebugHandler::outWriteEnd();
+
+    // Outgoing: 2->3->0->6
+    // 0 = accepted ongoing call
+    // Incoming:
+    // 4->0->6
+
+    callState = (GSMCallState)callStateIndex;
+
+    switch (callState)
+    {
+        case GSMCallState::DIALING: /* Dialing (MO call)  */
+            break;
+        case GSMCallState::ALERTING:
+            StopCallTimer();
+            callTimer = Timer::Start(this, CALL_HANGUP_DELAY, CallCMDType::HANGUP);
+            break;
+
+        case GSMCallState::INCOMING: /* Incoming (MT call)  */
+        {
+            StopCallTimer();
+            if (IsAuthorized(phone, callerName)) {
+                // Wait 0.5 sec then pick up call
+                callTimer = Timer::Start(this, CALL_ANSWER_DELAY, CallCMDType::ANSWER);
+            } else {
+                callTimer = Timer::Start(this, CALL_ANSWER_DELAY, CallCMDType::HANGUP);
+            }
+            break;
+        }
+        case GSMCallState::WAITING:
+            //StopCallTimer();
+            break;
+        case GSMCallState::DISCONNECT:
+            /* Disconnect */
+            //StopCallTimer();
+            //callTimer = Timer::Start(this, CALL_ANSWER_DELAY, CallCMDType::DIAL);
+            break;
+        case GSMCallState::ACTIVE:
+            if (!isIncoming) {
+                HangupCallCMD();
+            }
+            break;
+        default:
+            break;
+    }
+}
 
 void GSMSerialHandler::OnCMDRequest(char * reqCmd)
 {
@@ -432,7 +447,7 @@ bool GSMSerialHandler::IsBusy()
 
 void GSMSerialHandler::SendSMSMessage(StreamCallback messageCallback, char * phone)
 {
-	// TODO: If busy, add to stack and send on ready
+	// TODO: If busy, add to stack and send when ready
 
 	if (messageCallback == NULL) return;
 	if (IsBusy() || phone == NULL) return;
@@ -443,7 +458,7 @@ void GSMSerialHandler::SendSMSMessage(StreamCallback messageCallback, char * pho
 	// Wait "> " response
 }
 
-void GSMSerialHandler::CallCMD()
+void GSMSerialHandler::DialCMD()
 {
 	if (IsBusy()) return;
 
@@ -464,7 +479,7 @@ void GSMSerialHandler::NotifyByCallHangUp()
 	if (smsSender[0] == 0) return;
 	if (!callHangupStack.AppendCopy(smsSender)) return;
 
-	CallCMD();
+	DialCMD();
 }
 
 void GSMSerialHandler::HangupCallCMD()

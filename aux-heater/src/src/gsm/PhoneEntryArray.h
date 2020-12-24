@@ -37,6 +37,16 @@ public:
         }
     };
 
+    bool Contains(char *phone)
+    {
+        for(uint8_t i = 0; i < size; i++) {
+            if (strcmp(phone, arr[i]->phone) == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 protected:
 
     void FreeItem(PhoneUserEntry * item) override {

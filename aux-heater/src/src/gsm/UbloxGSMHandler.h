@@ -8,6 +8,7 @@ enum class UbloxFlowState : uint8_t
 
     ENABLE_CREG_EVENT,
     ENABLE_UCALLSTAT_EVENT,
+    ENABLE_DTMF_EVENT,
 
 	SIM_PIN_STATE,
 	SIM_LOGIN,
@@ -18,7 +19,6 @@ enum class UbloxFlowState : uint8_t
     SYNC_TIME, // For sync time after reg state change
 
     TIME_REQUEST,
-    GET_PHONE_BOOK_ENTRIES,
     READ_PHONE_BOOK,
 
 	READY,
@@ -28,6 +28,9 @@ enum class UbloxFlowState : uint8_t
 
 constexpr char GSM_UCALLSTAT[] = "+UCALLSTAT"; // Enable call status events
 constexpr char GSM_CLCC[] = "+CLCC"; // Call state info
+constexpr char GSM_READ_PHONE_BOOK_CMD[] = "+CPBR"; // Read phonebook entries
+constexpr char UBLOX_DTMF_CMD[] = "+UDTMFD"; //=1,1
+constexpr char UBLOX_DTMF_EVENT[] = "+UUDTMFD";
 
 class UbloxGSMHandler : public GSMSerialHandler
 {
@@ -39,6 +42,9 @@ public:
 private:
     UbloxFlowState flowState = UbloxFlowState::INITIALIZATION;
     PhonebookReader phoneBookReader;
+    char * response = NULL;
+    void FlushResponse();
+    void SaveResponse(char *response);
 
 protected:
     void HandleErrorResponse(char * reqCmd, char *response, size_t size) override;
