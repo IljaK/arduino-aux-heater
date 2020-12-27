@@ -55,8 +55,8 @@ void BLEServerHandler::Start()
     );
 
     // Bme 280 Characteristic
-    bme280Characteristics = CreateCharacteristic(
-        BME280_STATE_UUID,
+    temperatureCharacteristics = CreateCharacteristic(
+        TEMPERATURE_STATE_UUID,
         BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY
     );
 
@@ -209,19 +209,19 @@ void BLEServerHandler::StopAdvertise()
     pServer->getAdvertising()->stop();
 }
 
-void BLEServerHandler::SendData(BME280Data bme280Data)
+void BLEServerHandler::SendData(TemperatureData * temperatureData)
 {
-    bme280Characteristics->setValue((uint8_t *)&bme280Data, sizeof(bme280Data));
-    bme280Characteristics->notify(true);
+    temperatureCharacteristics->setValue((uint8_t *)temperatureData, sizeof(TemperatureData));
+    temperatureCharacteristics->notify(true);
 }
-void BLEServerHandler::SendData(BatteryData batteryData)
+void BLEServerHandler::SendData(BatteryData * batteryData)
 {
-    batteryCharacteristics->setValue((uint8_t *)&batteryData, sizeof(batteryData));
+    batteryCharacteristics->setValue((uint8_t *)batteryData, sizeof(BatteryData));
     batteryCharacteristics->notify(true);
 }
-void BLEServerHandler::SendData(DeviceSpecData deviceData)
+void BLEServerHandler::SendData(DeviceSpecData * deviceData)
 {
-    deviceCharacteristics->setValue((uint8_t *)&deviceData, sizeof(deviceData));
+    deviceCharacteristics->setValue((uint8_t *)deviceData, sizeof(DeviceSpecData));
     deviceCharacteristics->notify(true);
 }
 

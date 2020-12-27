@@ -26,6 +26,8 @@ constexpr uint8_t ESC_ASCII_SYMBOL = 27u; // ESC
 	constexpr uint8_t DEBUG_TX_PIN = 9u;
 #endif
 
+constexpr uint8_t DS18S20_PIN = 4u;
+
 #ifndef SERIAL_CHAR_BUFFER_SIZE
 #define SERIAL_CHAR_BUFFER_SIZE 128
 #endif
@@ -41,12 +43,6 @@ constexpr uint32_t GSM_CMD_DELAY = 500000u;
 //constexpr uint32_t baudRates[] = { 1200, 2400, 4800, 9600, 14400, 19200, 28800, 57600, 115200 };
 
 //temp|out temp|humidity|pressure|voltage|ampers|calculated voltage
-
-struct BME280Data {
-	float temperature = 0;
-	float humidity = 0;
-	float pressure = 0;
-};
 
 struct BatteryData {
 	float voltage = 0;
@@ -64,8 +60,6 @@ struct ByteArray {
     uint8_t * array;
 };
 
-typedef void (*BME1280DataCallback)(BME280Data *);
-typedef void (*BatteryDataCallback)(BatteryData *);
 typedef bool (*StreamCallback)(Stream *);
 typedef void (*StringArrayCallback)(char **, size_t);
 typedef void (*StringCallback)(char *, size_t);

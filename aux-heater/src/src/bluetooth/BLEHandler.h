@@ -16,14 +16,10 @@
 
 #define STATS_REFRESH_RATE 1000000u
 
-class BLEHandler : public BLESerialHandler, public DebugHandler, public ITimerCallback
+class BLEHandler : public BLESerialHandler, public DebugHandler
 {
 private:
-
-	BME1280DataCallback bme280DataCB = NULL;
-    BatteryDataCallback batteryDataCB = NULL;
-    BinaryMessageCallback rxCallback = NULL;
-    TimerID statsTimer = 0;
+    StringCallback rxCallback = NULL;
 
 protected:
 
@@ -32,15 +28,10 @@ protected:
     void onDisconnect(BLEServer* pServer) override;
 
 public:
-    BLEHandler(BinaryMessageCallback rxCallback, BME1280DataCallback bme280DataCB, BatteryDataCallback batteryDataCB);
+    BLEHandler(StringCallback rxCallback);
     virtual ~BLEHandler();
 
-	void OnTimerComplete(TimerID timerId, uint8_t data);
-
-    void StopStatsTimer();
-    void StartStatsTimer();
-
-    void SendStats();
+    void SendStats(TemperatureData * temperatureData, BatteryData * batteryData);
 
     void Start() override;
     void Loop() override;

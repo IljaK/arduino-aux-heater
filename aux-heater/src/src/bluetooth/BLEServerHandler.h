@@ -21,7 +21,7 @@
 #define UART_TX_CHARACTERISTICS "6E400002-B5A3-F393-E0A9-E50E24DCCA9E"
 #define UART_RX_CHARACTERISTICS "6E400003-B5A3-F393-E0A9-E50E24DCCA9E"
 
-#define BME280_STATE_UUID "6E400004-B5A3-F393-E0A9-E50E24DCCA9E"
+#define TEMPERATURE_STATE_UUID "6E400004-B5A3-F393-E0A9-E50E24DCCA9E"
 #define BATTERY_STATE_UUID "6E400005-B5A3-F393-E0A9-E50E24DCCA9E"
 #define DEVICE_STATE_UUID "6E400006-B5A3-F393-E0A9-E50E24DCCA9E"
 
@@ -51,7 +51,7 @@ protected:
     BLECharacteristic* uartTXCharacteristics;
 
     BLECharacteristic* batteryCharacteristics;
-    BLECharacteristic* bme280Characteristics;
+    BLECharacteristic* temperatureCharacteristics;
     BLECharacteristic* deviceCharacteristics;
 
     // BLE Server callbacks
@@ -81,9 +81,9 @@ public:
 
     virtual void Start();
 
-    void SendData(BME280Data bme280Data);
-    void SendData(BatteryData batteryData);
-    void SendData(DeviceSpecData deviceData);
+    void SendData(TemperatureData * temperatureData);
+    void SendData(BatteryData * batteryData);
+    void SendData(DeviceSpecData * deviceData);
 
     int GetConnectedCount();
 };

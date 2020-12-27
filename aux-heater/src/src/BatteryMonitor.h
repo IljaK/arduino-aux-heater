@@ -44,5 +44,7 @@ public:
 
 	BatteryMonitor(float r1, float r2, void(*actionCallback)(VoltageLevelState) = NULL);
 	~BatteryMonitor();
+
+    void GetBatteryData(BatteryData* data);
 };
 

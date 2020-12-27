@@ -88,3 +88,13 @@ float BatteryMonitor::GetStateVoltage(VoltageLevelState state)
 {
 	return ((float)valueLevel[(uint8_t)state]) / 10.0f;
 }
+
+void BatteryMonitor::GetBatteryData(BatteryData* data) {
+    // response stats: STATS:in temp|out temp|humidity|pressure|voltage|ampers|calculated voltage
+    if (data == NULL) return;
+
+    // TODO:
+    data->voltage = Voltage();
+    data->ampers = 0;
+    data->calcVoltage = 0;
+}

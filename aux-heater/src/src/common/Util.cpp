@@ -2,6 +2,9 @@
 #include <stdarg.h>
 #include <string.h>
 //#pragma warning(disable : 4996)
+#if __arm__
+    extern "C" char* sbrk(int incr);
+#endif
 
 Stream *outStream = NULL;
 
@@ -193,14 +196,15 @@ char *ShiftQuotations(char *quatationString)
 uint32_t remainRam () {
 #if ARDUINO_TEST
 	return 0;
+#elif __arm__
+    char top;
+    return &top - reinterpret_cast<char*>(sbrk(0));
+#elif ESP32
+    return xPortGetFreeHeapSize();
 #else
-	#if ESP32
-		return xPortGetFreeHeapSize();
-	#else
-		extern int __heap_start, *__brkval;
-		int v;
-		return (size_t) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
-	#endif
+    extern int __heap_start, *__brkval;
+    int v;
+    return (size_t) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
 #endif
 }
 /*

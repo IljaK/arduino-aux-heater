@@ -6,9 +6,6 @@
 */
 
 #include <Arduino.h>
-//#include <SoftwareSerial.h>
-#include <Adafruit_BME280.h>
-//#include <DallasTemperature.h>
 //#include "libs/ELECHOUSE_CC1101.h"
 #include "src/common/Timer.h"
 #include "src/common/Util.h"
@@ -19,38 +16,54 @@
 #include "src/bluetooth/BLEHandler.h"
 #include "src/bluetooth/BluetoothSerialHandler.h"
 #include "src/common/BinaryMessageStack.h"
+#include "src/TemperatureHandler.h"
 
 void handleLevelChanged(VoltageLevelState level);
 void handleSMSCommand(char* command, size_t size, time_t smsDispatchUTCts);
 bool handleDtmfCommand(char code);
 bool handleLevelMessage(Stream* stream);
 
+TemperatureHandler temperatureHandler;
+BatteryMonitor batteryMonitor(4700.0f, 2200.0f, handleLevelChanged);
+
+/*
+extern SERCOM sercom0;
+extern SERCOM sercom1; // SPI
+extern SERCOM sercom2; // I2C
+extern SERCOM sercom3;
+extern SERCOM sercom4; // SerialGSM
+extern SERCOM sercom5; // Serial1
+*/
+
+void handleSerialCommand(char *command, size_t length);
+
 #if ESP32
     #include "src/gsm/SimomGSMHandler.h"
-    void handleBLEMessage(BinaryMessage * message);
 
     HardwareSerial auxSerial(1);
     HardwareSerial gsmSerial(2);
     AuxHeaterSerial auxSerialHandler(&auxSerial);
     GSMSerialHandler gsmSerialHandler(&handleSMSCommand, &handleDtmfCommand, &gsmSerial);
-    BLEHandler bleHandler(handleBLEMessage, getBME280Data, getBatteryData);
+    BLEHandler btHandler(handleSerialCommand);
 #elif MKRGSM1400
+
+    Uart auxSerial(&sercom3, 0u, 7u, SERCOM_RX_PAD_3, UART_TX_PAD_0);
+
+    void SERCOM3_Handler()
+    {
+        auxSerial.IrqHandler();
+    }
+
     #include "src/gsm/UbloxGSMHandler.h"
-    AuxHeaterSerial auxSerialHandler(&Serial1);
+    AuxHeaterSerial auxSerialHandler(&auxSerial);
     UbloxGSMHandler gsmSerialHandler(handleSMSCommand, handleDtmfCommand, &SerialGSM);
+    BluetoothSerialHandler btHandler(&Serial1, &handleSerialCommand);
 #else
     #include "src/gsm/SimcomGSMHandler.h"
-    //BluetoothSerialHandler btSerialHandler(&Serial, &getBME280Data, &getBatteryData);
+    //BluetoothSerialHandler btHandler(&Serial);
     AuxHeaterSerial auxSerialHandler(&Serial1);
     SimcomGSMHandler gsmSerialHandler(handleSMSCommand, handleDtmfCommand, &Serial2);
 #endif
-
-
-BatteryMonitor batteryMonitor(4700.0f, 2200.0f, handleLevelChanged);
-//LedController ledController;
-
-Adafruit_BME280 bme280;
-//DallasTemperature tempSensor;
 
 void setup() {
     // USB Serial
@@ -62,8 +75,6 @@ void setup() {
     auxSerial.begin(AUX_BAUD_RATE, SERIAL_8N1, AUX_RX_PIN, AUX_TX_PIN);
     // gsm serial
     gsmSerial.begin(SERIAL_BAUD_RATE, SERIAL_8N1, GSM_RX_PIN, GSM_TX_PIN);
-
-    bleHandler.Start();
 #elif MKRGSM1400
     pinMode(GSM_RESETN, OUTPUT);
     digitalWrite(GSM_RESETN, LOW);
@@ -71,8 +82,9 @@ void setup() {
     pinMode(GSM_CTS, INPUT);
     digitalWrite(GSM_RTS, LOW);
 
-    DebugHandler::SetPrint(&Serial);
+    //DebugHandler::SetPrint(&Serial);
     SerialGSM.begin(SERIAL_BAUD_RATE, SERIAL_8N1);
+    Serial1.begin(57600, SERIAL_8N1);
 #endif
 
     //ledController.SetFrequency(100, 11, 0b00000001);
@@ -80,7 +92,6 @@ void setup() {
     //outSerial.begin(SERIAL_BAUD_RATE);
     //outSerial.listen();
 
-    bme280.begin(246u);
     //bool state = bme280.begin(246u, &Wire);
     //Serial.print("bme280: ");
     //Serial.print(state);
@@ -98,6 +109,7 @@ void setup() {
     //ELECHOUSE_cc1101.Init(F_433);
     //ELECHOUSE_cc1101.SetReceive();
 
+    temperatureHandler.Start();
     gsmSerialHandler.Start();
     DebugHandler::outWrite(F("Setup done!\r\n"));
 }
@@ -105,14 +117,10 @@ void setup() {
 void loop() {
     Timer::Loop();
 
-#if ESP32
-    bleHandler.Loop();
-#endif
-
     auxSerialHandler.Loop();
     gsmSerialHandler.Loop();
     //ledController.Loop();
-    //btSerialHandler.Loop();
+    btHandler.Loop();
 
     //if (ELECHOUSE_cc1101.CheckReceiveFlag()) {
     //	uint8_t size = ELECHOUSE_cc1101.ReceiveData(RX_buffer, CC1101_BUFFER_SIZE);
@@ -132,51 +140,30 @@ void loop() {
     TimeManager::LateLoop();
 }
 
-#if ESP32
 void handleSerialCommand(char *command, size_t length) {
-    
-    if (strncasecmp(command, "stats on", length) == 0) {
-        bleHandler.SendStats();
-    } else if (strncasecmp(command, "stats off", length) == 0) {
-        bleHandler.StopStatsTimer();
-    } else if (strncasecmp(command, "test", length) == 0) {
+
+    if (strcmp(command, BT_STATS_CMD) == 0) {
+        TemperatureData temperatureData;
+        temperatureHandler.GetTemperature(&temperatureData);
+
+        BatteryData batteryData;
+        batteryMonitor.GetBatteryData(&batteryData);
+
+        btHandler.SendStats(&temperatureData, &batteryData);
+    }
+    else if (strncasecmp(command, "test", length) == 0) {
         char data[] = "short msg";
         //bleHandler.println(data);
-        bleHandler.write((uint8_t *)data, strlen(data));
+        btHandler.write((uint8_t *)data, strlen(data));
     } else if (strncasecmp(command, "test long", length) == 0) {
         char data[] = "this is super long message for testing transfer over BLE where is 20 chars limit per message";
         //bleHandler.println(data);
-        bleHandler.write((uint8_t *)data, strlen(data));
+        btHandler.write((uint8_t *)data, strlen(data));
     } else if (strncasecmp(command, "aux off", length) == 0) {
         auxSerialHandler.StopHeater(&handleHeaterComplete);
     } else if (strncasecmp(command, "aux on", length) == 0) {
         auxSerialHandler.LaunchHeater(&handleHeaterComplete);
     }
-}
-void handleBLEMessage(BinaryMessage * message) {
-    handleSerialCommand((char *)message->data, (size_t)message->length);
-}
-#endif
-
-void getBME280Data(BME280Data* data) {
-    // response stats: STATS:in temp|out temp|humidity|pressure|voltage|ampers|calculated voltage
-    if (data == NULL) return;
-
-    data->temperature = bme280.readTemperature();
-    data->humidity = bme280.readHumidity();
-    data->pressure = bme280.readPressure();
-
-}
-
-void getBatteryData(BatteryData* data) {
-    // response stats: STATS:in temp|out temp|humidity|pressure|voltage|ampers|calculated voltage
-    if (data == NULL) return;
-
-    // TODO:
-    data->voltage = batteryMonitor.Voltage();
-    data->ampers = 0;
-    data->calcVoltage = 0;
-
 }
 
 void handleLevelChanged(VoltageLevelState level) {

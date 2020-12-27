@@ -2,10 +2,10 @@
 #include <string.h>
 #include "BLEHandler.h"
 
-BLEHandler::BLEHandler(BinaryMessageCallback rxCallback, BME1280DataCallback bme280DataCB, BatteryDataCallback batteryDataCB)
+BLEHandler::BLEHandler(BinaryMessageCallback rxCallback, BME1280DataCallback temperatureDataCB, BatteryDataCallback batteryDataCB)
 {
     this->rxCallback = rxCallback;
-    this->bme280DataCB = bme280DataCB;
+    this->temperatureDataCB = temperatureDataCB;
     this->batteryDataCB = batteryDataCB;
     debugPrint = this;
 }
@@ -14,34 +14,19 @@ BLEHandler::~BLEHandler()
 {
 }
 
-void BLEHandler::OnTimerComplete(TimerID timerId, uint8_t data)
+void BLEHandler::SendStats(TemperatureData * temperatureData, BatteryData * batteryData)
 {
-    if (timerId == statsTimer) {
-        statsTimer = 0;
-        SendStats();
-    }
-}
-
-void BLEHandler::SendStats()
-{
-    if (statsTimer != 0) return;
-    StartStatsTimer();
-
-    if (bme280DataCB != NULL) {
-        BME280Data bme280Data;
-        bme280DataCB(&bme280Data);
-        BLESerialHandler::SendData(bme280Data);
+    if (temperatureData != NULL) {
+        BLESerialHandler::SendData(temperatureData);
     }
 
-    if (batteryDataCB != NULL) {
-        BatteryData batteryData;
-        batteryDataCB(&batteryData);
+    if (batteryData != NULL) {
         BLESerialHandler::SendData(batteryData);
     }
 
     DeviceSpecData deviceData;
     deviceData.remainRam = remainRam();
-    deviceData.activeTime = time(NULL) - launchTime;
+    deviceData.activeTime = TimeManager::GetOnlineSeconds();
 
     BLESerialHandler::SendData(deviceData);
 }
@@ -53,7 +38,7 @@ void BLEHandler::Loop()
         BinaryMessage * message = GetMessage();
         if (message != NULL) {
             if (rxCallback != NULL) {
-                rxCallback(message);
+                rxCallback((char *)message->data, (size_t)message->length);
             }
             if (message->data != NULL) {
                 free(message->data);
@@ -72,30 +57,14 @@ void BLEHandler::onConnect(BLEServer* pServer, esp_ble_gatts_cb_param_t* param)
 {
     // May launch from different core!
     BLESerialHandler::onConnect(pServer, param);
-    StartStatsTimer();
+    isDebugEnabled = true;
 }
 
 void BLEHandler::onDisconnect(BLEServer* pServer)
 {
     // May launch from different core!
     BLESerialHandler::onDisconnect(pServer);
-    if (GetConnectedCount() <= 1) {
-        StopStatsTimer();
-    }
+    isDebugEnabled = false;
 }
 
-void BLEHandler::StartStatsTimer()
-{
-    if (statsTimer == 0) {
-        statsTimer = Timer::Start(this, STATS_REFRESH_RATE);
-    }
-}
-
-void BLEHandler::StopStatsTimer()
-{
-    if (statsTimer != 0) {
-        Timer::Stop(statsTimer);
-        statsTimer = 0;
-    }
-}
 #endif
