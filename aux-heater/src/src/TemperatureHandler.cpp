@@ -15,7 +15,7 @@ void TemperatureHandler::GetTemperature(TemperatureData* data) {
 
     data->temperature = bme280.readTemperature();
     data->humidity = bme280.readHumidity();
-    data->pressure = bme280.readPressure();
+    data->pressure = bme280.readPressure() / 100.0;
 
     dallasSensors.requestTemperatures();
     data->temperature2 = dallasSensors.getTempCByIndex(0);
