@@ -10,7 +10,7 @@ SerialCharResponseHandler::SerialCharResponseHandler(const char *separator, Stre
 
 SerialCharResponseHandler::~SerialCharResponseHandler()
 {
-
+    delete(this->separator);
 }
 
 void SerialCharResponseHandler::Loop()

@@ -17,6 +17,7 @@
 #include "src/bluetooth/BluetoothSerialHandler.h"
 #include "src/common/BinaryMessageStack.h"
 #include "src/TemperatureHandler.h"
+#include "wiring_private.h"
 
 void handleLevelChanged(VoltageLevelState level);
 void handleSMSCommand(char* command, size_t size, time_t smsDispatchUTCts);
@@ -24,16 +25,7 @@ bool handleDtmfCommand(char code);
 bool handleLevelMessage(Stream* stream);
 
 TemperatureHandler temperatureHandler;
-BatteryMonitor batteryMonitor(4700.0f, 2200.0f, handleLevelChanged);
-
-/*
-extern SERCOM sercom0;
-extern SERCOM sercom1; // SPI
-extern SERCOM sercom2; // I2C
-extern SERCOM sercom3;
-extern SERCOM sercom4; // SerialGSM
-extern SERCOM sercom5; // Serial1
-*/
+BatteryMonitor batteryMonitor(&handleLevelChanged);
 
 void handleSerialCommand(char *command, size_t length);
 
@@ -47,17 +39,17 @@ void handleSerialCommand(char *command, size_t length);
     BLEHandler btHandler(handleSerialCommand);
 #elif MKRGSM1400
 
-    Uart auxSerial(&sercom3, 0u, 7u, SERCOM_RX_PAD_3, UART_TX_PAD_0);
-
-    void SERCOM3_Handler()
-    {
-        auxSerial.IrqHandler();
+    #define auxSerial Serial1
+    
+    Uart btSerial(&sercom3, BT_RX_PIN, BT_TX_PIN, SERCOM_RX_PAD_1, UART_TX_PAD_0);
+    void SERCOM3_Handler() {
+        btSerial.IrqHandler();
     }
 
     #include "src/gsm/UbloxGSMHandler.h"
     AuxHeaterSerial auxSerialHandler(&auxSerial);
     UbloxGSMHandler gsmSerialHandler(handleSMSCommand, handleDtmfCommand, &SerialGSM);
-    BluetoothSerialHandler btHandler(&Serial1, &handleSerialCommand);
+    BluetoothSerialHandler btHandler(&btSerial, &handleSerialCommand);
 #else
     #include "src/gsm/SimcomGSMHandler.h"
     //BluetoothSerialHandler btHandler(&Serial);
@@ -68,34 +60,32 @@ void handleSerialCommand(char *command, size_t length);
 void setup() {
     // USB Serial
     Serial.begin(SERIAL_BAUD_RATE);
-    while(!Serial) {}
+    //while(!Serial) {}
 
 #if ESP32
     // AUX heater serial
     auxSerial.begin(AUX_BAUD_RATE, SERIAL_8N1, AUX_RX_PIN, AUX_TX_PIN);
     // gsm serial
     gsmSerial.begin(SERIAL_BAUD_RATE, SERIAL_8N1, GSM_RX_PIN, GSM_TX_PIN);
+    analogReadResolution(12);
 #elif MKRGSM1400
     pinMode(GSM_RESETN, OUTPUT);
     digitalWrite(GSM_RESETN, LOW);
     pinMode(GSM_RTS, OUTPUT);
     pinMode(GSM_CTS, INPUT);
     digitalWrite(GSM_RTS, LOW);
+    analogReadResolution(12);
 
-    //DebugHandler::SetPrint(&Serial);
     SerialGSM.begin(SERIAL_BAUD_RATE, SERIAL_8N1);
-    Serial1.begin(57600, SERIAL_8N1);
+    auxSerial.begin(AUX_BAUD_RATE, SERIAL_8N1);
+
+    btSerial.begin(BT_BAUD_RATE, SERIAL_8N1);
+    pinPeripheral(BT_RX_PIN, PIO_SERCOM); // Assign RX function to pin 1
+    pinPeripheral(BT_TX_PIN, PIO_SERCOM); // Assign TX function to pin 0
+
 #endif
 
     //ledController.SetFrequency(100, 11, 0b00000001);
-
-    //outSerial.begin(SERIAL_BAUD_RATE);
-    //outSerial.listen();
-
-    //bool state = bme280.begin(246u, &Wire);
-    //Serial.print("bme280: ");
-    //Serial.print(state);
-    //Serial.println();
 
     //pinMode(SCK_PIN, OUTPUT);
     //pinMode(MOSI_PIN, OUTPUT);
@@ -111,6 +101,7 @@ void setup() {
 
     temperatureHandler.Start();
     gsmSerialHandler.Start();
+    batteryMonitor.Start();
     DebugHandler::outWrite(F("Setup done!\r\n"));
 }
 
@@ -118,8 +109,7 @@ void loop() {
     Timer::Loop();
 
     auxSerialHandler.Loop();
-    gsmSerialHandler.Loop();
-    //ledController.Loop();
+    //gsmSerialHandler.Loop();
     btHandler.Loop();
 
     //if (ELECHOUSE_cc1101.CheckReceiveFlag()) {
@@ -130,11 +120,11 @@ void loop() {
     //	DebugHandler::outWriteEnd();
     //}
 
-    if (Serial.available() > 0) {
-        while (Serial.available() > 0) {
-            SerialGSM.write(Serial.read());
-        }
-    }
+    //if (Serial && Serial.available() > 0) {
+    //    while (Serial && Serial.available() > 0) {
+    //        SerialGSM.write(Serial.read());
+    //    }
+    //}
 
     // Must be latest task loop
     TimeManager::LateLoop();
@@ -142,16 +132,11 @@ void loop() {
 
 void handleSerialCommand(char *command, size_t length) {
 
-    if (strcmp(command, BT_STATS_CMD) == 0) {
-        TemperatureData temperatureData;
-        temperatureHandler.GetTemperature(&temperatureData);
+    Serial.print("handleSerialCommand: ");
+    Serial.print(command);
+    Serial.println();
 
-        BatteryData batteryData;
-        batteryMonitor.GetBatteryData(&batteryData);
-
-        btHandler.SendStats(&temperatureData, &batteryData);
-    }
-    else if (strncasecmp(command, "test", length) == 0) {
+    if (strncasecmp(command, "test", length) == 0) {
         char data[] = "short msg";
         //bleHandler.println(data);
         btHandler.write((uint8_t *)data, strlen(data));
@@ -160,9 +145,9 @@ void handleSerialCommand(char *command, size_t length) {
         //bleHandler.println(data);
         btHandler.write((uint8_t *)data, strlen(data));
     } else if (strncasecmp(command, "aux off", length) == 0) {
-        auxSerialHandler.StopHeater(&handleHeaterComplete);
+        //auxSerialHandler.StopHeater(&handleHeaterComplete);
     } else if (strncasecmp(command, "aux on", length) == 0) {
-        auxSerialHandler.LaunchHeater(&handleHeaterComplete);
+        //auxSerialHandler.LaunchHeater(&handleHeaterComplete);
     }
 }
 
@@ -273,7 +258,7 @@ bool handleLevelMessage(Stream* stream) {
     }
 
     if (result) {
-        stream->write(batteryMonitor.Voltage());
+        stream->write(batteryMonitor.CalcVoltage());
     }
 
     return result;

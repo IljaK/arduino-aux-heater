@@ -6,8 +6,6 @@ DallasTemperature dallasSensors(&dallasWire);
 
 void TemperatureHandler::Start() {
     bme280.begin(246u);
-    //dallasWire.begin(DS18S20_PIN);
-    //dallasSensors.setOneWire(&dallasWire);
     dallasSensors.begin();
 }
 

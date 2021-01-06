@@ -135,7 +135,7 @@ private:
 
 	SMSCallback smsCallback;
 	DTMFCallback dtmfCallback;
-	StreamCallback messageCallback;
+	StreamCallback messageCallback = NULL;
 
 	bool IsProperResponse(char *response, size_t size);
 

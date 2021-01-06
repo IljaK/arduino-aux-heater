@@ -7,35 +7,49 @@ constexpr uint8_t CRTLZ_ASCII_SYMBOL = 26u; // ctrl+z
 constexpr uint8_t ESC_ASCII_SYMBOL = 27u; // ESC
 
 #if ESP32
-	constexpr uint8_t AUX_RX_PIN = 9u;
-	constexpr uint8_t AUX_TX_PIN = 10u;
+	#define AUX_RX_PIN 9
+	#define AUX_TX_PIN 10
 
-	constexpr uint8_t GSM_RX_PIN = 16u;
-	constexpr uint8_t GSM_TX_PIN = 17u;
+	#define GSM_RX_PIN 16
+	#define GSM_TX_PIN 17
 
-	constexpr uint8_t VOLTMETER_MEASURE_PIN = A4;
-	constexpr uint8_t VOLTMETER_TRIGGER_PIN = 5u;
+	#define VOLTMETER_MEASURE_PIN A4
+	#define AMPERMETER_MEASURE_PIN A5
+	#define VOLTMETER_TRIGGER_PIN 5
 #else
-	constexpr uint8_t AUX_RX_PIN = 3u;
-	constexpr uint8_t AUX_TX_PIN = 4u;
+	#define BT_RX_PIN 1
+	#define BT_TX_PIN 0
 
-	constexpr uint8_t VOLTMETER_MEASURE_PIN = A4;
-	constexpr uint8_t VOLTMETER_TRIGGER_PIN = 5u;
+	#define AUX_RX_PIN 13
+	#define AUX_TX_PIN 14
 
-	constexpr uint8_t DEBUG_RX_PIN = 8u;
-	constexpr uint8_t DEBUG_TX_PIN = 9u;
+	#define VOLTMETER_MEASURE_PIN A4
+	#define AMPERMETER_MEASURE_PIN A5
+	#define VOLTMETER_TRIGGER_PIN 5
+
+    #define DS18S20_PIN 4
+    #define BT_BAUD_RATE 115200
 #endif
 
-constexpr uint8_t DS18S20_PIN = 4u;
+#if ESP32 || ARDUINO_ARCH_SAMD
+#define PIN_RESOLUTION_UNITS 4096 // 12 bit size
+#else
+#define PIN_RESOLUTION_UNITS 1024 // 10 bit size
+#endif
+
+constexpr uint16_t PIN_RESOLUTION = PIN_RESOLUTION_UNITS - 1;
+
 
 #ifndef SERIAL_CHAR_BUFFER_SIZE
-#define SERIAL_CHAR_BUFFER_SIZE 128
+#define SERIAL_CHAR_BUFFER_SIZE 64
 #endif
 
+
+constexpr char BT_STATS_CMD[] = "+STATS";
 constexpr char RESPONSE_SEPARATOR[] = "\r\n";
 
-constexpr uint32_t AUX_BAUD_RATE = 2400u;
-constexpr uint32_t SERIAL_BAUD_RATE = 115200u;
+#define AUX_BAUD_RATE 2400
+#define SERIAL_BAUD_RATE 115200
 
 constexpr uint32_t SERIAL_RESPONSE_TIMEOUT = 1000000u;
 constexpr uint32_t GSM_CMD_DELAY = 500000u;
@@ -46,6 +60,7 @@ constexpr uint32_t GSM_CMD_DELAY = 500000u;
 
 struct BatteryData {
 	float voltage = 0;
+	float pinVoltage = 0;
 	float ampers = 0;
 	float calcVoltage = 0;
 };
@@ -90,3 +105,4 @@ extern size_t writeASCII(Print *stream, unsigned long data, int radix = 10);
 //extern void outPrintf(const char *format, ...);
 
 extern uint32_t remainRam();
+extern double readAnalogVoltage(uint8_t pin);

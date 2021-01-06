@@ -9,7 +9,6 @@
 #define PACKAGE_EXTRA_DATA_SIZE 1
 constexpr uint8_t MAX_BLE_PART_SIZE = MAX_BLE_MESSAGE_SIZE - PACKAGE_EXTRA_DATA_SIZE;
 
-
 struct BLEMessage {
     uint8_t length;
     uint8_t data[];
@@ -21,12 +20,12 @@ class BLESerialHandler :
 {
 private:
     // Serial TX
-    ByteStackArray * serialTXBuffer = new ByteStackArray(MAX_TX_STACK_SIZE, MAX_BLE_MESSAGE_SIZE);
+    ByteStackArray serialTXBuffer;
     volatile bool isTransferrig = false;
     SemaphoreHandle_t xTXSemaphore = xSemaphoreCreateRecursiveMutex();
 
     // Serial RX
-    BinaryMessageStack * rxMessageStack = new BinaryMessageStack(MAX_RX_STACK_SIZE);
+    BinaryMessageStack rxMessageStack;
     SemaphoreHandle_t xRXSemaphore = xSemaphoreCreateMutex();
 
     void SendSerialMessage();

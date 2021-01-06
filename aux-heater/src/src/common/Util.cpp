@@ -207,6 +207,11 @@ uint32_t remainRam () {
     return (size_t) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
 #endif
 }
+
+double getAnalogValue() {
+
+}
+
 /*
 void outPrintf(const char *format, ...)
 {
@@ -248,7 +253,7 @@ size_t writeASCII(Print *stream, int data, int radix)
     char outString[size];
     outString[0] = 0;
     itoa(data, outString, radix);
-    return stream->write((const char *)outString);
+    return stream->print((const char *)outString);
 }
 
 size_t writeASCII(Print *stream, unsigned int data, int radix)
@@ -257,7 +262,7 @@ size_t writeASCII(Print *stream, unsigned int data, int radix)
     char outString[size];
     outString[0] = 0;
     utoa(data, outString, radix);
-    return stream->write((const char *)outString);
+    return stream->print((const char *)outString);
 }
 
 size_t writeASCII(Print *stream, long data, int radix)
@@ -266,7 +271,7 @@ size_t writeASCII(Print *stream, long data, int radix)
     char outString[size];
     outString[0] = 0;
     ltoa(data, outString, radix);
-    return stream->write((const char *)outString);
+    return stream->print((const char *)outString);
 }
 
 size_t writeASCII(Print *stream, unsigned long data, int radix)
@@ -275,8 +280,34 @@ size_t writeASCII(Print *stream, unsigned long data, int radix)
     char outString[size];
     outString[0] = 0;
     ultoa(data, outString, radix);
-    return stream->write((const char *)outString);
+    return stream->print((const char *)outString);
 }
+
+long readVCC() {
+#if ARDUINO_TEST 
+	return 5000;
+#elif ESP32 || ARDUINO_ARCH_SAMD
+	return 3300;
+#else
+	long result; // Read 1.1V reference against AVcc 
+	ADMUX = _BV(REFS0) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
+	delay(2); // Wait for Vref to settle 
+	ADCSRA |= _BV(ADSC); // Convert 
+	while (bit_is_set(ADCSRA,ADSC)); 
+	result = ADCL; 
+	result |= ADCH<<8; 
+	result = 1126400L / result; // Back-calculate AVcc in mV
+	return result; 
+#endif
+}
+
+double readAnalogVoltage(uint8_t pin)
+{
+    double vcc = readVCC() / 1000.0;
+    double analog_value = analogRead(pin);
+	return ((analog_value * vcc) / PIN_RESOLUTION);
+}
+
 
 /*
 #ifndef ESP32

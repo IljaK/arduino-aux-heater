@@ -1,5 +1,6 @@
 #pragma once
-#include "common/VoltMeter.h"
+#include "measurements/VoltMeter.h"
+#include "measurements/AmperMeter.h"
 #include "common/Util.h"
 #include "common/TimeManager.h"
 #include "common/DebugHandler.h"
@@ -18,33 +19,45 @@ enum class VoltageLevelState : uint8_t
 	OVERFLOW_LEVEL
 };
 
-class BatteryMonitor : public VoltMeter
+constexpr uint32_t DELAY_BEFORE_MEASURE = 2000u;
+constexpr uint32_t DELAY_BETWEEN_MEASURE = 1000000u; //60000000u; // 60 sec
+
+typedef void (*VoltageStateCallback)(VoltageLevelState);
+
+class BatteryMonitor: public ITimerCallback
 {
 private:
-	void(*stateCallback)(VoltageLevelState) = NULL;
+    VoltMeter voltMeter;
+    AmperMeter amperMeter;
+
+    TimerID measureTimer = 0;
+	VoltageStateCallback stateCallback = NULL;
 	VoltageLevelState currentState = VoltageLevelState::NORMAL_LEVEL;
 
 	uint8_t matchRequire = 3;
 	uint8_t matchedAttempts = 0;
 	VoltageLevelState matchState = VoltageLevelState::NORMAL_LEVEL;
 
-	uint8_t valueLevel[6] = { 105, 118, 120, 125, 145, 155 };
-
 	float GetStateVoltage(VoltageLevelState state);
 	void HandleAttempt(VoltageLevelState state);
 	VoltageLevelState GetNextState(VoltageLevelState state);
 	bool IsNormalized();
+    void StopTimer();
+    void StartTimer();
 
 protected:
-	void OnVoltageMeasured() override;
+	void OnVoltageMeasured();
 
 public:
-
-	VoltageLevelState CurrentState();
-
-	BatteryMonitor(float r1, float r2, void(*actionCallback)(VoltageLevelState) = NULL);
+	BatteryMonitor(VoltageStateCallback actionCallback = NULL);
 	~BatteryMonitor();
 
+    void OnTimerComplete(TimerID timerId, uint8_t data) override;
+
+	VoltageLevelState CurrentState();
     void GetBatteryData(BatteryData* data);
+
+    double CalcVoltage();
+    void Start();
 };
 

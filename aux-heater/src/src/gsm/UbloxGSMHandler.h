@@ -40,7 +40,8 @@ public:
 	void SendSMSMessage(StreamCallback messageCallback);
     void Start() override;
 private:
-    UbloxFlowState flowState = UbloxFlowState::INITIALIZATION;
+    //UbloxFlowState flowState = UbloxFlowState::INITIALIZATION;
+    UbloxFlowState flowState = UbloxFlowState::LOCKED;
     PhonebookReader phoneBookReader;
     char * response = NULL;
     void FlushResponse();

@@ -13,7 +13,7 @@ protected:
 	
 public:
 	BaseSerialHandler(Stream * serial);
-	~BaseSerialHandler();
+	virtual ~BaseSerialHandler();
 
 	void StartTimeoutTimer(unsigned long microSecTimeOut);
 	void StopTimeoutTimer();

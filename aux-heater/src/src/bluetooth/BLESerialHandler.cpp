@@ -1,7 +1,10 @@
 #if ESP32
 #include "BLESerialHandler.h"
 
-BLESerialHandler::BLESerialHandler() {
+BLESerialHandler::BLESerialHandler(), 
+    serialTXBuffer(MAX_TX_STACK_SIZE, MAX_BLE_MESSAGE_SIZE),
+    rxMessageStack(MAX_RX_STACK_SIZE)
+{
 
 }
 
@@ -60,8 +63,8 @@ void BLESerialHandler::onWrite(BLECharacteristic* pCharacteristic)
 void BLESerialHandler::FlushRxData()
 {
     xSemaphoreTake( xRXSemaphore, portMAX_DELAY );
-    while (rxMessageStack->Size() > 0) {
-        BinaryMessage * msg = rxMessageStack->UnshiftFirst();
+    while (rxMessageStack.Size() > 0) {
+        BinaryMessage * msg = rxMessageStack.UnshiftFirst();
         if (msg->data != NULL) {
             free(msg->data);
         }
@@ -75,9 +78,9 @@ void BLESerialHandler::ReadRxData(uint8_t * data)
     xSemaphoreTake( xRXSemaphore, portMAX_DELAY );
     
     BLEMessage * bleMessage = (BLEMessage *)data;
-    BinaryMessage * msg = rxMessageStack->PeekLast();
+    BinaryMessage * msg = rxMessageStack.PeekLast();
     if (msg != NULL) {
-        if (rxMessageStack->IsFull() && msg->isFilled()) {
+        if (rxMessageStack.IsFull() && msg->isFilled()) {
 
             xSemaphoreGive(xRXSemaphore);
             return;
@@ -93,7 +96,7 @@ void BLESerialHandler::ReadRxData(uint8_t * data)
         msg->data = (uint8_t *)malloc(msg->length);
         msg->filled = 0;
 
-        rxMessageStack->Append(msg);
+        rxMessageStack.Append(msg);
     }
 
     if (bleMessage->length > MAX_BLE_PART_SIZE) {
@@ -111,10 +114,10 @@ void BLESerialHandler::ReadRxData(uint8_t * data)
     xSemaphoreGive(xRXSemaphore);
 
     /*
-    msg = rxMessageStack->Peek();
+    msg = rxMessageStack.Peek();
 
     if (msg != NULL && msg->isFilled()) {
-        msg = rxMessageStack->UnshiftFirst();
+        msg = rxMessageStack.UnshiftFirst();
 
         //if (serialCallBack != NULL) {
         //    serialCallBack((char *)msg->data, (size_t)msg->length);
@@ -130,9 +133,9 @@ void BLESerialHandler::ReadRxData(uint8_t * data)
 int BLESerialHandler::AvailableMessages()
 {
     xSemaphoreTake( xRXSemaphore, portMAX_DELAY );
-    int size = rxMessageStack->Size();
+    int size = rxMessageStack.Size();
     if (size > 0) {
-        BinaryMessage * msg = rxMessageStack->PeekLast();
+        BinaryMessage * msg = rxMessageStack.PeekLast();
         if (msg == NULL || !msg->isFilled()) {
             size--;
         }
@@ -146,10 +149,10 @@ BinaryMessage * BLESerialHandler::GetMessage()
 {
     xSemaphoreTake( xRXSemaphore, portMAX_DELAY );
 
-    BinaryMessage * msg = rxMessageStack->Peek();
+    BinaryMessage * msg = rxMessageStack.Peek();
 
     if (msg != NULL && msg->isFilled()) {
-        msg = rxMessageStack->UnshiftFirst();
+        msg = rxMessageStack.UnshiftFirst();
     } else {
         msg = NULL;
     }
@@ -163,11 +166,11 @@ void BLESerialHandler::SendSerialMessage()
 {
 	xSemaphoreTakeRecursive( xTXSemaphore, portMAX_DELAY );
 
-    if (!isTransferrig && serialTXBuffer->Size() > 0) {
+    if (!isTransferrig && serialTXBuffer.Size() > 0) {
 
         Serial.print("SendSerialMessage core: ");
         Serial.print(xPortGetCoreID());
-        ByteArray * item = serialTXBuffer->UnshiftFirst();
+        ByteArray * item = serialTXBuffer.UnshiftFirst();
 
         if (item != NULL) {
 
@@ -194,8 +197,8 @@ void BLESerialHandler::AppenSerialStack(uint8_t * data, uint8_t length)
 
 	xSemaphoreTakeRecursive( xTXSemaphore, portMAX_DELAY );
 
-    serialTXBuffer->Append(data, length);
-    if (serialTXBuffer->HasFilledPacket()) {
+    serialTXBuffer.Append(data, length);
+    if (serialTXBuffer.HasFilledPacket()) {
         SendSerialMessage();
     }
     xSemaphoreGiveRecursive(xTXSemaphore);
