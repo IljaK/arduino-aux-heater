@@ -19,6 +19,14 @@ enum class VoltageLevelState : uint8_t
 	OVERFLOW_LEVEL
 };
 
+//#define R1 20000.0
+//#define R2 10000.0
+//#define R3 10000.0
+//#define R4 10000.0
+
+//constexpr double VOLTAGE_DIVIDER = (R1 / (R1 + R2)) * (R3 / (R3 + R4));
+constexpr double VOLTAGE_DIVIDER = 0.12518;
+
 constexpr uint32_t DELAY_BEFORE_MEASURE = 2000u;
 constexpr uint32_t DELAY_BETWEEN_MEASURE = 1000000u; //60000000u; // 60 sec
 

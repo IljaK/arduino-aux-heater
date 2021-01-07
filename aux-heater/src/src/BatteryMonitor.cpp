@@ -3,7 +3,7 @@
 uint8_t valueLevel[6] = { 105, 118, 120, 125, 145, 155 };
 
 BatteryMonitor::BatteryMonitor(VoltageStateCallback stateCallback):ITimerCallback(), 
-    voltMeter(51000.0f, 12000.0f, VOLTMETER_MEASURE_PIN), 
+    voltMeter(VOLTAGE_DIVIDER, VOLTMETER_MEASURE_PIN),
     amperMeter(AMPERMETER_MEASURE_PIN)
 {
 	this->stateCallback = stateCallback;

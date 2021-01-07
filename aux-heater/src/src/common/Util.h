@@ -27,9 +27,16 @@ constexpr uint8_t ESC_ASCII_SYMBOL = 27u; // ESC
 	#define AMPERMETER_MEASURE_PIN A5
 	#define VOLTMETER_TRIGGER_PIN 5
 
-    #define DS18S20_PIN 4
+    #define DS18S20_PIN 2
     #define BT_BAUD_RATE 115200
+
+    #define BT_PIN_ENABLE 3
+    #define BT_STATE_PIN 4
 #endif
+
+#define ACC_STATE_PIN 5
+#define EMERGENCY_STATE_PIN 6
+#define SERVICE_STATE_PIN 7
 
 #if ESP32 || ARDUINO_ARCH_SAMD
 #define PIN_RESOLUTION_UNITS 4096 // 12 bit size
@@ -38,7 +45,6 @@ constexpr uint8_t ESC_ASCII_SYMBOL = 27u; // ESC
 #endif
 
 constexpr uint16_t PIN_RESOLUTION = PIN_RESOLUTION_UNITS - 1;
-
 
 #ifndef SERIAL_CHAR_BUFFER_SIZE
 #define SERIAL_CHAR_BUFFER_SIZE 64

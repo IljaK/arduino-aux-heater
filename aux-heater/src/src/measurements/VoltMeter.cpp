@@ -1,10 +1,10 @@
 #include "VoltMeter.h"
 #include "../common/Util.h"
 
-VoltMeter::VoltMeter(float r1, float r2, uint8_t measurePin):PinValueMeter(measurePin)
+VoltMeter::VoltMeter(double divider, uint8_t measurePin):PinValueMeter(measurePin)
 {
-	this->r1 = r1;
-	this->r2 = r2;
+    this->divider = divider;
+    //divider = (double)r2 / ((double)r1 + (double)r2);
 
 	pinMode(measurePin, INPUT);
     Measure();
@@ -27,7 +27,7 @@ double VoltMeter::Voltage()
         return 0;
     }
 
-	double voltage = (double)pinValue / ((double)r2 / ((double)r1 + (double)r2));
+	double voltage = (double)pinValue / divider;
 
 	if (voltage < 0.1) voltage = 0.0;
 

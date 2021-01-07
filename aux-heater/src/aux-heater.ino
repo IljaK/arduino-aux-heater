@@ -27,6 +27,11 @@ bool handleLevelMessage(Stream* stream);
 TemperatureHandler temperatureHandler;
 BatteryMonitor batteryMonitor(&handleLevelChanged);
 
+volatile uint8_t accPinState = LOW;
+volatile uint8_t btPinState = LOW;
+volatile uint8_t emergencyPinState = LOW;
+volatile uint8_t servicePinState = LOW;
+
 void handleSerialCommand(char *command, size_t length);
 
 #if ESP32
@@ -82,8 +87,20 @@ void setup() {
     btSerial.begin(BT_BAUD_RATE, SERIAL_8N1);
     pinPeripheral(BT_RX_PIN, PIO_SERCOM); // Assign RX function to pin 1
     pinPeripheral(BT_TX_PIN, PIO_SERCOM); // Assign TX function to pin 0
-
 #endif
+
+#if defined(BT_PIN_ENABLE)
+    pinMode(BT_PIN_ENABLE, OUTPUT);
+    digitalWrite(BT_PIN_ENABLE, LOW);
+#endif
+
+#if defined(BT_PIN_CONNECTED)
+    initPullupPin(BT_STATE_PIN, &btPinState, INPUT_PULLDOWN, btState);
+#endif
+
+    initPullupPin(EMERGENCY_STATE_PIN, &emergencyPinState, INPUT_PULLUP, emergencyState);
+    initPullupPin(SERVICE_STATE_PIN, &servicePinState, INPUT_PULLUP, serviceState);
+    initPullupPin(ACC_STATE_PIN, &accPinState, INPUT_PULLUP, accState);
 
     //ledController.SetFrequency(100, 11, 0b00000001);
 
@@ -102,7 +119,11 @@ void setup() {
     temperatureHandler.Start();
     gsmSerialHandler.Start();
     batteryMonitor.Start();
-    DebugHandler::outWrite(F("Setup done!\r\n"));
+    DebugHandler::outWrite("Setup done!\r\n");
+
+    Serial.print("BT STATE: ");
+    Serial.print(btPinState);
+    Serial.print("\r\n");
 }
 
 void loop() {
@@ -130,11 +151,33 @@ void loop() {
     TimeManager::LateLoop();
 }
 
+void initPullupPin(uint8_t pin, volatile uint8_t *pinValue, PinMode mode, voidFuncPtr isrFunc)
+{
+    pinMode(pin, INPUT);
+    *pinValue = digitalRead(pin);
+    pinMode(pin, mode);
+    attachInterrupt(digitalPinToInterrupt(pin), isrFunc, CHANGE);
+}
+void accState() {
+    accPinState = !accPinState;
+}
+void emergencyState() {
+    emergencyPinState = !emergencyPinState;
+}
+void serviceState() {
+    servicePinState = !servicePinState;
+}
+#if defined(BT_PIN_CONNECTED)
+void btState() {
+    btPinState = !btPinState;
+}
+#endif
+
 void handleSerialCommand(char *command, size_t length) {
 
-    Serial.print("handleSerialCommand: ");
-    Serial.print(command);
-    Serial.println();
+    //Serial.print("handleSerialCommand: ");
+    //Serial.print(command);
+    //Serial.println();
 
     if (strncasecmp(command, "test", length) == 0) {
         char data[] = "short msg";

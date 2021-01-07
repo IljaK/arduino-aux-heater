@@ -7,8 +7,8 @@
 #include "src/TemperatureHandler.h"
 #include "src/BatteryMonitor.h"
 
-constexpr char BT_CONNECTED_CMD[] = "+CONN";
-constexpr char BT_DISCONNECTED_CMD[] = "+DISC";
+//constexpr char BT_CONNECTED_CMD[] = "+CONN";
+//constexpr char BT_DISCONNECTED_CMD[] = "+DISC";
 
 constexpr char BT_TEMP_CMD[] = "+TEMP";
 constexpr char BT_BAT_CMD[] = "+BAT";
@@ -37,6 +37,7 @@ public:
 	void OnResponseReceived(bool isTimeOut, bool isOverFlow = false) override;
     void OnTimerComplete(TimerID timerId, uint8_t data) override;
 	bool IsBusy() override;
+    void Loop() override;
     
     void SendTemp();
     void SendBat();

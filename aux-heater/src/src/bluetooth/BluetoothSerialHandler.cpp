@@ -2,9 +2,11 @@
 
 extern TemperatureHandler temperatureHandler;
 extern BatteryMonitor batteryMonitor;
+extern uint8_t btPinState;
 
 BluetoothSerialHandler::BluetoothSerialHandler(Stream * serial, StringCallback messageCallback):SerialCharResponseHandler(RESPONSE_SEPARATOR, serial)
 {
+    isDebugEnabled = btPinState;
     debugPrint = serial;
     this->messageCallback = messageCallback;
 }
@@ -34,6 +36,9 @@ void BluetoothSerialHandler::StopStatsTimer()
 void BluetoothSerialHandler::SendStat(StatPartType stat)
 {
     StopStatsTimer();
+    if (!isDebugEnabled) {
+        return;
+    }
     switch (stat)
     {
     case StatPartType::TEMP:
@@ -52,34 +57,40 @@ void BluetoothSerialHandler::SendStat(StatPartType stat)
     }
 }
 
+void BluetoothSerialHandler::Loop()
+{    if (isDebugEnabled != btPinState) {
+        if (!isDebugEnabled) {
+            // Connected
+        } else {
+            // Disconnected
+            StopStatsTimer();
+        }
+    }
+    isDebugEnabled = btPinState;
+    SerialCharResponseHandler::Loop();
+}
+
 void BluetoothSerialHandler::OnResponseReceived(bool isTimeOut, bool isOverFlow)
 {
     SerialCharResponseHandler::OnResponseReceived(isTimeOut, isOverFlow);
 
-    //Serial.write("BT: ");
-    //Serial.write(buffer);
-    //Serial.write("\r\n");
-
     //size_t size = strlen(buffer);
 
-    if (strncmp(buffer, BT_CONNECTED_CMD, strlen(BT_CONNECTED_CMD)) == 0) {
-        isDebugEnabled = true;
-        
-    } else if (strncmp(buffer, BT_DISCONNECTED_CMD, strlen(BT_DISCONNECTED_CMD)) == 0) {
-        isDebugEnabled = false;
-    } else if (strncmp(buffer, BT_STATS_CMD, strlen(BT_STATS_CMD)) == 0) {
-        isDebugEnabled = false;
+    if (strncmp(buffer, BT_STATS_CMD, strlen(BT_STATS_CMD)) == 0) {
         if (statsTimer == 0) {
             SendStat(StatPartType::TEMP);
         }
     } else if (messageCallback != NULL) {
-        isDebugEnabled = true;
         messageCallback(buffer, strlen(buffer));
     }
 }
 
 void BluetoothSerialHandler::SendTemp()
 {
+    if (!isDebugEnabled) {
+        return;
+    }
+
     TemperatureData temperatureData;
     temperatureHandler.GetTemperature(&temperatureData);
 
@@ -108,6 +119,9 @@ void BluetoothSerialHandler::SendTemp()
 }
 void BluetoothSerialHandler::SendBat()
 {
+    if (!isDebugEnabled) {
+        return;
+    }
     BatteryData batteryData;
     batteryMonitor.GetBatteryData(&batteryData);
 
@@ -124,6 +138,9 @@ void BluetoothSerialHandler::SendBat()
 }
 void BluetoothSerialHandler::SendDev()
 {
+    if (!isDebugEnabled) {
+        return;
+    }
     serial->write(BT_DEV_CMD);
     serial->write(':');
     writeASCII(serial, remainRam()); // remain memory
