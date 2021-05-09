@@ -31,7 +31,7 @@ void SerialTimerResponseHandler::OnTimerComplete(TimerID timerId, uint8_t data)
 void SerialTimerResponseHandler::StartTimer()
 {
 	StopTimer();
-	if (IsLimitReached() || !serial) return;
+	if (!serial) return;
 	registeredBytes = serial->available();
 	messageTimer = Timer::Start(this, ResponseByteTimeOut());
 }

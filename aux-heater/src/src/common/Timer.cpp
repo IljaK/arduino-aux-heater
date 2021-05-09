@@ -48,6 +48,23 @@ TimerID Timer::Start(ITimerCallback *pCaller, unsigned long duration, uint8_t da
 #endif
 	return id;
 }
+// TODO: Test this
+TimerID Timer::Start(timerCompleteCallBack pCallBack, unsigned long duration, uint8_t data)
+{
+    if (pCallBack == NULL) {
+        return 0;
+    }
+    TimerCallback *tc = new TimerCallback(pCallBack);
+    if (tc == NULL) {
+        // Could not allocate?
+        return 0;
+    }
+    TimerID id = Start(tc, duration, data);
+    if (id == 0) {
+        delete tc;
+    }
+    return id;
+}
 
 void Timer::Loop()
 {
@@ -122,6 +139,9 @@ bool Timer::Stop(TimerID timerId)
 			} else {
 				pPrev->pNext = pNode->pNext;
 			}
+            if (pNode->pCaller) {
+                pNode->pCaller->OnTimerStop(pNode->id, pNode->data);
+            }
 			delete(pNode);
 			result = true;
 			break;
@@ -156,6 +176,10 @@ void Timer::StopAll(ITimerCallback* pCaller)
 			else {
 				pPrev->pNext = freeNode->pNext;
 			}
+
+            if (freeNode != NULL && freeNode->pCaller) {
+                freeNode->pCaller->OnTimerStop(freeNode->id, freeNode->data);
+            }
 			delete(freeNode);
 
 			continue;

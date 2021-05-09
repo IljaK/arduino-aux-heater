@@ -24,7 +24,5 @@ public:
 	virtual void OnResponseReceived(bool IsTimeOut, bool isOverFlow = false);
 	virtual void FlushData();
 	virtual void Loop();
-
-	bool IsLimitReached();
 };
 

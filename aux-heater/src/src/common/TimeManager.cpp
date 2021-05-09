@@ -1,5 +1,4 @@
 #include "TimeManager.h"
-#include "DebugHandler.h"
 
 uint32_t TimeManager::syncMicroTS = 0;
 time_t TimeManager::launchTimeStamp = 0;

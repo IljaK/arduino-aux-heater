@@ -1,6 +1,6 @@
 #include "GSMSerialHandler.h"
 
-GSMSerialHandler::GSMSerialHandler(SMSCallback smsCallback, DTMFCallback dtmfCallback, Stream * serial):SerialCharResponseHandler(RESPONSE_SEPARATOR, serial)//SerialTimerResponseHandler(stream)
+GSMSerialHandler::GSMSerialHandler(SMSCallback smsCallback, DTMFCallback dtmfCallback, Stream * serial):SerialCharResponseHandler(GSM_SERIAL_BUFFER_SIZE, RESPONSE_SEPARATOR, serial)//SerialTimerResponseHandler(stream)
 {
 	this->smsCallback = smsCallback;
 	this->dtmfCallback = dtmfCallback;

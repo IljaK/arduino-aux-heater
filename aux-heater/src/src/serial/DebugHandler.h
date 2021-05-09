@@ -1,7 +1,7 @@
 #pragma once
 #include <Arduino.h>
-#include "Util.h"
-#include "../serial/SerialCharResponseHandler.h"
+#include "../common/Util.h"
+#include "SerialCharResponseHandler.h"
 
 class DebugHandler
 {

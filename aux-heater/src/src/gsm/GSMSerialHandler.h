@@ -5,7 +5,9 @@
 #include "../serial/SerialCharResponseHandler.h"
 #include "../serial/SerialTimerResponseHandler.h"
 #include "../common/StringStackArray.h"
-#include "../common/DebugHandler.h"
+#include "../serial/DebugHandler.h"
+
+#define GSM_SERIAL_BUFFER_SIZE 256
 
 constexpr char SIM_PIN_CODE[] = "0000"; // Pin code for sim card
 

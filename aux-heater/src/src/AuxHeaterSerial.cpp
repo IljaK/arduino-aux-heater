@@ -1,12 +1,28 @@
 #include "AuxHeaterSerial.h"
+#include <typeinfo>
 
-AuxHeaterSerial::AuxHeaterSerial(Stream * auxSerial):SerialTimerResponseHandler(auxSerial)
+AuxHeaterSerial::AuxHeaterSerial(HardwareSerial * auxSerial):ITimerCallback()
 {
-	
+    this->pHSerail = auxSerial;
+    this->pStream = auxSerial;
+}
+
+AuxHeaterSerial::AuxHeaterSerial(Stream * auxSerial):ITimerCallback()
+{
+    this->pHSerail = NULL;
+    this->pStream = auxSerial;
 }
 
 AuxHeaterSerial::~AuxHeaterSerial()
 {
+}
+
+void AuxHeaterSerial::StopTimer()
+{
+    if (flowTimer != 0) {
+        Timer::Stop(flowTimer);
+        flowTimer = 0;
+    }
 }
 
 void AuxHeaterSerial::LaunchHeater(StreamCallback resultCallback)
@@ -22,7 +38,7 @@ void AuxHeaterSerial::HandleCMD(HeaterCmdState cmd, StreamCallback actionCallbac
 		}
 		return;
 	}
-	serial->flush();
+	pStream->flush();
 	cmdState = cmd;
 	this->actionCallback = actionCallback;
 	cmdAttempt = 0;
@@ -44,7 +60,6 @@ void AuxHeaterSerial::StopHeater(StreamCallback actionCallback)
 {
 	HandleCMD(HeaterCmdState::STOP, actionCallback);
 }
-
 
 void AuxHeaterSerial::LaunchCMD()
 {
@@ -79,20 +94,35 @@ void AuxHeaterSerial::LaunchCMD()
 */
 	cmdAttempt++;
 
+    pStream->flush();
+    if (pHSerail != NULL) {
+        pHSerail->end();
+    }
+    pinMode(AUX_TX_PIN, OUTPUT);
 	digitalWrite(AUX_TX_PIN, LOW);
-	//delayMicroseconds(300000u);
+
 	delay(300u);
-	digitalWrite(AUX_TX_PIN, HIGH);
+
+    digitalWrite(AUX_TX_PIN, HIGH);
+    if (pHSerail != NULL) {
+        #if defined(MKRGSM1400)
+        pinPeripheral(AUX_TX_PIN, PIO_SERCOM);
+        #endif
+        pHSerail->begin(AUX_BAUD_RATE, SERIAL_8N1);
+    }
 	delayMicroseconds(59432u);
-	serial->write((uint8_t)145u);
-	delayMicroseconds(2400u);
-	serial->write((uint8_t)129u);
+
+	pStream->write((uint8_t)145u);
+	//delayMicroseconds(2400u);
+	pStream->write((uint8_t)129u);
 
 	StopTimer();
-	messageTimer = Timer::Start(this, 162124ul);
+	flowTimer = Timer::Start(this, 162124ul);
 }
 void AuxHeaterSerial::StopCMD()
 {
+
+    // 0 01010101 - (3200 delay) - 0 11010001
 	// [0](824)-[1](424)-[0](424)-[1](392)-[0](428)-[1](396)-[0](392)-[1](3596)-[0](436)-[1](800)-[0](428)-[1](392)-[0](1252)-[1](152016)
 	/*
 	digitalWrite(AUX_TX_PIN, LOW);
@@ -127,12 +157,12 @@ void AuxHeaterSerial::StopCMD()
 	*/
 
 	cmdAttempt++;
-	serial->write((uint8_t)170u);
-	delayMicroseconds(2400u);
-	serial->write((uint8_t)139u);
+	pStream->write((uint8_t)170u);
+    //delayMicroseconds(2400u);
+	pStream->write((uint8_t)139u);
 
 	StopTimer();
-	messageTimer = Timer::Start(this, 152016ul);
+	flowTimer = Timer::Start(this, 152016ul);
 }
 
 void AuxHeaterSerial::HandleResult()
@@ -141,7 +171,7 @@ void AuxHeaterSerial::HandleResult()
 	cmdState = HeaterCmdState::NONE;
 
 	if (awaitState != HeaterCmdState::NONE) {
-		serial->flush();
+		pStream->flush();
 		HeaterCmdState state = awaitState;
 		awaitState = HeaterCmdState::NONE;
 		HandleCMD(state, actionCallback);
@@ -151,13 +181,13 @@ void AuxHeaterSerial::HandleResult()
 	StreamCallback cb = actionCallback;
 	actionCallback = NULL;
 
-	if (cb != NULL) cb(serial);
+	if (cb != NULL) cb(pStream);
 }
 
 void AuxHeaterSerial::OnTimerComplete(TimerID timerId, uint8_t data)
 {
-	if (messageTimer == timerId) {
-		messageTimer = 0;
+	if (flowTimer == timerId) {
+		flowTimer = 0;
 
 		switch (cmdState)
 		{
@@ -170,11 +200,11 @@ void AuxHeaterSerial::OnTimerComplete(TimerID timerId, uint8_t data)
 			else StopCMD();
 			break;
 		default:
-			if (serial->available()) HandleResult();
+			if (pStream->available()) HandleResult();
 			break;
 		}
 	} else {
-		SerialTimerResponseHandler::OnTimerComplete(timerId, data);
+		ITimerCallback::OnTimerComplete(timerId, data);
 	}
 }
 
@@ -187,15 +217,5 @@ bool AuxHeaterSerial::IsBusy() {
 		default:
 			break;
 	}
-	return SerialTimerResponseHandler::IsBusy();
-}
-
-unsigned long AuxHeaterSerial::ResponseByteTimeOut()
-{
-	return 3000u;
-}
-
-void AuxHeaterSerial::OnResponseReceived(bool IsTimeOut, bool isOverFlow)
-{
-	SerialTimerResponseHandler::OnResponseReceived(IsTimeOut, isOverFlow);
+	return false;
 }

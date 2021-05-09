@@ -1,23 +1,23 @@
-
 /*
  Name:    aux-heater.ino
  Created: 11/7/2018 4:04:00 PM
  Author:  Ilja
 */
 
-#include <Arduino.h>
+#include "src/Definitions.h"
 //#include "libs/ELECHOUSE_CC1101.h"
 #include "src/common/Timer.h"
 #include "src/common/Util.h"
 #include "src/AuxHeaterSerial.h"
 #include "src/BatteryMonitor.h"
-#include "src/common/DebugHandler.h"
+#include "src/serial/DebugHandler.h"
 #include <strings.h>
 #include "src/bluetooth/BLEHandler.h"
 #include "src/bluetooth/BluetoothSerialHandler.h"
 #include "src/common/BinaryMessageStack.h"
 #include "src/TemperatureHandler.h"
-#include "wiring_private.h"
+#include "src/common/Button.h"
+#include "src/AudiControls.h"
 
 void handleLevelChanged(VoltageLevelState level);
 void handleSMSCommand(char* command, size_t size, time_t smsDispatchUTCts);
@@ -26,15 +26,11 @@ bool handleLevelMessage(Stream* stream);
 
 TemperatureHandler temperatureHandler;
 BatteryMonitor batteryMonitor(&handleLevelChanged);
-
-volatile uint8_t accPinState = LOW;
-volatile uint8_t btPinState = LOW;
-volatile uint8_t emergencyPinState = LOW;
-volatile uint8_t servicePinState = LOW;
+AudiControls audiControls;
 
 void handleSerialCommand(char *command, size_t length);
 
-#if ESP32
+#if defined(ESP32)
     #include "src/gsm/SimomGSMHandler.h"
 
     HardwareSerial auxSerial(1);
@@ -42,7 +38,7 @@ void handleSerialCommand(char *command, size_t length);
     AuxHeaterSerial auxSerialHandler(&auxSerial);
     GSMSerialHandler gsmSerialHandler(&handleSMSCommand, &handleDtmfCommand, &gsmSerial);
     BLEHandler btHandler(handleSerialCommand);
-#elif MKRGSM1400
+#elif defined(MKRGSM1400)
 
     #define auxSerial Serial1
     
@@ -52,7 +48,7 @@ void handleSerialCommand(char *command, size_t length);
     }
 
     #include "src/gsm/UbloxGSMHandler.h"
-    AuxHeaterSerial auxSerialHandler(&auxSerial);
+    AuxHeaterSerial auxSerialHandler((HardwareSerial *)&auxSerial);
     UbloxGSMHandler gsmSerialHandler(handleSMSCommand, handleDtmfCommand, &SerialGSM);
     BluetoothSerialHandler btHandler(&btSerial, &handleSerialCommand);
 #else
@@ -67,13 +63,15 @@ void setup() {
     Serial.begin(SERIAL_BAUD_RATE);
     //while(!Serial) {}
 
-#if ESP32
+#if defined(ESP32)
     // AUX heater serial
     auxSerial.begin(AUX_BAUD_RATE, SERIAL_8N1, AUX_RX_PIN, AUX_TX_PIN);
     // gsm serial
     gsmSerial.begin(SERIAL_BAUD_RATE, SERIAL_8N1, GSM_RX_PIN, GSM_TX_PIN);
     analogReadResolution(12);
-#elif MKRGSM1400
+
+#elif defined(MKRGSM1400)
+
     pinMode(GSM_RESETN, OUTPUT);
     digitalWrite(GSM_RESETN, LOW);
     pinMode(GSM_RTS, OUTPUT);
@@ -89,19 +87,6 @@ void setup() {
     pinPeripheral(BT_TX_PIN, PIO_SERCOM); // Assign TX function to pin 0
 #endif
 
-#if defined(BT_PIN_ENABLE)
-    pinMode(BT_PIN_ENABLE, OUTPUT);
-    digitalWrite(BT_PIN_ENABLE, LOW);
-#endif
-
-#if defined(BT_PIN_CONNECTED)
-    initPullupPin(BT_STATE_PIN, &btPinState, INPUT_PULLDOWN, btState);
-#endif
-
-    initPullupPin(EMERGENCY_STATE_PIN, &emergencyPinState, INPUT_PULLUP, emergencyState);
-    initPullupPin(SERVICE_STATE_PIN, &servicePinState, INPUT_PULLUP, serviceState);
-    initPullupPin(ACC_STATE_PIN, &accPinState, INPUT_PULLUP, accState);
-
     //ledController.SetFrequency(100, 11, 0b00000001);
 
     //pinMode(SCK_PIN, OUTPUT);
@@ -116,20 +101,18 @@ void setup() {
     //ELECHOUSE_cc1101.Init(F_433);
     //ELECHOUSE_cc1101.SetReceive();
 
+    audiControls.Start();
     temperatureHandler.Start();
     gsmSerialHandler.Start();
     batteryMonitor.Start();
     DebugHandler::outWrite("Setup done!\r\n");
-
-    Serial.print("BT STATE: ");
-    Serial.print(btPinState);
-    Serial.print("\r\n");
 }
 
 void loop() {
     Timer::Loop();
 
-    auxSerialHandler.Loop();
+    audiControls.Loop();
+
     //gsmSerialHandler.Loop();
     btHandler.Loop();
 
@@ -150,28 +133,6 @@ void loop() {
     // Must be latest task loop
     TimeManager::LateLoop();
 }
-
-void initPullupPin(uint8_t pin, volatile uint8_t *pinValue, PinMode mode, voidFuncPtr isrFunc)
-{
-    pinMode(pin, INPUT);
-    *pinValue = digitalRead(pin);
-    pinMode(pin, mode);
-    attachInterrupt(digitalPinToInterrupt(pin), isrFunc, CHANGE);
-}
-void accState() {
-    accPinState = !accPinState;
-}
-void emergencyState() {
-    emergencyPinState = !emergencyPinState;
-}
-void serviceState() {
-    servicePinState = !servicePinState;
-}
-#if defined(BT_PIN_CONNECTED)
-void btState() {
-    btPinState = !btPinState;
-}
-#endif
 
 void handleSerialCommand(char *command, size_t length) {
 
@@ -305,4 +266,15 @@ bool handleLevelMessage(Stream* stream) {
     }
 
     return result;
+}
+
+void handleEmergencyClick(uint8_t multiClicks) {
+    DebugHandler::outWrite("handleEmergencyClick ");
+    DebugHandler::outWriteASCII(multiClicks);
+    DebugHandler::outWriteEnd();
+}
+void handleServiceClick(uint8_t multiClicks) {
+    DebugHandler::outWrite("handleServiceClick ");
+    DebugHandler::outWriteASCII(multiClicks);
+    DebugHandler::outWriteEnd();
 }

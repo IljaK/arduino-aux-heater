@@ -1,61 +1,12 @@
 #pragma once
-#include <Arduino.h>
+#include "../Definitions.h"
 
 constexpr uint8_t CR_ASCII_SYMBOL = 13u; // CR
 constexpr uint8_t LF_ASCII_SYMBOL = 10u; // LF
 constexpr uint8_t CRTLZ_ASCII_SYMBOL = 26u; // ctrl+z
 constexpr uint8_t ESC_ASCII_SYMBOL = 27u; // ESC
 
-#if ESP32
-	#define AUX_RX_PIN 9
-	#define AUX_TX_PIN 10
-
-	#define GSM_RX_PIN 16
-	#define GSM_TX_PIN 17
-
-	#define VOLTMETER_MEASURE_PIN A4
-	#define AMPERMETER_MEASURE_PIN A5
-	#define VOLTMETER_TRIGGER_PIN 5
-#else
-	#define BT_RX_PIN 1
-	#define BT_TX_PIN 0
-
-	#define AUX_RX_PIN 13
-	#define AUX_TX_PIN 14
-
-	#define VOLTMETER_MEASURE_PIN A4
-	#define AMPERMETER_MEASURE_PIN A5
-	#define VOLTMETER_TRIGGER_PIN 5
-
-    #define DS18S20_PIN 2
-    #define BT_BAUD_RATE 115200
-
-    #define BT_PIN_ENABLE 3
-    #define BT_STATE_PIN 4
-#endif
-
-#define ACC_STATE_PIN 5
-#define EMERGENCY_STATE_PIN 6
-#define SERVICE_STATE_PIN 7
-
-#if ESP32 || ARDUINO_ARCH_SAMD
-#define PIN_RESOLUTION_UNITS 4096 // 12 bit size
-#else
-#define PIN_RESOLUTION_UNITS 1024 // 10 bit size
-#endif
-
-constexpr uint16_t PIN_RESOLUTION = PIN_RESOLUTION_UNITS - 1;
-
-#ifndef SERIAL_CHAR_BUFFER_SIZE
-#define SERIAL_CHAR_BUFFER_SIZE 64
-#endif
-
-
-constexpr char BT_STATS_CMD[] = "+STATS";
 constexpr char RESPONSE_SEPARATOR[] = "\r\n";
-
-#define AUX_BAUD_RATE 2400
-#define SERIAL_BAUD_RATE 115200
 
 constexpr uint32_t SERIAL_RESPONSE_TIMEOUT = 1000000u;
 constexpr uint32_t GSM_CMD_DELAY = 500000u;
@@ -64,21 +15,9 @@ constexpr uint32_t GSM_CMD_DELAY = 500000u;
 
 //temp|out temp|humidity|pressure|voltage|ampers|calculated voltage
 
-struct BatteryData {
-	float voltage = 0;
-	float pinVoltage = 0;
-	float ampers = 0;
-	float calcVoltage = 0;
-};
-
 struct DeviceSpecData {
     uint32_t remainRam = 0;
     uint32_t activeTime = 0;
-};
-
-struct ByteArray {
-    uint8_t length;
-    uint8_t * array;
 };
 
 typedef bool (*StreamCallback)(Stream *);
@@ -112,3 +51,4 @@ extern size_t writeASCII(Print *stream, unsigned long data, int radix = 10);
 
 extern uint32_t remainRam();
 extern double readAnalogVoltage(uint8_t pin);
+extern uint8_t initPullupPin(uint8_t pin, PinMode mode, voidFuncPtr isrFunc);

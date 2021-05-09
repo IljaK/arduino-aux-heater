@@ -3,7 +3,7 @@
 #include "measurements/AmperMeter.h"
 #include "common/Util.h"
 #include "common/TimeManager.h"
-#include "common/DebugHandler.h"
+#include "serial/DebugHandler.h"
 #include <Arduino.h>
 
 
@@ -17,6 +17,13 @@ enum class VoltageLevelState : uint8_t
 
 	CHARGE_LEVEL,
 	OVERFLOW_LEVEL
+};
+
+struct BatteryData {
+	float voltage = 0;
+	float pinVoltage = 0;
+	float ampers = 0;
+	float calcVoltage = 0;
 };
 
 //#define R1 20000.0

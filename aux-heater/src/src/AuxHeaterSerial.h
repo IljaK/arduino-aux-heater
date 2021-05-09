@@ -13,9 +13,13 @@ enum class HeaterCmdState : uint8_t
 
 const uint8_t AUX_MAX_ATTEMPTS = 3;
 
-class AuxHeaterSerial: public SerialTimerResponseHandler
+class AuxHeaterSerial: public ITimerCallback
 {
 private:
+    HardwareSerial *pHSerail = NULL;
+    Stream *pStream = NULL;
+    TimerID flowTimer;
+
 	uint8_t cmdAttempt = 0;
 	StreamCallback actionCallback = NULL;
 
@@ -26,18 +30,18 @@ private:
 	void LaunchCMD();
 	void StopCMD();
 	void HandleResult();
+    void StopTimer();
 
 public:
+	AuxHeaterSerial(HardwareSerial * auxSerial);
 	AuxHeaterSerial(Stream * auxSerial);
-	~AuxHeaterSerial();
+	virtual ~AuxHeaterSerial();
 
 	void LaunchHeater(StreamCallback resultCallback);
 	void StopHeater(StreamCallback resultCallback);
 
-	bool IsBusy() override;
-	unsigned long ResponseByteTimeOut() override;
+	bool IsBusy();
 
-	void OnResponseReceived(bool IsTimeOut, bool isOverFlow) override;
 	void OnTimerComplete(TimerID timerId, uint8_t data) override;
 };
 

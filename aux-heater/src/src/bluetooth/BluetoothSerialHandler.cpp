@@ -4,7 +4,8 @@ extern TemperatureHandler temperatureHandler;
 extern BatteryMonitor batteryMonitor;
 extern uint8_t btPinState;
 
-BluetoothSerialHandler::BluetoothSerialHandler(Stream * serial, StringCallback messageCallback):SerialCharResponseHandler(RESPONSE_SEPARATOR, serial)
+BluetoothSerialHandler::BluetoothSerialHandler(Stream * serial, StringCallback messageCallback):
+    SerialCharResponseHandler(BLUETOOTH_SERIAL_BUFFER_SIZE, RESPONSE_SEPARATOR, serial)
 {
     isDebugEnabled = btPinState;
     debugPrint = serial;

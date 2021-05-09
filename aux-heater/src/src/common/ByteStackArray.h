@@ -2,6 +2,11 @@
 #include "Util.h"
 #include "StackArray.h"
 
+struct ByteArray {
+    uint8_t length;
+    uint8_t * array;
+};
+
 class ByteStackArray: public StackArray<ByteArray *>
 {
 private:

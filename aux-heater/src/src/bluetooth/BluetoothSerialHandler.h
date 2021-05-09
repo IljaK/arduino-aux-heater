@@ -3,16 +3,17 @@
 #include "../common/Util.h"
 #include "../common/TimeManager.h"
 #include "../serial/SerialCharResponseHandler.h"
-#include "../common/DebugHandler.h"
-#include "src/TemperatureHandler.h"
-#include "src/BatteryMonitor.h"
+#include "../serial/DebugHandler.h"
+#include "../TemperatureHandler.h"
+#include "../BatteryMonitor.h"
 
-//constexpr char BT_CONNECTED_CMD[] = "+CONN";
-//constexpr char BT_DISCONNECTED_CMD[] = "+DISC";
 
-constexpr char BT_TEMP_CMD[] = "+TEMP";
-constexpr char BT_BAT_CMD[] = "+BAT";
-constexpr char BT_DEV_CMD[] = "+DEV";
+#define BLUETOOTH_SERIAL_BUFFER_SIZE 32
+
+constexpr char BT_STATS_CMD[] = "+STATS"; // Request stats CMD
+constexpr char BT_TEMP_CMD[] = "+TEMP"; // Response temperature data header
+constexpr char BT_BAT_CMD[] = "+BAT"; // Response temperature battery header
+constexpr char BT_DEV_CMD[] = "+DEV"; // Response temperature device status header
 
 enum StatPartType:uint8_t
 {
@@ -45,5 +46,4 @@ public:
 
     size_t write(uint8_t);
     size_t write(const uint8_t *buffer, size_t size);
-
 };

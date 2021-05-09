@@ -41,14 +41,6 @@ void BaseSerialHandler::FlushData()
 
 void BaseSerialHandler::Loop()
 {
-	if (IsLimitReached()) {
-		ResponseDetectedInternal(false, true);
-	}
-}
-
-bool BaseSerialHandler::IsLimitReached()
-{
-	return (serial != NULL && serial->available() >= SERIAL_CHAR_BUFFER_SIZE);
 }
 
 void BaseSerialHandler::StartTimeoutTimer(unsigned long microSecTimeOut)

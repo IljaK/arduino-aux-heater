@@ -208,10 +208,6 @@ uint32_t remainRam () {
 #endif
 }
 
-double getAnalogValue() {
-
-}
-
 /*
 void outPrintf(const char *format, ...)
 {
@@ -308,6 +304,14 @@ double readAnalogVoltage(uint8_t pin)
 	return ((analog_value * vcc) / PIN_RESOLUTION);
 }
 
+uint8_t initPullupPin(uint8_t pin, PinMode mode, voidFuncPtr isrFunc)
+{
+    pinMode(pin, INPUT);
+    uint8_t val = digitalRead(pin);
+    pinMode(pin, mode);
+    attachInterrupt(digitalPinToInterrupt(pin), isrFunc, CHANGE);
+    return val;
+}
 
 /*
 #ifndef ESP32

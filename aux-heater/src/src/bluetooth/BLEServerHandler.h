@@ -5,7 +5,7 @@
 #include <BLEServer.h>
 #include <BLEUtils.h>
 #include <BLE2902.h>
-#include "../common/DebugHandler.h"
+#include "../serial/DebugHandler.h"
 #include "../common/Timer.h"
 #include "../common/Util.h"
 #include "../common/ByteStackArray.h"
