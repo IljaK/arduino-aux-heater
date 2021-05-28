@@ -1,0 +1,3 @@
+[submodule "aux-heater/lib/arduino-helpers"]
+	path = aux-heater/lib/arduino-helpers
+	url = https://github.com/IljaK/arduino-helpers

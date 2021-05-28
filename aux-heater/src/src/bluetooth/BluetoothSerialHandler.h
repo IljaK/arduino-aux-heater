@@ -1,9 +1,9 @@
 #pragma once
 #include <Arduino.h>
-#include "../common/Util.h"
-#include "../common/TimeManager.h"
-#include "../serial/SerialCharResponseHandler.h"
-#include "../serial/DebugHandler.h"
+#include "common/Util.h"
+#include "common/TimeManager.h"
+#include "serial/SerialCharResponseHandler.h"
+#include "../DebugHandler.h"
 #include "../TemperatureHandler.h"
 #include "../BatteryMonitor.h"
 

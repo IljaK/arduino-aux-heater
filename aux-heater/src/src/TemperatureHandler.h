@@ -1,5 +1,5 @@
-
 #pragma once
+#include "Definitions.h"
 #include <Adafruit_BME280.h>
 #include <DallasTemperature.h>
 #include "common/Util.h"

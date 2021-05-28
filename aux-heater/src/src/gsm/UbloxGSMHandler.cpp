@@ -221,9 +221,10 @@ bool UbloxGSMHandler::IsAuthorized(char *number, char *entryName)
 
 void UbloxGSMHandler::OnFlowTimer()
 {
-    //DebugHandler::outWrite("UbloxGSMHandler::OnFlowTimer: ", true);
-    //DebugHandler::outWriteASCII((uint8_t)flowState, 10, true);
-    //DebugHandler::outWrite("\r\n", true);
+    if (debugPrint != NULL) {
+        debugPrint->print("UbloxGSMHandler::OnFlowTimer: ");
+        debugPrint->println((uint8_t)flowState, 10);
+    }
 
     switch (flowState)
 	{

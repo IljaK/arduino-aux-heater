@@ -1,9 +1,10 @@
 #pragma once
+#include "Definitions.h"
 #include "measurements/VoltMeter.h"
 #include "measurements/AmperMeter.h"
 #include "common/Util.h"
 #include "common/TimeManager.h"
-#include "serial/DebugHandler.h"
+#include "common/Timer.h"
 #include <Arduino.h>
 
 
@@ -61,12 +62,14 @@ private:
     void StartTimer();
 
 protected:
+    Print *debugPrint = NULL;
 	void OnVoltageMeasured();
 
 public:
 	BatteryMonitor(VoltageStateCallback actionCallback = NULL);
 	~BatteryMonitor();
 
+    void SetDebugOutput(Print *debugPrint);
     void OnTimerComplete(TimerID timerId, uint8_t data) override;
 
 	VoltageLevelState CurrentState();

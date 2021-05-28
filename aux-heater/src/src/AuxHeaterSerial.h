@@ -1,4 +1,5 @@
 #pragma once
+#include "Definitions.h"
 #include "common/Util.h"
 #include "common/Timer.h"
 #include "serial/BaseSerialHandler.h"

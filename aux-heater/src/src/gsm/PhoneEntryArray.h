@@ -1,4 +1,4 @@
-#include "../common/StackArray.h"
+#include "array/StackArray.h"
 
 struct PhoneUserEntry
 {

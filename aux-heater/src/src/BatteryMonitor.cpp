@@ -77,10 +77,9 @@ void BatteryMonitor::HandleAttempt(VoltageLevelState state)
 	}
 	matchedAttempts++;
 	if (matchedAttempts >= matchRequire) {
-        if (DebugHandler::IsDebugEnabled()) {
-            DebugHandler::outWrite(F("Handle Battery LEVEL: "));
-            DebugHandler::outWriteASCII((uint8_t)state);
-			DebugHandler::outWriteEnd();
+        if (debugPrint != NULL) {
+            debugPrint->print("Handle Battery LEVEL: ");
+            debugPrint->println((uint8_t)state);
         }
 		currentState = state;
 		matchedAttempts = 0;

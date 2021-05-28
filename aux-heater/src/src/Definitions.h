@@ -38,13 +38,5 @@
 #define EMERGENCY_STATE_PIN 6
 #define SERVICE_STATE_PIN 7
 
-#if defined(ESP32) || defined(ARDUINO_ARCH_SAMD)
-#define PIN_RESOLUTION_UNITS 4096 // 12 bit size
-#else
-#define PIN_RESOLUTION_UNITS 1024 // 10 bit size
-#endif
-
-constexpr uint16_t PIN_RESOLUTION = PIN_RESOLUTION_UNITS - 1;
-
 #define AUX_BAUD_RATE 2400
 #define SERIAL_BAUD_RATE 115200

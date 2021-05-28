@@ -4,20 +4,20 @@
  Author:  Ilja
 */
 
-#include "src/Definitions.h"
+#include "Definitions.h"
 //#include "libs/ELECHOUSE_CC1101.h"
-#include "src/common/Timer.h"
-#include "src/common/Util.h"
-#include "src/AuxHeaterSerial.h"
-#include "src/BatteryMonitor.h"
-#include "src/serial/DebugHandler.h"
+#include "common/Timer.h"
+#include "common/Util.h"
+#include "AuxHeaterSerial.h"
+#include "BatteryMonitor.h"
+#include "DebugHandler.h"
 #include <strings.h>
-#include "src/bluetooth/BLEHandler.h"
-#include "src/bluetooth/BluetoothSerialHandler.h"
-#include "src/common/BinaryMessageStack.h"
-#include "src/TemperatureHandler.h"
-#include "src/common/Button.h"
-#include "src/AudiControls.h"
+#include "bluetooth/BLEHandler.h"
+#include "bluetooth/BluetoothSerialHandler.h"
+#include "array/BinaryMessageStack.h"
+#include "TemperatureHandler.h"
+#include "common/Button.h"
+#include "AudiControls.h"
 
 void handleLevelChanged(VoltageLevelState level);
 void handleSMSCommand(char* command, size_t size, time_t smsDispatchUTCts);
@@ -62,13 +62,13 @@ void setup() {
     // USB Serial
     Serial.begin(SERIAL_BAUD_RATE);
     //while(!Serial) {}
+    analogReadResolution(ANALOG_UNITS_RESOLUTION_RANGE);
 
 #if defined(ESP32)
     // AUX heater serial
     auxSerial.begin(AUX_BAUD_RATE, SERIAL_8N1, AUX_RX_PIN, AUX_TX_PIN);
     // gsm serial
     gsmSerial.begin(SERIAL_BAUD_RATE, SERIAL_8N1, GSM_RX_PIN, GSM_TX_PIN);
-    analogReadResolution(12);
 
 #elif defined(MKRGSM1400)
 
@@ -77,7 +77,6 @@ void setup() {
     pinMode(GSM_RTS, OUTPUT);
     pinMode(GSM_CTS, INPUT);
     digitalWrite(GSM_RTS, LOW);
-    analogReadResolution(12);
 
     SerialGSM.begin(SERIAL_BAUD_RATE, SERIAL_8N1);
     auxSerial.begin(AUX_BAUD_RATE, SERIAL_8N1);

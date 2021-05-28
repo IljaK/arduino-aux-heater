@@ -62,10 +62,9 @@ void SimcomGSMHandler::HandleOKResponse(char * reqCmd, char *response, size_t si
 		break;
 
 	case SimcomFlowState::FIND_PRIMARY_PHONE:
-        if (DebugHandler::IsDebugEnabled()) {
-            DebugHandler::outWrite(F("Primary phone: "));
-            DebugHandler::outWrite(primaryPhone);
-			DebugHandler::outWriteEnd();
+        if (debugPrint != NULL) {
+            debugPrint->print(F("Primary phone: "));
+            debugPrint->println(primaryPhone);
         }
 		flowState = SimcomFlowState::TIME_REQUEST;
 		break;

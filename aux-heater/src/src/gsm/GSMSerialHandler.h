@@ -1,11 +1,10 @@
 #pragma once
 #include <Arduino.h>
-#include "../common/Util.h"
-#include "../common/TimeManager.h"
-#include "../serial/SerialCharResponseHandler.h"
-#include "../serial/SerialTimerResponseHandler.h"
-#include "../common/StringStackArray.h"
-#include "../serial/DebugHandler.h"
+#include "common/Util.h"
+#include "common/TimeManager.h"
+#include "serial/SerialCharResponseHandler.h"
+#include "serial/SerialTimerResponseHandler.h"
+#include "array/StringStackArray.h"
 
 #define GSM_SERIAL_BUFFER_SIZE 256
 
@@ -150,6 +149,7 @@ private:
 	void StopCallTimer();
 
 protected:
+    Print *debugPrint = NULL;
 
     void WriteGsmSerial(const char * cmd, bool isCheck = false, bool isSet = false, char *data = NULL, bool dataQuotations = false, bool semicolon = false);
 
@@ -187,5 +187,6 @@ public:
     GSMSimPinState SimPinState();
 
     char *PendingRequest();
+    void SetDebugOutpit(Print *debugPrint);
 };
 
