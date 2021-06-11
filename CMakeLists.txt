@@ -46,6 +46,7 @@ include_directories(aux-heater/src)
 include_directories(aux-heater/src/gsm)
 include_directories(aux-heater-test/src)
 include_directories(aux-heater-test/src/mock)
+include_directories(aux-heater-test/src/array)
 include_directories(aux-heater/lib/arduino-helpers/src)
 include_directories(aux-heater/lib/arduino-helpers/src/array)
 include_directories(aux-heater/lib/arduino-helpers/src/common)
@@ -62,6 +63,7 @@ file(GLOB aux-heater-test-src
     "aux-heater/src/gsm/*.h" "aux-heater/src/gsm/*.cpp"
     "aux-heater-test/src/*.h" "aux-heater-test/src/*.cpp"
     "aux-heater-test/src/mock/*.h" "aux-heater-test/src/mock/*.cpp"
+    "aux-heater-test/src/array/*.h" "aux-heater-test/src/array/*.cpp"
     "aux-heater/lib/arduino-helpers/src/*.h" "aux-heater/lib/arduino-helpers/src/*.cpp"
     "aux-heater/lib/arduino-helpers/src/array/*.h" "aux-heater/lib/arduino-helpers/src/array/*.cpp"
     "aux-heater/lib/arduino-helpers/src/common/*.h" "aux-heater/lib/arduino-helpers/src/common/*.cpp"

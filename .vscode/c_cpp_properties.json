@@ -4,7 +4,7 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/build/googletest-prefix/src/googletest/googletest/include/**",
-                "${workspaceFolder}/aux-heater/src/src/**",
+                "${workspaceFolder}/aux-heater/src/**",
                 "${workspaceFolder}/aux-heater/src/lib/arduino-helpers/src/**",
                 "${workspaceFolder}/aux-heater/src/lib/async-GSM/src/**",
                 "${workspaceFolder}/arduino-stub/**",
@@ -22,7 +22,7 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/build/googletest-prefix/src/googletest/googletest/include/**",
-                "${workspaceFolder}/aux-heater/src/src/**",
+                "${workspaceFolder}/aux-heater/src/**",
                 "${workspaceFolder}/aux-heater/lib/arduino-helpers/src/**",
                 "${workspaceFolder}/aux-heater/lib/async-GSM/src/**",
                 "${workspaceFolder}/arduino-stub/**",
@@ -44,7 +44,7 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceFolder}/build/googletest-prefix/src/googletest/googletest/include/**",
-                "${workspaceFolder}/aux-heater/src/src/**",
+                "${workspaceFolder}/aux-heater/src/**",
                 "${workspaceFolder}/aux-heater/lib/arduino-helpers/src/*",
                 "${workspaceFolder}/aux-heater/lib/arduino-helpers/src/array/**",
                 "${workspaceFolder}/aux-heater/lib/arduino-helpers/src/common/**",
@@ -54,7 +54,9 @@
                 "${workspaceFolder}/aux-heater/lib/async-GSM/src/common/**",
                 "${workspaceFolder}/aux-heater/lib/async-GSM/src/socket/**",
                 "${workspaceFolder}/arduino-stub/**",
-                "${workspaceFolder}/aux-heater-test/src/**"
+                "${workspaceFolder}/aux-heater-test/src/**",
+                "${workspaceFolder}/aux-heater-test/src/mock/**",
+                "${workspaceFolder}/aux-heater-test/src/array/**"
             ],
             "defines": [
                 "_MAC_",
