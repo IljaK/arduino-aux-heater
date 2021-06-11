@@ -20,6 +20,12 @@ void TimerMock::OnTimerComplete(TimerID timerId, uint8_t data) {
 		}
 	}
 }
+void TimerMock::OnTimerStop(TimerID timerId, uint8_t data) {
+    if (timerId == this->timerId) {
+		this->timerId = 0;
+    }
+}
+
 bool TimerMock::IsCompleted() {
 	return timerId == 0;
 }

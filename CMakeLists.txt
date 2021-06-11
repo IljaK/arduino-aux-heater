@@ -42,23 +42,34 @@ add_dependencies(gtest_maind googletest)
 
 include_directories(${source_dir}/googletest/include)
 include_directories(arduino-stub)
-include_directories(aux-heater/src/src)
-include_directories(aux-heater/src/src/libs)
-include_directories(aux-heater/src/src/common)
-include_directories(aux-heater/src/src/serial)
-include_directories(aux-heater/src/src/gsm)
+include_directories(aux-heater/src)
+include_directories(aux-heater/src/gsm)
 include_directories(aux-heater-test/src)
 include_directories(aux-heater-test/src/mock)
+include_directories(aux-heater/lib/arduino-helpers/src)
+include_directories(aux-heater/lib/arduino-helpers/src/array)
+include_directories(aux-heater/lib/arduino-helpers/src/common)
+include_directories(aux-heater/lib/arduino-helpers/src/measurements)
+include_directories(aux-heater/lib/arduino-helpers/src/serial)
+include_directories(aux-heater/lib/async-GSM/src)
+include_directories(aux-heater/lib/async-GSM/src/common)
+include_directories(aux-heater/lib/async-GSM/src/socket)
 
 # Add recursive .h and .cpp files to build
 file(GLOB aux-heater-test-src 
     "arduino-stub/*.h" "arduino-stub/*.cpp"
-    "aux-heater/src/src/*.h" "aux-heater/src/src/*.cpp"
-    "aux-heater/src/src/common/*.h" "aux-heater/src/src/common/*.cpp"
-    "aux-heater/src/src/serial/*.h" "aux-heater/src/src/serial/*.cpp"
-    "aux-heater/src/src/gsm/*.h" "aux-heater/src/src/gsm/*.cpp"
+    "aux-heater/src/*.h" "aux-heater/src/*.cpp"
+    "aux-heater/src/gsm/*.h" "aux-heater/src/gsm/*.cpp"
     "aux-heater-test/src/*.h" "aux-heater-test/src/*.cpp"
-    "aux-heater-test/src/mock/*.h" "aux-heater-test/src/mock/*.cpp")
+    "aux-heater-test/src/mock/*.h" "aux-heater-test/src/mock/*.cpp"
+    "aux-heater/lib/arduino-helpers/src/*.h" "aux-heater/lib/arduino-helpers/src/*.cpp"
+    "aux-heater/lib/arduino-helpers/src/array/*.h" "aux-heater/lib/arduino-helpers/src/array/*.cpp"
+    "aux-heater/lib/arduino-helpers/src/common/*.h" "aux-heater/lib/arduino-helpers/src/common/*.cpp"
+    "aux-heater/lib/arduino-helpers/src/serial/*.h" "aux-heater/lib/arduino-helpers/src/serial/*.cpp"
+    "aux-heater/lib/arduino-helpers/src/measurements/*.h" "aux-heater/lib/arduino-helpers/src/measurements/*.cpp"
+    "aux-heater/lib/async-GSM/src/*.h" "aux-heater/lib/async-GSM/src/*.cpp"
+    "aux-heater/lib/async-GSM/src/common/*.h" "aux-heater/lib/async-GSM/src/common/*.cpp"
+    "aux-heater/lib/async-GSM/src/socket/*.h" "aux-heater/lib/async-GSM/src/socket/*.cpp")
 
 add_executable(aux-heater-test ${aux-heater-test-src})
 target_compile_definitions(aux-heater-test PUBLIC ARDUINO_TEST)

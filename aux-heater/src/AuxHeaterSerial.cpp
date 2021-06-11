@@ -108,7 +108,7 @@ void AuxHeaterSerial::LaunchCMD()
         #if defined(MKRGSM1400)
         pinPeripheral(AUX_TX_PIN, PIO_SERCOM);
         #endif
-        pHSerail->begin(AUX_BAUD_RATE, SERIAL_8N1);
+        pHSerail->begin(AUX_BAUD_RATE);
     }
 	delayMicroseconds(59432u);
 
@@ -203,9 +203,14 @@ void AuxHeaterSerial::OnTimerComplete(TimerID timerId, uint8_t data)
 			if (pStream->available()) HandleResult();
 			break;
 		}
-	} else {
-		ITimerCallback::OnTimerComplete(timerId, data);
 	}
+}
+
+void AuxHeaterSerial::OnTimerStop(TimerID timerId, uint8_t data)
+{
+    if (flowTimer == timerId) {
+		flowTimer = 0;
+    }
 }
 
 bool AuxHeaterSerial::IsBusy() {

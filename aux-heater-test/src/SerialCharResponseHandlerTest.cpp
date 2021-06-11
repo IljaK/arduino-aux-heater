@@ -14,7 +14,7 @@ TEST(SerialCharResponseHandlerTest, SeparatorParsingTest)
 
 	char separator[] = "\r\r\r\n";
 	SerialStream serial;
-	SerialCharResponseHandlerMock charResponseHandler((const char *)separator, &serial);
+	SerialCharResponseHandlerMock charResponseHandler(128, (const char *)separator, &serial);
 
 	char data1[] = "some args";
 	char data2[] = "cmd end\r\r\r\nbegin";
@@ -60,7 +60,7 @@ TEST(SerialCharResponseHandlerTest, BufferOverflowTest)
 
 	char separator[] = "\r\n";
 	SerialStream serial;
-	SerialCharResponseHandlerMock charResponseHandler((const char *)separator, &serial);
+	SerialCharResponseHandlerMock charResponseHandler(128, (const char *)separator, &serial);
 
 	charResponseHandler.Loop();
 

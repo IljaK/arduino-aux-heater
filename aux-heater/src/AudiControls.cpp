@@ -1,3 +1,4 @@
+#ifndef ARDUINO_TEST
 #include "AudiControls.h"
 
 volatile uint8_t accPinState;
@@ -47,3 +48,4 @@ void AudiControls::Loop()
     emergencyButton.Loop();
     serviceButton.Loop();
 }
+#endif

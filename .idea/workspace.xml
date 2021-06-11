@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="68b71958-573c-480f-b544-f2fe71774ae1" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/aux-heater/lib/async-GSM" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitmodules" beforeDir="false" afterPath="$PROJECT_DIR$/.gitmodules" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vscode/c_cpp_properties.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vscode/c_cpp_properties.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vscode/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vscode/settings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/arduino-stub/Arduino.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/arduino-stub/Arduino.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/arduino-stub/Arduino.h" beforeDir="false" afterPath="$PROJECT_DIR$/arduino-stub/Arduino.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/arduino-stub/Print.h" beforeDir="false" afterPath="$PROJECT_DIR$/arduino-stub/Print.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/arduino-stub/Stream.h" beforeDir="false" afterPath="$PROJECT_DIR$/arduino-stub/Stream.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aux-heater-test/src/PhonebookReaderTest.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/aux-heater-test/src/PhonebookReaderTest.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aux-heater-test/src/SerialCharResponseHandlerTest.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/aux-heater-test/src/SerialCharResponseHandlerTest.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aux-heater-test/src/VoltMeterTest.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/aux-heater-test/src/VoltMeterTest.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aux-heater-test/src/mock/SerialCharResponseHandlerMock.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/aux-heater-test/src/mock/SerialCharResponseHandlerMock.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aux-heater-test/src/mock/SerialCharResponseHandlerMock.h" beforeDir="false" afterPath="$PROJECT_DIR$/aux-heater-test/src/mock/SerialCharResponseHandlerMock.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aux-heater-test/src/mock/TimerMock.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/aux-heater-test/src/mock/TimerMock.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aux-heater-test/src/mock/TimerMock.h" beforeDir="false" afterPath="$PROJECT_DIR$/aux-heater-test/src/mock/TimerMock.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aux-heater/lib/arduino-helpers" beforeDir="false" afterPath="$PROJECT_DIR$/aux-heater/lib/arduino-helpers" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aux-heater/src/src/AudiControls.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/aux-heater/src/src/AudiControls.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aux-heater/src/src/AuxHeaterSerial.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/aux-heater/src/src/AuxHeaterSerial.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aux-heater/src/src/AuxHeaterSerial.h" beforeDir="false" afterPath="$PROJECT_DIR$/aux-heater/src/src/AuxHeaterSerial.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aux-heater/src/src/BatteryMonitor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/aux-heater/src/src/BatteryMonitor.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aux-heater/src/src/BatteryMonitor.h" beforeDir="false" afterPath="$PROJECT_DIR$/aux-heater/src/src/BatteryMonitor.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aux-heater/src/src/Definitions.h" beforeDir="false" afterPath="$PROJECT_DIR$/aux-heater/src/src/Definitions.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aux-heater/src/src/gsm/PhoneEntryArray.h" beforeDir="false" afterPath="$PROJECT_DIR$/aux-heater/src/src/gsm/PhoneEntryArray.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aux-heater/src/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/aux-heater/src/src/main.cpp" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1thYtOljVgGajjjtjCa2qx3Xswi" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="68b71958-573c-480f-b544-f2fe71774ae1" name="Default Changelist" comment="" />
+      <created>1623223001969</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1623223001969</updated>
+    </task>
+    <servers />
+  </component>
+</project>

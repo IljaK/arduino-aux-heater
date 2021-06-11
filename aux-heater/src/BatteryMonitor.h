@@ -71,6 +71,7 @@ public:
 
     void SetDebugOutput(Print *debugPrint);
     void OnTimerComplete(TimerID timerId, uint8_t data) override;
+    void OnTimerStop(TimerID timerId, uint8_t data) override;
 
 	VoltageLevelState CurrentState();
     void GetBatteryData(BatteryData* data);

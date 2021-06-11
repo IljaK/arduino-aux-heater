@@ -1,6 +1,5 @@
 #pragma once
 #include <Arduino.h>
-#include "wiring_private.h"
 
 #ifndef MKRGSM1400
 #define MKRGSM1400

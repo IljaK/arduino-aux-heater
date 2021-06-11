@@ -8,7 +8,7 @@ class SerialCharResponseHandlerMock: public SerialCharResponseHandler, public Ba
 public:
 	char receivedCommand[SERIAL_RX_BUFFER_SIZE];
 
-	SerialCharResponseHandlerMock(const char *separator, SerialStream* stream);
+	SerialCharResponseHandlerMock(const size_t bufferSize, const char *separator, SerialStream* stream);
 	~SerialCharResponseHandlerMock();
 
 	void OnResponseReceived(bool IsTimeOut, bool isOverFlow = false) override;

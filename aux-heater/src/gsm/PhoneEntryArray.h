@@ -17,7 +17,7 @@ public:
     {
     }
 
-    void Clear() {
+    void Clear() override {
         for(uint8_t i = 0; i < size; i++) {
             FreeItem(arr[i]);
             arr[i] = NULL;

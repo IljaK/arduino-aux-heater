@@ -44,5 +44,6 @@ public:
 	bool IsBusy();
 
 	void OnTimerComplete(TimerID timerId, uint8_t data) override;
+    void OnTimerStop(TimerID timerId, uint8_t data) override;
 };
 

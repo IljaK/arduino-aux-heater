@@ -1,5 +1,14 @@
 #pragma once
+
 #include <stdint.h>
+#ifdef _LINUX_
+#include <unistd.h>
+#else
+#include <windows.h>
+#endif
+#include <ctype.h>
+#include <time.h>
+
 #include <cstdio>
 #include <string>
 #include <ctime>
@@ -7,24 +16,39 @@
 #include "EEprom.h"
 #include "Stream.h"
 #include "Mutex.h"
+#include "Sercom.h"
+#include "Uart.h"
 
 #include <cstdlib>
 #include <climits>
 
-#include <time.h>
+#include "HardwareSerial.h"
 /** One hour, expressed in seconds */
 #define ONE_HOUR 3600
 
 #define MAXBYTE UCHAR_MAX
 
-#define LOW 0x0
-#define HIGH 0x1
+typedef uint8_t pin_size_t;
+typedef void (*voidFuncPtr)(void);
+typedef void (*voidFuncPtrParam)(void*);
 
-#define INPUT 0x0
-#define OUTPUT 0x1
-#define INPUT_PULLUP 0x2
+typedef enum {
+  LOW     = 0,
+  HIGH    = 1,
+  CHANGE  = 2,
+  FALLING = 3,
+  RISING  = 4,
+} PinStatus;
+
+typedef enum {
+  INPUT           = 0x0,
+  OUTPUT          = 0x1,
+  INPUT_PULLUP    = 0x2,
+  INPUT_PULLDOWN  = 0x3,
+} PinMode;
+
 #define LED_BUILTIN 13
-
+#define digitalPinToInterrupt(P)   ( P )
 
 static uint8_t SPCR = 0;
 static uint8_t SPE = 0;
@@ -46,6 +70,42 @@ static const uint8_t A8 = 26;	// D8
 static const uint8_t A9 = 27;	// D9
 static const uint8_t A10 = 28;	// D10
 static const uint8_t A11 = 29;	// D12
+
+typedef enum _EPioType
+{
+  PIO_NOT_A_PIN=-1,     /* Not under control of a peripheral. */
+  PIO_EXTINT=0,         /* The pin is controlled by the associated signal of peripheral A. */
+  PIO_ANALOG,           /* The pin is controlled by the associated signal of peripheral B. */
+  PIO_SERCOM,           /* The pin is controlled by the associated signal of peripheral C. */
+  PIO_SERCOM_ALT,       /* The pin is controlled by the associated signal of peripheral D. */
+  PIO_TIMER,            /* The pin is controlled by the associated signal of peripheral E. */
+  PIO_TIMER_ALT,        /* The pin is controlled by the associated signal of peripheral F. */
+  PIO_COM,              /* The pin is controlled by the associated signal of peripheral G. */
+  PIO_AC_CLK,           /* The pin is controlled by the associated signal of peripheral H. */
+  PIO_DIGITAL,          /* The pin is controlled by PORT. */
+  PIO_INPUT,            /* The pin is controlled by PORT and is an input. */
+  PIO_INPUT_PULLUP,     /* The pin is controlled by PORT and is an input with internal pull-up resistor enabled. */
+  PIO_OUTPUT,           /* The pin is controlled by PORT and is an output. */
+
+  PIO_PWM=PIO_TIMER,
+  PIO_PWM_ALT=PIO_TIMER_ALT,
+} EPioType ;
+
+#define GSM_RTS    (28u)
+#define GSM_CTS    (29u)
+#define GSM_RESETN (31u)
+#define GSM_DTR    (35u)
+
+extern Stream SerialGSM;
+extern Stream Serial;
+extern Stream Serial1;
+
+extern SERCOM sercom0;
+extern SERCOM sercom1;
+extern SERCOM sercom2;
+extern SERCOM sercom3;
+extern SERCOM sercom4;
+extern SERCOM sercom5;
 
 extern unsigned long millis();
 extern unsigned long micros();
@@ -82,3 +142,7 @@ extern char *itoa (int val, char *s, int radix);
 extern char *utoa (long val, char *s, int radix);
 extern char *ltoa (unsigned int val, char *s, int radix);
 extern char *ultoa (unsigned long val, char *s, int radix);
+
+extern void attachInterrupt(pin_size_t pin, voidFuncPtr callback, PinStatus mode);
+extern int pinPeripheral( uint32_t ulPin, EPioType ulPeripheral );
+extern void analogReadResolution(int res);

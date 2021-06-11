@@ -1,3 +1,6 @@
 [submodule "aux-heater/lib/arduino-helpers"]
 	path = aux-heater/lib/arduino-helpers
 	url = https://github.com/IljaK/arduino-helpers
+[submodule "aux-heater/lib/async-GSM"]
+	path = aux-heater/lib/async-GSM
+	url = https://github.com/IljaK/async-GSM

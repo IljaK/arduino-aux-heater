@@ -12,6 +12,7 @@ public:
 	TimerMock();
 	~TimerMock();
 	void OnTimerComplete(TimerID timerId, uint8_t data) override;
+	void OnTimerStop(TimerID timerId, uint8_t data) override;
 	bool IsCompleted();
 	void Start(unsigned long duration);
 	uint8_t TimerId() { return timerId; }

@@ -101,6 +101,13 @@ void BatteryMonitor::OnTimerComplete(TimerID timerId, uint8_t data)
         StartTimer();
     }
 }
+void BatteryMonitor::OnTimerStop(TimerID timerId, uint8_t data)
+{
+    if (timerId == measureTimer) {
+        measureTimer = 0;
+    }
+}
+
 void BatteryMonitor::StopTimer()
 {
     if (measureTimer != 0) {

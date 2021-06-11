@@ -27,6 +27,8 @@ public:
 	Stream();
 
 	int read();
+    void begin(long speed) {}
+    void end() {}
 
 	int available() { return length; }
 	void flush() { length = 0; }

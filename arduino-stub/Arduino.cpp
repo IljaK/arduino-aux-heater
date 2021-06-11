@@ -1,3 +1,4 @@
+/*
 #include <stdint.h>
 #ifdef _LINUX_
 #include <unistd.h>
@@ -6,10 +7,22 @@
 #endif
 #include <ctype.h>
 #include <time.h>
+*/
+#include "Arduino.h"
 
 unsigned long timeOffset = 0;
 uint16_t analogValues[21];
 time_t systemTime = 0;
+
+Stream Serial;
+Stream Serial1;
+Stream SerialGSM;
+SERCOM sercom0;
+SERCOM sercom1;
+SERCOM sercom2;
+SERCOM sercom3;
+SERCOM sercom4;
+SERCOM sercom5;
 
 unsigned long micros()
 {
@@ -134,4 +147,17 @@ char *ultoa (unsigned long val, char *s, int radix)
 {
 	// TODO:
 	return 0;
+}
+
+void attachInterrupt(pin_size_t pin, voidFuncPtr callback, PinStatus mode)
+{
+}
+
+int pinPeripheral( uint32_t ulPin, EPioType ulPeripheral )
+{
+    return 0;
+}
+
+void analogReadResolution(int res)
+{
 }

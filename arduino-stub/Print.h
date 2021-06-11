@@ -37,6 +37,17 @@ public:
 	size_t print(const char *str, size_t length) { return write((uint8_t *)str, length); };
 	size_t print(const char *str) { return write((uint8_t *)str, strlen(str)); };
 
+    inline size_t println(unsigned long n, int = DEC) { return write((uint8_t)n); }
+	inline size_t println(long n, int = DEC) { return write((uint8_t)n); }
+	inline size_t println(unsigned int n, int = DEC) { return write((uint8_t)n); }
+	inline size_t println(int n, int = DEC) { return write((uint8_t)n); }
+
+	size_t println(const __FlashStringHelper* str) { return 0; }
+	size_t println(char byte) { return write((uint8_t)byte); };
+	size_t println(char *str, size_t length) { return write((uint8_t *)str, length); };
+	size_t println(const char *str, size_t length) { return write((uint8_t *)str, length); };
+	size_t println(const char *str) { return write((uint8_t *)str, strlen(str)); };
+
 	virtual int read() = 0;
 	virtual int available() = 0;
 };

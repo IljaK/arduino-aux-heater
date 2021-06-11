@@ -3,6 +3,7 @@
  Created: 11/7/2018 4:04:00 PM
  Author:  Ilja
 */
+#ifndef ARDUINO_TEST
 
 #include "Definitions.h"
 //#include "libs/ELECHOUSE_CC1101.h"
@@ -31,7 +32,7 @@ AudiControls audiControls;
 void handleSerialCommand(char *command, size_t length);
 
 #if defined(ESP32)
-    #include "src/gsm/SimomGSMHandler.h"
+    #include "gsm/SimomGSMHandler.h"
 
     HardwareSerial auxSerial(1);
     HardwareSerial gsmSerial(2);
@@ -47,7 +48,7 @@ void handleSerialCommand(char *command, size_t length);
         btSerial.IrqHandler();
     }
 
-    #include "src/gsm/UbloxGSMHandler.h"
+    #include "gsm/UbloxGSMHandler.h"
     AuxHeaterSerial auxSerialHandler((HardwareSerial *)&auxSerial);
     UbloxGSMHandler gsmSerialHandler(handleSMSCommand, handleDtmfCommand, &SerialGSM);
     BluetoothSerialHandler btHandler(&btSerial, &handleSerialCommand);
@@ -78,10 +79,10 @@ void setup() {
     pinMode(GSM_CTS, INPUT);
     digitalWrite(GSM_RTS, LOW);
 
-    SerialGSM.begin(SERIAL_BAUD_RATE, SERIAL_8N1);
-    auxSerial.begin(AUX_BAUD_RATE, SERIAL_8N1);
+    SerialGSM.begin(SERIAL_BAUD_RATE);
+    auxSerial.begin(AUX_BAUD_RATE);
 
-    btSerial.begin(BT_BAUD_RATE, SERIAL_8N1);
+    btSerial.begin(BT_BAUD_RATE);
     pinPeripheral(BT_RX_PIN, PIO_SERCOM); // Assign RX function to pin 1
     pinPeripheral(BT_TX_PIN, PIO_SERCOM); // Assign TX function to pin 0
 #endif
@@ -277,3 +278,5 @@ void handleServiceClick(uint8_t multiClicks) {
     DebugHandler::outWriteASCII(multiClicks);
     DebugHandler::outWriteEnd();
 }
+
+#endif
