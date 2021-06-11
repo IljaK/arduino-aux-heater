@@ -58,3 +58,19 @@ TEST(Util, ReverseByteTest)
 
     EXPECT_EQ(reverseByte(0b01010101), 0b10101010);
 }
+
+
+TEST(Util, HexEncodingTest)
+{
+    char data[] = "some test data";
+    char hex[128];
+    size_t encoded = encodeToHex((uint8_t *)data, strlen(data), hex);
+
+    EXPECT_EQ(encoded / 2, strlen(data));
+
+    char result[128];
+    size_t decoded = decodeFromHex(hex, (uint8_t *)result, encoded / 2);
+
+    EXPECT_EQ(strcmp(data, result), 0);
+
+}
